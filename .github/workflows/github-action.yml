@@ -1,0 +1,68 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg VITE_API_URL=${{ secrets.VITE_API_URL }} \
+            -t magic-store-front-admin:latest .
+
+
+      - name: Check Docker image
+        run: |
+          docker images
+
+
+      - name: Save image
+        run: |
+          docker save -o image.tar magic-store-front-admin:latest
+          gzip image.tar
+
+          ls -lh image.tar.gz
+
+
+      - name: Setup SSH Agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+
+      - name: Copy image to server
+        run: |
+          scp -o StrictHostKeyChecking=no \
+          image.tar.gz \
+          ${{ secrets.USER }}@${{ secrets.HOST }}:~/magic-store-front/admin/
+
+
+      - name: Deploy
+        run: |
+          ssh -o StrictHostKeyChecking=no \
+          ${{ secrets.USER }}@${{ secrets.HOST }} << 'EOF'
+
+          cd ~/magic-store-front/admin
+
+          rm -f image.tar
+
+          gunzip -f image.tar.gz
+
+          docker load -i image.tar
+
+          docker compose up -d --force-recreate
+
+          docker image prune -af
+
+          EOF
