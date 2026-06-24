@@ -1,0 +1,15 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+::selection {
+  color: #fff;
+  background: #36abff;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}

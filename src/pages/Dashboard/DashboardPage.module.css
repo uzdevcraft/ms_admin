@@ -1,0 +1,44 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.welcome {
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #01ac70, #0d9660);
+  border: none;
+}
+
+.welcomeTitle {
+  color: var(--mantine-color-white);
+}
+
+.welcomeText {
+  color: rgba(255, 255, 255, 0.92);
+  margin-top: 0.35rem;
+}
+
+.statCard {
+  background: #fff;
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: var(--mantine-color-gray-6);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.statValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--mantine-color-gray-9);
+  line-height: 1.2;
+}
+
+.chartCard {
+  background: #fff;
+  min-height: 360px;
+}
