@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import * as Api from '../api';
-import * as Mappers from '../mappers';
-import type * as Types from '../types';
-import { LIST_KEY } from './constants';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import * as Api from "../api";
+import * as Mappers from "../mappers";
+import type * as Types from "../types";
 
 const useCreate = () => {
   const queryClient = useQueryClient();
@@ -10,10 +10,10 @@ const useCreate = () => {
   return useMutation({
     mutationFn: async (values: Types.IForm.Create) => {
       const { data } = await Api.Create(Mappers.CreateRequest(values));
-      return data;
+      return Mappers.Category(typeof data === "object" ? data : { id: data });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: LIST_KEY });
+      queryClient.invalidateQueries({ queryKey: ["categories", "list"] });
     },
   });
 };

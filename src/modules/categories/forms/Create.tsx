@@ -1,63 +1,66 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Group, Modal } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
-import { useForm } from 'react-hook-form';
-import getApiError from '@common/utils/getApiError';
-import useCreate from '../hooks/useCreate';
-import { CategoryFormFields } from './CategoryFormFields';
-import { categoryFormSchema, defaultValues, type CategoryFormValues } from './schema';
+import type { ReactNode } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
 
-interface CreateProps {
-  opened: boolean;
-  onClose: () => void;
+import getApiError from "@common/utils/getApiError";
+import { keepOptions } from "@/helpers";
+
+import useCreate from "../hooks/useCreate";
+import type * as Types from "../types";
+import {
+  categoryFormSchema,
+  defaultValues,
+  type CategoryFormValues,
+} from "./schema";
+
+interface IChildren extends UseFormReturn<CategoryFormValues> {
+  isLoading: boolean;
 }
 
-export function Create({ opened, onClose }: CreateProps) {
+interface IProps {
+  children: (props: IChildren) => ReactNode;
+  className?: string;
+  onError?: (error: string) => void;
+  onSettled?: () => void;
+  onSuccess?: (value: Types.IEntity.Category) => void;
+}
+
+const CreateForm = ({
+  children,
+  className,
+  onError,
+  onSettled,
+  onSuccess,
+}: IProps) => {
   const create = useCreate();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    control,
-    formState: { errors },
-  } = useForm<CategoryFormValues>({
-    resolver: yupResolver(categoryFormSchema),
+  const form = useForm<CategoryFormValues>({
     defaultValues,
+    resolver: yupResolver(categoryFormSchema),
   });
 
-  const handleClose = () => {
-    reset(defaultValues);
-    onClose();
-  };
-
-  const onSubmit = async (values: CategoryFormValues) => {
-    try {
-      await create.mutateAsync(values);
-      notifications.show({ message: 'Category created', color: 'green' });
-      handleClose();
-    } catch (error) {
-      const apiError = getApiError(error);
-      notifications.show({
-        message: apiError.message || 'Something went wrong',
-        color: 'red',
-      });
-    }
-  };
+  const onSubmit = form.handleSubmit((values) => {
+    create.mutate(values, {
+      onSuccess: (data) => {
+        onSuccess?.(data);
+      },
+      onError: (error) => {
+        onError?.(getApiError(error).message || error.message);
+      },
+      onSettled: () => {
+        form.reset({ ...form.getValues() }, { ...keepOptions });
+        onSettled?.();
+      },
+    });
+  });
 
   return (
-    <Modal opened={opened} onClose={handleClose} title="Add Category" size="md">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <CategoryFormFields register={register} control={control} errors={errors} />
-        <Group justify="flex-end" mt="md">
-          <Button variant="default" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button type="submit" loading={create.isPending} color="violet">
-            Create
-          </Button>
-        </Group>
+    <FormProvider {...form}>
+      <form className={className} onSubmit={onSubmit}>
+        {children({ ...form, isLoading: create.isPending })}
       </form>
-    </Modal>
+    </FormProvider>
   );
-}
+};
+
+export default CreateForm;

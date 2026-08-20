@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import * as Api from '../api';
-import * as Mappers from '../mappers';
-import type * as Types from '../types';
-import { LIST_KEY, singleKey } from './constants';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import * as Api from "../api";
+import * as Mappers from "../mappers";
+import type * as Types from "../types";
 
 interface UpdateVariables {
   id: number;
@@ -15,11 +15,16 @@ const useUpdate = () => {
   return useMutation({
     mutationFn: async ({ id, values }: UpdateVariables) => {
       const { data } = await Api.Update(Mappers.UpdateRequest(id, values));
-      return data;
+      return Mappers.Category(data);
     },
-    onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: LIST_KEY });
-      queryClient.invalidateQueries({ queryKey: singleKey(id) });
+    onSuccess: (_, { id, values }) => {
+      queryClient.invalidateQueries({ queryKey: ["categories", "list"] });
+      queryClient.invalidateQueries({ queryKey: ["categories", "single", id] });
+      if (values.id !== id) {
+        queryClient.invalidateQueries({
+          queryKey: ["categories", "single", values.id],
+        });
+      }
     },
   });
 };

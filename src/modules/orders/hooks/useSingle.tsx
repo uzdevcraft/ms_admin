@@ -1,12 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
-import * as Api from '../api';
-import * as Mappers from '../mappers';
-import type * as Types from '../types';
-import { singleKey } from './constants';
+import { useQuery } from "@tanstack/react-query";
+
+import * as Api from "../api";
+import * as Mappers from "../mappers";
+import type * as Types from "../types";
 
 const useSingle = ({ id }: Types.IQuery.Single, enabled = true) =>
   useQuery({
-    queryKey: singleKey(id),
+    queryKey: ["orders", "single", id],
     queryFn: async () => {
       const { data } = await Api.Single({ id });
       return Mappers.Order(data);

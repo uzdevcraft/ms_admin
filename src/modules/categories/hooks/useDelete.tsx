@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import * as Api from '../api';
-import { LIST_KEY, singleKey } from './constants';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import * as Api from "../api";
 
 const useDelete = () => {
   const queryClient = useQueryClient();
@@ -10,8 +10,8 @@ const useDelete = () => {
       await Api.Delete({ id });
     },
     onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: LIST_KEY });
-      queryClient.removeQueries({ queryKey: singleKey(id) });
+      queryClient.invalidateQueries({ queryKey: ["categories", "list"] });
+      queryClient.removeQueries({ queryKey: ["categories", "single", id] });
     },
   });
 };

@@ -1,11 +1,11 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import * as Api from '../api';
-import * as Mappers from '../mappers';
-import { LIST_KEY } from './constants';
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+
+import * as Api from "../api";
+import * as Mappers from "../mappers";
 
 const useList = () =>
   useQuery({
-    queryKey: LIST_KEY,
+    queryKey: ["products", "list"],
     queryFn: async () => {
       const { data } = await Api.List();
       return Mappers.List(data);

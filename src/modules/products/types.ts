@@ -32,6 +32,7 @@ export declare namespace IApi {
   export namespace Update {
     export interface Request extends Partial<IApi.Create.Request> {
       id: number;
+      newId?: number;
     }
 
     export type Response = IEntity.Product;
@@ -99,5 +100,7 @@ export declare namespace IForm {
     sortOrder: number;
   }
 
-  export type Update = Create;
+  export interface Update extends Create {
+    id: number;
+  }
 }

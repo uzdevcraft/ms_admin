@@ -1,88 +1,75 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Group, Modal, Stack, Text } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import formatPrice from '@common/utils/formatPrice';
-import getApiError from '@common/utils/getApiError';
-import type * as Types from '../types';
-import useUpdateStatus from '../hooks/useUpdateStatus';
-import { UpdateStatusFormFields } from './UpdateStatusFormFields';
+import { useEffect, type ReactNode } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
+
+import getApiError from "@common/utils/getApiError";
+import { keepOptions } from "@/helpers";
+
+import useUpdateStatus from "../hooks/useUpdateStatus";
+import type * as Types from "../types";
 import {
   updateStatusDefaultValues,
   updateStatusSchema,
   type UpdateStatusFormValues,
-} from './schema';
+} from "./schema";
 
-interface UpdateStatusProps {
-  opened: boolean;
-  onClose: () => void;
-  order: Types.IEntity.Order | null;
+interface IChildren extends UseFormReturn<UpdateStatusFormValues> {
+  isLoading: boolean;
 }
 
-export function UpdateStatus({ opened, onClose, order }: UpdateStatusProps) {
+interface IProps {
+  order: Types.IEntity.Order;
+  children: (props: IChildren) => ReactNode;
+  className?: string;
+  onError?: (error: string) => void;
+  onSettled?: () => void;
+  onSuccess?: () => void;
+}
+
+const UpdateStatusForm = ({
+  order,
+  children,
+  className,
+  onError,
+  onSettled,
+  onSuccess,
+}: IProps) => {
   const updateStatus = useUpdateStatus();
 
-  const {
-    handleSubmit,
-    reset,
-    control,
-    formState: { errors },
-  } = useForm<UpdateStatusFormValues>({
-    resolver: yupResolver(updateStatusSchema),
+  const form = useForm<UpdateStatusFormValues>({
     defaultValues: updateStatusDefaultValues,
+    resolver: yupResolver(updateStatusSchema),
   });
 
   useEffect(() => {
-    if (opened && order) {
-      reset({ status: order.status });
-    }
-  }, [opened, order, reset]);
+    form.reset({ status: order.status });
+  }, [order, form.reset]);
 
-  const handleClose = () => {
-    reset(updateStatusDefaultValues);
-    onClose();
-  };
-
-  const onSubmit = async (values: UpdateStatusFormValues) => {
-    if (!order) return;
-
-    try {
-      await updateStatus.mutateAsync({ id: order.id, status: values.status });
-      notifications.show({ message: 'Order status updated', color: 'green' });
-      handleClose();
-    } catch (error) {
-      const apiError = getApiError(error);
-      notifications.show({
-        message: apiError.message || 'Something went wrong',
-        color: 'red',
-      });
-    }
-  };
+  const onSubmit = form.handleSubmit((values) => {
+    updateStatus.mutate(
+      { id: order.id, status: values.status },
+      {
+        onSuccess: () => {
+          onSuccess?.();
+        },
+        onError: (error) => {
+          onError?.(getApiError(error).message || error.message);
+        },
+        onSettled: () => {
+          form.reset({ ...form.getValues() }, { ...keepOptions });
+          onSettled?.();
+        },
+      },
+    );
+  });
 
   return (
-    <Modal opened={opened} onClose={handleClose} title="Update Order Status" size="md">
-      {order && (
-        <Stack gap="sm" mb="md">
-          <Text size="sm">
-            Order <strong>#{order.id}</strong> — {order.userFullName}
-          </Text>
-          <Text size="sm" c="dimmed">
-            Total: {formatPrice(order.totalAmount)}
-          </Text>
-        </Stack>
-      )}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <UpdateStatusFormFields control={control} errors={errors} />
-        <Group justify="flex-end" mt="md">
-          <Button variant="default" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button type="submit" loading={updateStatus.isPending} color="violet">
-            Save changes
-          </Button>
-        </Group>
+    <FormProvider {...form}>
+      <form className={className} onSubmit={onSubmit}>
+        {children({ ...form, isLoading: updateStatus.isPending })}
       </form>
-    </Modal>
+    </FormProvider>
   );
-}
+};
+
+export default UpdateStatusForm;

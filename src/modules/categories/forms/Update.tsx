@@ -1,21 +1,35 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Group, Modal } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import getApiError from '@common/utils/getApiError';
-import type * as Types from '../types';
-import useUpdate from '../hooks/useUpdate';
-import { CategoryFormFields } from './CategoryFormFields';
-import { categoryFormSchema, defaultValues, type CategoryFormValues } from './schema';
+import { useEffect, type ReactNode } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
 
-interface UpdateProps {
-  opened: boolean;
-  onClose: () => void;
-  category: Types.IEntity.Category | null;
+import getApiError from "@common/utils/getApiError";
+import { keepOptions } from "@/helpers";
+
+import useUpdate from "../hooks/useUpdate";
+import type * as Types from "../types";
+import {
+  categoryUpdateFormSchema,
+  updateDefaultValues,
+  type CategoryUpdateFormValues,
+} from "./schema";
+
+interface IChildren extends UseFormReturn<CategoryUpdateFormValues> {
+  isLoading: boolean;
 }
 
-const toFormValues = (category: Types.IEntity.Category): CategoryFormValues => ({
+interface IProps {
+  category: Types.IEntity.Category;
+  children: (props: IChildren) => ReactNode;
+  className?: string;
+  onError?: (error: string) => void;
+  onSettled?: () => void;
+  onSuccess?: (value: Types.IEntity.Category) => void;
+}
+
+const toFormValues = (
+  category: Types.IEntity.Category,
+): CategoryUpdateFormValues => ({
+  id: category.id,
   name: category.name,
   nameUz: category.nameUz,
   nameRu: category.nameRu,
@@ -25,60 +39,50 @@ const toFormValues = (category: Types.IEntity.Category): CategoryFormValues => (
   sortOrder: category.sortOrder,
 });
 
-export function Update({ opened, onClose, category }: UpdateProps) {
+const UpdateForm = ({
+  category,
+  children,
+  className,
+  onError,
+  onSettled,
+  onSuccess,
+}: IProps) => {
   const update = useUpdate();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    control,
-    formState: { errors },
-  } = useForm<CategoryFormValues>({
-    resolver: yupResolver(categoryFormSchema),
-    defaultValues,
+  const form = useForm<CategoryUpdateFormValues>({
+    defaultValues: updateDefaultValues,
+    resolver: yupResolver(categoryUpdateFormSchema),
   });
 
   useEffect(() => {
-    if (opened && category) {
-      reset(toFormValues(category));
-    }
-  }, [opened, category, reset]);
+    form.reset(toFormValues(category));
+  }, [category, form.reset]);
 
-  const handleClose = () => {
-    reset(defaultValues);
-    onClose();
-  };
-
-  const onSubmit = async (values: CategoryFormValues) => {
-    if (!category) return;
-
-    try {
-      await update.mutateAsync({ id: category.id, values });
-      notifications.show({ message: 'Category updated', color: 'green' });
-      handleClose();
-    } catch (error) {
-      const apiError = getApiError(error);
-      notifications.show({
-        message: apiError.message || 'Something went wrong',
-        color: 'red',
-      });
-    }
-  };
+  const onSubmit = form.handleSubmit((values) => {
+    update.mutate(
+      { id: category.id, values },
+      {
+        onSuccess: (data) => {
+          onSuccess?.(data);
+        },
+        onError: (error) => {
+          onError?.(getApiError(error).message || error.message);
+        },
+        onSettled: () => {
+          form.reset({ ...form.getValues() }, { ...keepOptions });
+          onSettled?.();
+        },
+      },
+    );
+  });
 
   return (
-    <Modal opened={opened} onClose={handleClose} title="Edit Category" size="md">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <CategoryFormFields register={register} control={control} errors={errors} />
-        <Group justify="flex-end" mt="md">
-          <Button variant="default" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button type="submit" loading={update.isPending} color="violet">
-            Save changes
-          </Button>
-        </Group>
+    <FormProvider {...form}>
+      <form className={className} onSubmit={onSubmit}>
+        {children({ ...form, isLoading: update.isPending })}
       </form>
-    </Modal>
+    </FormProvider>
   );
-}
+};
+
+export default UpdateForm;

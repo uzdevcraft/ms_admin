@@ -1,6 +1,11 @@
+const parseAdminId = () => {
+  const parsed = Number(import.meta.env.VITE_ADMIN_ID);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : NaN;
+};
+
 const config = {
-  api: {
-    accessTokenKey: 'magic_store_auth_token',
+  auth: {
+    adminId: parseAdminId(),
   },
   list: {
     perPage: 20,

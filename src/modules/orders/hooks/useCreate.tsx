@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import * as Api from '../api';
-import * as Mappers from '../mappers';
-import type * as Types from '../types';
-import { LIST_KEY, MY_ORDERS_KEY } from './constants';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import * as Api from "../api";
+import * as Mappers from "../mappers";
+import type * as Types from "../types";
 
 const useCreate = () => {
   const queryClient = useQueryClient();
@@ -13,8 +13,8 @@ const useCreate = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: LIST_KEY });
-      queryClient.invalidateQueries({ queryKey: MY_ORDERS_KEY });
+      queryClient.invalidateQueries({ queryKey: ["orders", "list"] });
+      queryClient.invalidateQueries({ queryKey: ["orders", "my-orders"] });
     },
   });
 };

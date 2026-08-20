@@ -10,7 +10,26 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <title>Magic Store Admin</title>
+    <title>ZARO — Admin panel</title>
+    <script>
+      (function () {
+        var key = 'ms-admin-color-scheme';
+        try {
+          var stored = localStorage.getItem(key);
+          var scheme =
+            stored === 'dark' || stored === 'light' || stored === 'auto'
+              ? stored
+              : 'light';
+          if (scheme === 'auto') {
+            scheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+          }
+          document.documentElement.setAttribute('data-mantine-color-scheme', scheme);
+          document.documentElement.style.colorScheme = scheme;
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

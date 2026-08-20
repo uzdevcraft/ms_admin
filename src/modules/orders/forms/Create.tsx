@@ -1,67 +1,65 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Group, Modal } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
-import { useForm } from 'react-hook-form';
-import getApiError from '@common/utils/getApiError';
-import useCreate from '../hooks/useCreate';
-import { CreateOrderFormFields } from './CreateOrderFormFields';
+import type { ReactNode } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
+
+import getApiError from "@common/utils/getApiError";
+import { keepOptions } from "@/helpers";
+
+import useCreate from "../hooks/useCreate";
 import {
   createDefaultValues,
   createOrderSchema,
   type CreateOrderFormValues,
-} from './schema';
+} from "./schema";
 
-interface CreateProps {
-  opened: boolean;
-  onClose: () => void;
+interface IChildren extends UseFormReturn<CreateOrderFormValues> {
+  isLoading: boolean;
 }
 
-export function Create({ opened, onClose }: CreateProps) {
+interface IProps {
+  children: (props: IChildren) => ReactNode;
+  className?: string;
+  onError?: (error: string) => void;
+  onSettled?: () => void;
+  onSuccess?: () => void;
+}
+
+const CreateForm = ({
+  children,
+  className,
+  onError,
+  onSettled,
+  onSuccess,
+}: IProps) => {
   const create = useCreate();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    control,
-    formState: { errors },
-  } = useForm<CreateOrderFormValues>({
-    resolver: yupResolver(createOrderSchema),
+  const form = useForm<CreateOrderFormValues>({
     defaultValues: createDefaultValues,
+    resolver: yupResolver(createOrderSchema),
   });
 
-  const handleClose = () => {
-    reset(createDefaultValues);
-    onClose();
-  };
-
-  const onSubmit = async (values: CreateOrderFormValues) => {
-    try {
-      await create.mutateAsync(values);
-      notifications.show({ message: 'Order created', color: 'green' });
-      handleClose();
-    } catch (error) {
-      const apiError = getApiError(error);
-      notifications.show({
-        message: apiError.message || 'Something went wrong',
-        color: 'red',
-      });
-    }
-  };
+  const onSubmit = form.handleSubmit((values) => {
+    create.mutate(values, {
+      onSuccess: () => {
+        onSuccess?.();
+      },
+      onError: (error) => {
+        onError?.(getApiError(error).message || error.message);
+      },
+      onSettled: () => {
+        form.reset({ ...form.getValues() }, { ...keepOptions });
+        onSettled?.();
+      },
+    });
+  });
 
   return (
-    <Modal opened={opened} onClose={handleClose} title="Create Order" size="lg">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <CreateOrderFormFields register={register} control={control} errors={errors} />
-        <Group justify="flex-end" mt="md">
-          <Button variant="default" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button type="submit" loading={create.isPending} color="violet">
-            Create
-          </Button>
-        </Group>
+    <FormProvider {...form}>
+      <form className={className} onSubmit={onSubmit}>
+        {children({ ...form, isLoading: create.isPending })}
       </form>
-    </Modal>
+    </FormProvider>
   );
-}
+};
+
+export default CreateForm;

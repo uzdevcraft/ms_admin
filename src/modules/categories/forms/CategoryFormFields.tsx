@@ -7,38 +7,62 @@ import {
   Textarea,
 } from '@mantine/core';
 import { Controller, type Control, type FieldErrors, type UseFormRegister } from 'react-hook-form';
+import { forms } from '@/locale/uz';
 import type { CategoryFormValues } from './schema';
 
 interface CategoryFormFieldsProps {
   register: UseFormRegister<CategoryFormValues>;
   control: Control<CategoryFormValues>;
   errors: FieldErrors<CategoryFormValues>;
+  showId?: boolean;
 }
 
-export function CategoryFormFields({ register, control, errors }: CategoryFormFieldsProps) {
+export function CategoryFormFields({
+  register,
+  control,
+  errors,
+  showId = false,
+}: CategoryFormFieldsProps) {
   return (
     <Stack gap="sm">
+      {showId ? (
+        <Controller
+          name="id"
+          control={control}
+          render={({ field }) => (
+            <NumberInput
+              label={forms.id}
+              min={1}
+              allowDecimal={false}
+              error={errors.id?.message}
+              value={field.value || undefined}
+              onChange={(value) => field.onChange(Number(value) || 0)}
+            />
+          )}
+        />
+      ) : null}
+
       <Group grow>
-        <TextInput label="Name" error={errors.name?.message} {...register('name')} />
-        <TextInput label="Name (UZ)" error={errors.nameUz?.message} {...register('nameUz')} />
-        <TextInput label="Name (RU)" error={errors.nameRu?.message} {...register('nameRu')} />
+        <TextInput label={forms.name} error={errors.name?.message} {...register('name')} />
+        <TextInput label={forms.nameUz} error={errors.nameUz?.message} {...register('nameUz')} />
+        <TextInput label={forms.nameRu} error={errors.nameRu?.message} {...register('nameRu')} />
       </Group>
 
       <Textarea
-        label="Description"
+        label={forms.description}
         minRows={3}
         error={errors.description?.message}
         {...register('description')}
       />
 
-      <TextInput label="Image URL" error={errors.imageUrl?.message} {...register('imageUrl')} />
+      <TextInput label={forms.imageUrl} error={errors.imageUrl?.message} {...register('imageUrl')} />
 
       <Controller
         name="sortOrder"
         control={control}
         render={({ field }) => (
           <NumberInput
-            label="Sort order"
+            label={forms.sortOrder}
             min={0}
             error={errors.sortOrder?.message}
             value={field.value}
@@ -52,7 +76,7 @@ export function CategoryFormFields({ register, control, errors }: CategoryFormFi
         control={control}
         render={({ field }) => (
           <Switch
-            label="Active (visible in store)"
+            label={forms.activeVisible}
             checked={field.value}
             onChange={(event) => field.onChange(event.currentTarget.checked)}
           />

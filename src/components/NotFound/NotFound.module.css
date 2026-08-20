@@ -1,0 +1,90 @@
+.wrapper {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.content {
+  text-align: center;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 32px 24px;
+
+  background: c(neutral, 0);
+  border: 1px solid c(border);
+
+  backdrop-filter: blur(12px);
+}
+
+.code {
+  position: relative;
+
+  font-size: clamp(72px, 22vw, 140px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.06em;
+
+  color: c(brand, 5);
+
+  user-select: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -20px;
+
+    background: radial-gradient(circle, c(brand, 0) 0%, transparent 70%);
+
+    opacity: 0.18;
+    filter: blur(32px);
+    z-index: -1;
+  }
+}
+
+.title {
+  color: c(text);
+  margin-bottom: 8px;
+}
+
+.description {
+  color: c(text);
+  opacity: 0.7;
+
+  max-width: 320px;
+  text-wrap: balance;
+  margin: 0 auto;
+
+  line-height: 1.6;
+}
+
+.button {
+  background: c(brand, 5);
+  color: c(white);
+  border: none;
+  transition: all 0.18s ease;
+
+  box-shadow: s(md);
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* Desktopda biroz havodorroq */
+@media (min-width: 768px) {
+  .wrapper {
+    padding: 40px;
+  }
+
+  .description {
+    max-width: 420px;
+  }
+}

@@ -1,12 +1,14 @@
 *,
 *::before,
 *::after {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
 ::selection {
   color: #fff;
-  background: #36abff;
+  background: var(--mantine-color-blue-6);
 }
 
 body {

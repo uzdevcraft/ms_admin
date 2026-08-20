@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import * as Api from '../api';
-import type * as Types from '../types';
-import { LIST_KEY, MY_ORDERS_KEY, singleKey } from './constants';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import * as Api from "../api";
+import type * as Types from "../types";
 
 interface UpdateStatusVariables {
   id: number;
@@ -17,9 +17,9 @@ const useUpdateStatus = () => {
       return data;
     },
     onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: LIST_KEY });
-      queryClient.invalidateQueries({ queryKey: MY_ORDERS_KEY });
-      queryClient.invalidateQueries({ queryKey: singleKey(id) });
+      queryClient.invalidateQueries({ queryKey: ["orders", "list"] });
+      queryClient.invalidateQueries({ queryKey: ["orders", "my-orders"] });
+      queryClient.invalidateQueries({ queryKey: ["orders", "single", id] });
     },
   });
 };

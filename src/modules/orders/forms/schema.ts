@@ -1,35 +1,32 @@
 import * as yup from 'yup';
+import { orderStatusOptions, validation } from '@/locale/uz';
 import type * as Types from '../types';
 
-export const ORDER_STATUS_OPTIONS: { value: Types.OrderStatus; label: string }[] = [
-  { value: 'PENDING', label: 'Pending' },
-  { value: 'PAID', label: 'Paid' },
-  { value: 'PROCESSING', label: 'Processing' },
-  { value: 'SHIPPED', label: 'Shipped' },
-  { value: 'DELIVERED', label: 'Delivered' },
-  { value: 'CANCELLED', label: 'Cancelled' },
-];
+export const ORDER_STATUS_OPTIONS = orderStatusOptions as unknown as {
+  value: Types.OrderStatus;
+  label: string;
+}[];
 
 const orderItemSchema = yup.object({
   productId: yup
     .number()
     .integer()
-    .min(1, 'Product is required')
-    .required('Product is required'),
+    .min(1, validation.productRequired)
+    .required(validation.productRequired),
   quantity: yup
     .number()
     .integer()
-    .min(1, 'Quantity must be at least 1')
-    .required('Quantity is required'),
+    .min(1, validation.quantityMin)
+    .required(validation.quantityRequired),
 });
 
 export const createOrderSchema: yup.ObjectSchema<Types.IForm.Create> = yup.object({
   items: yup
     .array()
     .of(orderItemSchema)
-    .min(1, 'Add at least one item')
-    .required('Add at least one item'),
-  deliveryAddress: yup.string().required('Delivery address is required'),
+    .min(1, validation.addAtLeastOneItem)
+    .required(validation.addAtLeastOneItem),
+  deliveryAddress: yup.string().required(validation.deliveryAddressRequired),
   comment: yup.string().default(''),
 });
 
@@ -37,7 +34,7 @@ export const updateStatusSchema: yup.ObjectSchema<Types.IForm.UpdateStatus> = yu
   status: yup
     .mixed<Types.OrderStatus>()
     .oneOf(ORDER_STATUS_OPTIONS.map((option) => option.value))
-    .required('Status is required'),
+    .required(validation.statusRequired),
 });
 
 export type CreateOrderFormValues = Types.IForm.Create;

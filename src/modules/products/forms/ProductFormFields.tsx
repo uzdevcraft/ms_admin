@@ -9,15 +9,22 @@ import {
 } from '@mantine/core';
 import { Controller, type Control, type FieldErrors, type UseFormRegister } from 'react-hook-form';
 import { Hooks as CategoryHooks } from '@modules/categories';
+import { forms } from '@/locale/uz';
 import type { ProductFormValues } from './schema';
 
 interface ProductFormFieldsProps {
   register: UseFormRegister<ProductFormValues>;
   control: Control<ProductFormValues>;
   errors: FieldErrors<ProductFormValues>;
+  showId?: boolean;
 }
 
-export function ProductFormFields({ register, control, errors }: ProductFormFieldsProps) {
+export function ProductFormFields({
+  register,
+  control,
+  errors,
+  showId = false,
+}: ProductFormFieldsProps) {
   const { data: categories } = CategoryHooks.useList();
 
   const categoryOptions =
@@ -28,12 +35,29 @@ export function ProductFormFields({ register, control, errors }: ProductFormFiel
 
   return (
     <Stack gap="sm">
+      {showId ? (
+        <Controller
+          name="id"
+          control={control}
+          render={({ field }) => (
+            <NumberInput
+              label={forms.id}
+              min={1}
+              allowDecimal={false}
+              error={errors.id?.message}
+              value={field.value || undefined}
+              onChange={(value) => field.onChange(Number(value) || 0)}
+            />
+          )}
+        />
+      ) : null}
+
       <Controller
         name="categoryId"
         control={control}
         render={({ field }) => (
           <Select
-            label="Category"
+            label={forms.category}
             data={categoryOptions}
             error={errors.categoryId?.message}
             value={field.value ? String(field.value) : null}
@@ -43,26 +67,26 @@ export function ProductFormFields({ register, control, errors }: ProductFormFiel
       />
 
       <Group grow>
-        <TextInput label="Name" error={errors.name?.message} {...register('name')} />
-        <TextInput label="Name (UZ)" error={errors.nameUz?.message} {...register('nameUz')} />
-        <TextInput label="Name (RU)" error={errors.nameRu?.message} {...register('nameRu')} />
+        <TextInput label={forms.name} error={errors.name?.message} {...register('name')} />
+        <TextInput label={forms.nameUz} error={errors.nameUz?.message} {...register('nameUz')} />
+        <TextInput label={forms.nameRu} error={errors.nameRu?.message} {...register('nameRu')} />
       </Group>
 
       <Textarea
-        label="Description"
+        label={forms.description}
         minRows={2}
         error={errors.description?.message}
         {...register('description')}
       />
       <Group grow>
         <Textarea
-          label="Description (UZ)"
+          label={forms.descriptionUz}
           minRows={2}
           error={errors.descriptionUz?.message}
           {...register('descriptionUz')}
         />
         <Textarea
-          label="Description (RU)"
+          label={forms.descriptionRu}
           minRows={2}
           error={errors.descriptionRu?.message}
           {...register('descriptionRu')}
@@ -75,7 +99,7 @@ export function ProductFormFields({ register, control, errors }: ProductFormFiel
           control={control}
           render={({ field }) => (
             <NumberInput
-              label="Price"
+              label={forms.price}
               decimalScale={2}
               min={0}
               error={errors.price?.message}
@@ -89,7 +113,7 @@ export function ProductFormFields({ register, control, errors }: ProductFormFiel
           control={control}
           render={({ field }) => (
             <NumberInput
-              label="Discount price"
+              label={forms.discountPrice}
               decimalScale={2}
               min={0}
               error={errors.discountPrice?.message}
@@ -106,7 +130,7 @@ export function ProductFormFields({ register, control, errors }: ProductFormFiel
           control={control}
           render={({ field }) => (
             <NumberInput
-              label="Stock"
+              label={forms.stock}
               min={0}
               error={errors.stockQuantity?.message}
               value={field.value}
@@ -119,7 +143,7 @@ export function ProductFormFields({ register, control, errors }: ProductFormFiel
           control={control}
           render={({ field }) => (
             <NumberInput
-              label="Sort order"
+              label={forms.sortOrder}
               min={0}
               error={errors.sortOrder?.message}
               value={field.value}
@@ -129,14 +153,14 @@ export function ProductFormFields({ register, control, errors }: ProductFormFiel
         />
       </Group>
 
-      <TextInput label="Image URL" error={errors.imageUrl?.message} {...register('imageUrl')} />
+      <TextInput label={forms.imageUrl} error={errors.imageUrl?.message} {...register('imageUrl')} />
 
       <Controller
         name="isActive"
         control={control}
         render={({ field }) => (
           <Switch
-            label="Active (visible in store)"
+            label={forms.activeVisible}
             checked={field.value}
             onChange={(event) => field.onChange(event.currentTarget.checked)}
           />

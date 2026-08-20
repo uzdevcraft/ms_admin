@@ -1,5 +1,6 @@
 import { Select, Stack } from '@mantine/core';
 import { Controller, type Control, type FieldErrors } from 'react-hook-form';
+import { forms } from '@/locale/uz';
 import { ORDER_STATUS_OPTIONS, type UpdateStatusFormValues } from './schema';
 
 interface UpdateStatusFormFieldsProps {
@@ -15,7 +16,7 @@ export function UpdateStatusFormFields({ control, errors }: UpdateStatusFormFiel
         control={control}
         render={({ field }) => (
           <Select
-            label="Status"
+            label={forms.status}
             data={ORDER_STATUS_OPTIONS}
             error={errors.status?.message}
             value={field.value}

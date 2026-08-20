@@ -12,6 +12,7 @@ import {
 import { IconPlus, IconTrash } from '@tabler/icons-react';
 import { Controller, useFieldArray, type Control, type FieldErrors, type UseFormRegister } from 'react-hook-form';
 import { Hooks as ProductHooks } from '@modules/products';
+import { forms, userTesting } from '@/locale/uz';
 import type { CreateOrderFormValues } from './schema';
 
 interface CreateOrderFormFieldsProps {
@@ -39,7 +40,7 @@ export function CreateOrderFormFields({ register, control, errors }: CreateOrder
             control={control}
             render={({ field: productField }) => (
               <Select
-                label={index === 0 ? 'Product' : undefined}
+                label={index === 0 ? forms.product : undefined}
                 data={productOptions}
                 searchable
                 error={errors.items?.[index]?.productId?.message}
@@ -53,7 +54,7 @@ export function CreateOrderFormFields({ register, control, errors }: CreateOrder
             control={control}
             render={({ field: quantityField }) => (
               <NumberInput
-                label={index === 0 ? 'Quantity' : undefined}
+                label={index === 0 ? userTesting.quantity : undefined}
                 min={1}
                 error={errors.items?.[index]?.quantity?.message}
                 value={quantityField.value}
@@ -66,7 +67,7 @@ export function CreateOrderFormFields({ register, control, errors }: CreateOrder
               variant="subtle"
               color="red"
               onClick={() => remove(index)}
-              aria-label="Remove item"
+              aria-label={userTesting.removeItem}
             >
               <IconTrash size={16} />
             </ActionIcon>
@@ -86,16 +87,21 @@ export function CreateOrderFormFields({ register, control, errors }: CreateOrder
         leftSection={<IconPlus size={16} />}
         onClick={() => append({ productId: 0, quantity: 1 })}
       >
-        Add item
+        {userTesting.addItem}
       </Button>
 
       <TextInput
-        label="Delivery address"
+        label={userTesting.deliveryAddress}
         error={errors.deliveryAddress?.message}
         {...register('deliveryAddress')}
       />
 
-      <Textarea label="Comment" minRows={2} error={errors.comment?.message} {...register('comment')} />
+      <Textarea
+        label={userTesting.comment}
+        minRows={2}
+        error={errors.comment?.message}
+        {...register('comment')}
+      />
     </Stack>
   );
 }
