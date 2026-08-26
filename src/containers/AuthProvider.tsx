@@ -1,4 +1,4 @@
-import { type FormEvent, type ReactNode, useState } from "react";
+import { type FormEvent, type ReactNode, useEffect, useState } from "react";
 import {
   Button,
   Center,
@@ -6,49 +6,58 @@ import {
   PasswordInput,
   Stack,
   Text,
+  TextInput,
   Title,
 } from "@mantine/core";
-import { IconLock } from "@tabler/icons-react";
+import { IconLock, IconUser } from "@tabler/icons-react";
 import { toast } from "@/common/utils/toast";
+import getApiError from "@/common/utils/getApiError";
 
 import { APP_NAME, APP_TAGLINE } from "@/config/brand";
-import { storage, VITE_ADMIN_PASSWORD } from "@/common/services";
-
-const ADMIN_PASSWORD = VITE_ADMIN_PASSWORD;
+import { storage } from "@/common/services";
+import { useLogin } from "@/modules/auth/hooks";
+import { useAuthStore } from "@/modules/auth/store";
+import { common } from "@/locale/uz";
 
 type AuthProviderProps = {
   children: ReactNode;
 };
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [access, setAccess] = useState(storage.session.get("access") || false);
+  const [access, setAccess] = useState(false);
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { mutateAsync: login, isPending } = useLogin();
 
-  const handleLogin = () => {
-    const toastId = toast.loading("Logging in...");
-
-    if (password === ADMIN_PASSWORD) {
-      toast.success("Login successful", {
-        id: toastId,
-        description: "You are now logged in",
-        closeButton: false,
-      });
-      storage.session.set("access", true);
+  useEffect(() => {
+    const token = storage.local.get("accessToken");
+    if (token) {
+      useAuthStore.setState({ accessToken: token, isAuthenticated: true });
       setAccess(true);
-    } else {
-      toast.error("Login failed", {
+    }
+  }, []);
+
+  const handleLogin = async () => {
+    const toastId = toast.loading("Kirish...");
+
+    try {
+      await login({ username, password });
+      toast.success("Muvaffaqiyatli kirdingiz", {
         id: toastId,
-        description: "Invalid password",
         closeButton: false,
       });
-      storage.session.set("access", false);
-      setAccess(false);
+      setAccess(true);
+    } catch (error: unknown) {
+      toast.error(getApiError(error).message || common.somethingWentWrong, {
+        id: toastId,
+        closeButton: false,
+      });
     }
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    handleLogin();
+    void handleLogin();
   };
 
   if (access) {
@@ -66,21 +75,29 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
                 {APP_TAGLINE}
               </Text>
               <Text mt="xs" fw={500}>
-                Login to the dashboard
+                Boshqaruv paneliga kirish
               </Text>
             </Stack>
 
-            <PasswordInput
-              label="Password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              leftSection={<IconLock size={16} stroke={1.5} />}
+            <TextInput
+              label={common.username}
+              placeholder={common.usernamePlaceholder}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              leftSection={<IconUser size={16} stroke={1.5} />}
               autoFocus
             />
 
-            <Button type="submit" fullWidth>
-              Login
+            <PasswordInput
+              label={common.password}
+              placeholder={common.passwordPlaceholder}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              leftSection={<IconLock size={16} stroke={1.5} />}
+            />
+
+            <Button type="submit" fullWidth loading={isPending}>
+              {common.signIn}
             </Button>
           </Stack>
         </form>

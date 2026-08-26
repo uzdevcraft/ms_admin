@@ -2,6 +2,7 @@ import axios, { AxiosError, type AxiosRequestHeaders } from "axios";
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 import type { IApi } from "@/modules/auth/types";
 import authEvents from "@/common/services/authEvents";
+import storage from "./storage";
 import { GUEST_WARNING_MESSAGE } from "@/modules/auth/constants";
 
 import { useAuthStore } from "@/modules/auth/store";
@@ -38,7 +39,7 @@ function fallbackToGuest(message: string = GUEST_WARNING_MESSAGE): void {
  * logout flow to fall back to, so we drop straight into guest mode.
  */
 const refreshAuthLogic = async (failedRequest: AxiosError) => {
-  const refreshToken = cookieStore.get("refreshToken");
+  const refreshToken = storage.local.get("refreshToken");
 
   if (!refreshToken) {
     fallbackToGuest();
@@ -55,7 +56,7 @@ const refreshAuthLogic = async (failedRequest: AxiosError) => {
     );
 
     useAuthStore.getState().setAccessToken(data.accessToken);
-    cookieStore.set("refreshToken", data.refreshToken ?? "");
+    storage.local.set("refreshToken", data.refreshToken ?? "");
 
     if (failedRequest.response) {
       failedRequest.response.config.headers =

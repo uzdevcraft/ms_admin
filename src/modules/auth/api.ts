@@ -1,9 +1,11 @@
-import { http } from '@/common/services';
+import { http } from "@/common/services";
 
-import type { IApi } from './types';
+import type { IApi } from "./types";
 
-export const Login = (peerId: string) => {
-  return http.pureRequest.get<IApi.Login>(`/auth/login-with-telegramId?telegramId=${peerId}`);
+export const Login = (payload: { username: string; password: string }) => {
+  return http.pureRequest.post<IApi.Login>(
+    `/auth/login?${new URLSearchParams(payload).toString()}`,
+  );
 };
 
-export const User = () => http.request.get<IApi.User>('/auth/me');
+export const User = () => http.request.get<IApi.User>("/auth/me");

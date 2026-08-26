@@ -1,38 +1,28 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import * as Api from "../api";
 import * as Mappers from "../mappers";
 
 import { useAuthStore } from "@/modules/auth/store";
-import { VITE_ADMIN_ID } from "@/common/services";
-
-const TELEGRAM_ID = VITE_ADMIN_ID;
+import { storage } from "@/common/services";
 
 const useLogin = () => {
-  const { data, isPending } = useQuery({
-    queryKey: ["login"],
-    queryFn: async () => {
-      try {
-        const { data } = await Api.Login(TELEGRAM_ID);
-        const mappedData = Mappers.Login(data);
+  return useMutation({
+    mutationFn: async (payload: { username: string; password: string }) => {
+      const { data } = await Api.Login(payload);
+      const mappedData = Mappers.Login(data);
 
-        useAuthStore.setState({ accessToken: mappedData.accessToken });
-        useAuthStore.setState({ isAuthenticated: true });
+      useAuthStore.setState({
+        accessToken: mappedData.accessToken,
+        isAuthenticated: true,
+      });
 
-        cookieStore.set("refreshToken", mappedData.refreshToken);
+      storage.local.set("accessToken", mappedData.accessToken);
+      storage.local.set("refreshToken", mappedData.refreshToken);
 
-        return mappedData;
-      } catch (error: any) {
-        useAuthStore.setState({ error: error.message });
-        throw error;
-      }
+      return mappedData;
     },
   });
-
-  return {
-    isLoggingIn: isPending,
-    data,
-  };
 };
 
 export default useLogin;
