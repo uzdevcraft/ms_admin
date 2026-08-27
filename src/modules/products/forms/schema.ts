@@ -23,10 +23,7 @@ export const productFormSchema: yup.ObjectSchema<Types.IForm.Create> =
       .number()
       .min(0, validation.discountPositive)
       .required(validation.discountRequired),
-    imageUrl: yup
-      .string()
-      .url(validation.validUrl)
-      .required(validation.imageUrlRequired),
+    imageUrl: yup.string().required(validation.imageUrlRequired),
     stockQuantity: yup
       .number()
       .integer()

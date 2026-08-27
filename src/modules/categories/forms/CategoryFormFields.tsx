@@ -5,10 +5,16 @@ import {
   Switch,
   TextInput,
   Textarea,
-} from '@mantine/core';
-import { Controller, type Control, type FieldErrors, type UseFormRegister } from 'react-hook-form';
-import { forms } from '@/locale/uz';
-import type { CategoryFormValues } from './schema';
+} from "@mantine/core";
+import {
+  Controller,
+  type Control,
+  type FieldErrors,
+  type UseFormRegister,
+} from "react-hook-form";
+import { ImageUpload } from "@/components/ImageUpload";
+import { forms } from "@/locale/uz";
+import type { CategoryFormValues } from "./schema";
 
 interface CategoryFormFieldsProps {
   register: UseFormRegister<CategoryFormValues>;
@@ -43,19 +49,42 @@ export function CategoryFormFields({
       ) : null}
 
       <Group grow>
-        <TextInput label={forms.name} error={errors.name?.message} {...register('name')} />
-        <TextInput label={forms.nameUz} error={errors.nameUz?.message} {...register('nameUz')} />
-        <TextInput label={forms.nameRu} error={errors.nameRu?.message} {...register('nameRu')} />
+        <TextInput
+          label={forms.name}
+          error={errors.name?.message}
+          {...register("name")}
+        />
+        <TextInput
+          label={forms.nameUz}
+          error={errors.nameUz?.message}
+          {...register("nameUz")}
+        />
+        <TextInput
+          label={forms.nameRu}
+          error={errors.nameRu?.message}
+          {...register("nameRu")}
+        />
       </Group>
 
       <Textarea
         label={forms.description}
         minRows={3}
         error={errors.description?.message}
-        {...register('description')}
+        {...register("description")}
       />
 
-      <TextInput label={forms.imageUrl} error={errors.imageUrl?.message} {...register('imageUrl')} />
+      <Controller
+        name="imageUrl"
+        control={control}
+        render={({ field }) => (
+          <ImageUpload
+            label={forms.imageUrl}
+            value={field.value || ""}
+            onChange={field.onChange}
+            error={errors.imageUrl?.message}
+          />
+        )}
+      />
 
       <Controller
         name="sortOrder"

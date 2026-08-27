@@ -35,8 +35,8 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <MantineProvider
         theme={theme}
+        defaultColorScheme="dark"
         colorSchemeManager={colorSchemeManager}
-        defaultColorScheme="light"
       >
         <AuthProvider>
           <Toaster position="top-right" richColors closeButton />

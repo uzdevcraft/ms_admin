@@ -6,11 +6,17 @@ import {
   Switch,
   TextInput,
   Textarea,
-} from '@mantine/core';
-import { Controller, type Control, type FieldErrors, type UseFormRegister } from 'react-hook-form';
-import { Hooks as CategoryHooks } from '@modules/categories';
-import { forms } from '@/locale/uz';
-import type { ProductFormValues } from './schema';
+} from "@mantine/core";
+import {
+  Controller,
+  type Control,
+  type FieldErrors,
+  type UseFormRegister,
+} from "react-hook-form";
+import { ImageUpload } from "@/components/ImageUpload";
+import { Hooks as CategoryHooks } from "@modules/categories";
+import { forms } from "@/locale/uz";
+import type { ProductFormValues } from "./schema";
 
 interface ProductFormFieldsProps {
   register: UseFormRegister<ProductFormValues>;
@@ -67,29 +73,41 @@ export function ProductFormFields({
       />
 
       <Group grow>
-        <TextInput label={forms.name} error={errors.name?.message} {...register('name')} />
-        <TextInput label={forms.nameUz} error={errors.nameUz?.message} {...register('nameUz')} />
-        <TextInput label={forms.nameRu} error={errors.nameRu?.message} {...register('nameRu')} />
+        <TextInput
+          label={forms.name}
+          error={errors.name?.message}
+          {...register("name")}
+        />
+        <TextInput
+          label={forms.nameUz}
+          error={errors.nameUz?.message}
+          {...register("nameUz")}
+        />
+        <TextInput
+          label={forms.nameRu}
+          error={errors.nameRu?.message}
+          {...register("nameRu")}
+        />
       </Group>
 
       <Textarea
         label={forms.description}
         minRows={2}
         error={errors.description?.message}
-        {...register('description')}
+        {...register("description")}
       />
       <Group grow>
         <Textarea
           label={forms.descriptionUz}
           minRows={2}
           error={errors.descriptionUz?.message}
-          {...register('descriptionUz')}
+          {...register("descriptionUz")}
         />
         <Textarea
           label={forms.descriptionRu}
           minRows={2}
           error={errors.descriptionRu?.message}
-          {...register('descriptionRu')}
+          {...register("descriptionRu")}
         />
       </Group>
 
@@ -153,7 +171,18 @@ export function ProductFormFields({
         />
       </Group>
 
-      <TextInput label={forms.imageUrl} error={errors.imageUrl?.message} {...register('imageUrl')} />
+      <Controller
+        name="imageUrl"
+        control={control}
+        render={({ field }) => (
+          <ImageUpload
+            label={forms.imageUrl}
+            value={field.value || ""}
+            onChange={field.onChange}
+            error={errors.imageUrl?.message}
+          />
+        )}
+      />
 
       <Controller
         name="isActive"

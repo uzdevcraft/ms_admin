@@ -8,10 +8,7 @@ export const categoryFormSchema: yup.ObjectSchema<Types.IForm.Create> =
     nameUz: yup.string().required(validation.nameUzRequired),
     nameRu: yup.string().required(validation.nameRuRequired),
     description: yup.string().required(validation.descriptionRequired),
-    imageUrl: yup
-      .string()
-      .url(validation.validUrl)
-      .required(validation.imageUrlRequired),
+    imageUrl: yup.string().required(validation.imageUrlRequired),
     isActive: yup.boolean().defined().required(),
     sortOrder: yup
       .number()
