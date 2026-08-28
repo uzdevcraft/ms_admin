@@ -79,6 +79,7 @@ export function CategoryFormFields({
         render={({ field }) => (
           <ImageUpload
             label={forms.imageUrl}
+            placeholder={forms.imagePlaceholder}
             value={field.value || ""}
             onChange={field.onChange}
             error={errors.imageUrl?.message}

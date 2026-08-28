@@ -9,6 +9,7 @@ interface ImageUploadProps {
   onChange: (value: string) => void;
   error?: string;
   label?: string;
+  placeholder?: string;
   accept?: string;
 }
 
@@ -19,6 +20,7 @@ export default function ImageUpload({
   onChange,
   error,
   label = forms.imageUrl,
+  placeholder,
   accept = DEFAULT_ACCEPT,
 }: ImageUploadProps) {
   const upload = useUpload();
@@ -49,6 +51,7 @@ export default function ImageUpload({
 
       <FileInput
         label={label}
+        placeholder={placeholder}
         accept={accept}
         value={file}
         onChange={handleChange}

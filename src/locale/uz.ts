@@ -222,6 +222,7 @@ export const forms = {
   stock: "Ombor",
   sortOrder: "Tartib raqami",
   imageUrl: "Rasm",
+  imagePlaceholder: "Rasm faylini tanlang (PNG, JPEG, JPG, WEBP)",
   id: "ID",
   activeVisible: "Faol (do'konda ko'rinadi)",
   product: "Mahsulot",
