@@ -1,4 +1,4 @@
-import { ROLES } from './constants';
+import { ROLES } from "./constants";
 
 export declare namespace IApi {
   export interface Login {
@@ -7,9 +7,10 @@ export declare namespace IApi {
     success: boolean;
   }
 
-  export interface RefreshResponse {
-    accessToken: string;
-    refreshToken?: string;
+  // POST /auth/refresh returns the same AuthResponse payload as /auth/login.
+  export interface Refresh {
+    token: string;
+    refreshToken: string;
     success: boolean;
   }
 

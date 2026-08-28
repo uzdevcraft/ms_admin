@@ -4,7 +4,7 @@ import * as Api from "../api";
 import * as Mappers from "../mappers";
 
 import { useAuthStore } from "@/modules/auth/store";
-import { storage } from "@/common/services";
+import { http } from "@/common/services";
 
 const useLogin = () => {
   return useMutation({
@@ -12,13 +12,8 @@ const useLogin = () => {
       const { data } = await Api.Login(payload);
       const mappedData = Mappers.Login(data);
 
-      useAuthStore.setState({
-        accessToken: mappedData.accessToken,
-        isAuthenticated: true,
-      });
-
-      storage.local.set("accessToken", mappedData.accessToken);
-      storage.local.set("refreshToken", mappedData.refreshToken);
+      http.persistSession(mappedData);
+      useAuthStore.getState().loginSuccess();
 
       return mappedData;
     },
