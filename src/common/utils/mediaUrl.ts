@@ -1,11 +1,14 @@
-const MEDIA_PROXY_PATH = "/media";
+const MEDIA_PROXY_PATH = '/media';
 
-// The media server (MinIO) is only reachable over http, so an https page cannot
-// load its images directly — the browser blocks them as mixed content. In that
-// case route the request through the same-origin /media proxy instead.
+// Media files live on a MinIO server that (a) has no https listener, so an https page
+// cannot load them directly (mixed content), and (b) serves every object as
+// `application/octet-stream` with `X-Content-Type-Options: nosniff`, which makes the
+// browser refuse to render them in an <img>. Both are fixed by going through the
+// same-origin /media proxy, which forwards to the media server and repairs the
+// Content-Type — see the `/media` proxy in vite.config.ts.
 export default (src?: string | null) => {
-  if (!src || !src.startsWith("http://")) return src ?? "";
-  if (typeof window === "undefined" || window.location.protocol !== "https:") return src;
+  if (!src) return '';
+  if (!/^https?:\/\//.test(src)) return src;
 
   const { pathname, search } = new URL(src);
 

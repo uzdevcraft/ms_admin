@@ -2,6 +2,17 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
+const MEDIA_MIME_TYPES: Record<string, string> = {
+  webp: 'image/webp',
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  gif: 'image/gif',
+  avif: 'image/avif',
+  svg: 'image/svg+xml',
+  pdf: 'application/pdf'
+};
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_');
@@ -28,14 +39,28 @@ export default defineConfig(({ mode }) => {
             });
           }
         },
-        // Browser → same-origin /media. The media server (MinIO) has no https
-        // listener, so an https page cannot load its images directly (mixed
-        // content). See src/common/utils/mediaUrl.ts.
+        // Browser → same-origin /media. See src/common/utils/mediaUrl.ts.
         '/media': {
           target: mediaOrigin,
           changeOrigin: true,
           secure: false,
-          rewrite: path => path.replace(/^\/media/, '')
+          rewrite: path => path.replace(/^\/media/, ''),
+          // MinIO stores these objects as `application/octet-stream` and sends
+          // `nosniff`, so the browser refuses to render them as images. Derive the
+          // real type from the extension and drop the nosniff opt-out.
+          configure: proxy => {
+            proxy.on('proxyRes', (proxyRes, req) => {
+              const ext = (req.url ?? '').split('?')[0].split('.').pop()?.toLowerCase();
+              const mime = ext ? MEDIA_MIME_TYPES[ext] : undefined;
+
+              if (!mime) return;
+
+              // Now a same-origin response, so MinIO's HSTS would apply to this app.
+              delete proxyRes.headers['strict-transport-security'];
+              delete proxyRes.headers['x-content-type-options'];
+              proxyRes.headers['content-type'] = mime;
+            });
+          }
         }
       }
     },
