@@ -3,6 +3,7 @@ import { IconPencil, IconTrash } from '@tabler/icons-react';
 
 import type { TableColumn } from '@/components/Table';
 import formatPrice from '@common/utils/formatPrice';
+import mediaUrl from '@common/utils/mediaUrl';
 import { common, products as productsLocale } from '@/locale/uz';
 import type * as Types from '@/modules/products/types';
 
@@ -21,7 +22,7 @@ export const getProductColumns = ({
     width: 64,
     render: product =>
       product.imageUrl ? (
-        <Image src={product.imageUrl} alt={product.name} w={40} h={40} radius="sm" fit="cover" />
+        <Image src={mediaUrl(product.imageUrl)} alt={product.name} w={40} h={40} radius="sm" fit="cover" />
       ) : (
         <Text c="dimmed" size="sm">
           {common.dash}

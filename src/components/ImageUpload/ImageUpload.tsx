@@ -3,6 +3,7 @@ import { Box, Center, FileInput, Group, Image, Loader, Stack, Text } from '@mant
 
 import { useUpload } from '@/modules/files/hooks/useUpload';
 import getApiError from '@common/utils/getApiError';
+import mediaUrl from '@common/utils/mediaUrl';
 import { forms } from '@/locale/uz';
 
 interface ImageUploadProps {
@@ -50,7 +51,7 @@ export default function ImageUpload({
     <Stack gap="xs">
       {value ? (
         <Box pos="relative" w={80} h={80}>
-          <Image src={value} alt={label} w={80} h={80} radius="sm" fit="cover" />
+          <Image src={mediaUrl(value)} alt={label} w={80} h={80} radius="sm" fit="cover" />
 
           {isLoading && (
             <Center

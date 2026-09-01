@@ -3,6 +3,7 @@ import { IconPencil, IconTrash } from '@tabler/icons-react';
 
 import type { TableColumn } from '@/components/Table';
 import { formatDate } from '@/common/utils/format';
+import mediaUrl from '@common/utils/mediaUrl';
 import { categories as categoriesLocale, common } from '@/locale/uz';
 import type * as Types from '@/modules/categories/types';
 import dayjs from 'dayjs';
@@ -22,7 +23,7 @@ export const getCategoryColumns = ({
     width: 64,
     render: category =>
       category.imageUrl ? (
-        <Image src={category.imageUrl} alt={category.name} w={40} h={40} radius="sm" fit="cover" />
+        <Image src={mediaUrl(category.imageUrl)} alt={category.name} w={40} h={40} radius="sm" fit="cover" />
       ) : (
         <Text c="dimmed" size="sm">
           {common.dash}

@@ -2,6 +2,7 @@ import { Group, Image, Text } from '@mantine/core';
 
 import type { TableColumn } from '@/components/Table';
 import formatPrice from '@common/utils/formatPrice';
+import mediaUrl from '@common/utils/mediaUrl';
 import { common, orders as ordersLocale } from '@/locale/uz';
 import type * as Types from '@/modules/orders/types';
 
@@ -12,7 +13,7 @@ export const getOrderItemColumns = (): TableColumn<Types.IEntity.OrderItem>[] =>
     width: 72,
     render: item =>
       item.productImage ? (
-        <Image src={item.productImage} alt={item.productName} w={56} h={56} radius="sm" fit="cover" />
+        <Image src={mediaUrl(item.productImage)} alt={item.productName} w={56} h={56} radius="sm" fit="cover" />
       ) : (
         <Text c="dimmed" size="sm">
           {common.dash}

@@ -10,6 +10,7 @@ import { ErrorAlert } from '@/components/ErrorAlert';
 import { PageHeader } from '@/components/PageHeader';
 import { Table } from '@/components/Table';
 import formatPrice from '@common/utils/formatPrice';
+import mediaUrl from '@common/utils/mediaUrl';
 import { common, orders as ordersLocale, paymentStatus as paymentStatusLocale } from '@/locale/uz';
 import { useSingle } from '@/modules/orders/hooks';
 import { STATUS_COLORS, STATUS_LABELS } from '@/pages/Orders/columns';
@@ -133,9 +134,9 @@ const SingleOrder = () => {
                         <Text className={classes.label}>{ordersLocale.receipt}</Text>
 
                         {order.payment.receiptImageUrl ? (
-                          <Anchor href={order.payment.receiptImageUrl} target="_blank" rel="noreferrer">
+                          <Anchor href={mediaUrl(order.payment.receiptImageUrl)} target="_blank" rel="noreferrer">
                             <Image
-                              src={order.payment.receiptImageUrl}
+                              src={mediaUrl(order.payment.receiptImageUrl)}
                               alt={ordersLocale.receipt}
                               className={classes.receipt}
                               fit="contain"
