@@ -2,3 +2,16 @@
   display: flex;
   flex-direction: column;
 }
+
+.fieldGroup {
+  display: flex;
+  gap: 1rem;
+
+  & > div {
+    width: 100% !important;
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+}

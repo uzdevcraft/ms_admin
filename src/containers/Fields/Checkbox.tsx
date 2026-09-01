@@ -1,10 +1,10 @@
-import { Checkbox as MantineCheckbox, type CheckboxProps } from '@mantine/core';
+import { Checkbox, type CheckboxProps } from '@mantine/core';
 import { useController, type FieldValues, type UseControllerProps } from 'react-hook-form';
 
 type IProps<T extends FieldValues> = UseControllerProps<T> &
   Omit<CheckboxProps, 'name' | 'value' | 'onChange' | 'error'>;
 
-export function Checkbox<T extends FieldValues>({ control, name, rules, defaultValue, ...rest }: IProps<T>) {
+export function CheckboxField<T extends FieldValues>({ control, name, rules, defaultValue, ...rest }: IProps<T>) {
   const {
     field,
     fieldState: { error }
@@ -15,7 +15,7 @@ export function Checkbox<T extends FieldValues>({ control, name, rules, defaultV
     defaultValue
   });
 
-  return <MantineCheckbox {...field} {...rest} checked={!!field.value} error={error?.message} />;
+  return <Checkbox {...field} {...rest} checked={!!field.value} error={error?.message} />;
 }
 
-export default Checkbox;
+export default CheckboxField;

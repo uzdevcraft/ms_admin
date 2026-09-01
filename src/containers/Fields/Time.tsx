@@ -1,10 +1,10 @@
-import { TimeInput as MantineTimeInput, type TimeInputProps } from '@mantine/dates';
+import { TimeInput, type TimeInputProps } from '@mantine/dates';
 import { useController, type FieldValues, type UseControllerProps } from 'react-hook-form';
 
 type IProps<T extends FieldValues> = UseControllerProps<T> &
   Omit<TimeInputProps, 'name' | 'value' | 'onChange' | 'error'>;
 
-export function Time<T extends FieldValues>({ control, name, rules, defaultValue, ...rest }: IProps<T>) {
+export function TimeField<T extends FieldValues>({ control, name, rules, defaultValue, ...rest }: IProps<T>) {
   const {
     field,
     fieldState: { error }
@@ -16,7 +16,7 @@ export function Time<T extends FieldValues>({ control, name, rules, defaultValue
   });
 
   return (
-    <MantineTimeInput
+    <TimeInput
       {...rest}
       {...field}
       error={error?.message}
@@ -25,4 +25,4 @@ export function Time<T extends FieldValues>({ control, name, rules, defaultValue
   );
 }
 
-export default Time;
+export default TimeField;

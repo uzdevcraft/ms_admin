@@ -4,32 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <title>ZARO — Admin panel</title>
-    <script>
-      (function () {
-        var key = 'ms-admin-color-scheme';
-        try {
-          var stored = localStorage.getItem(key);
-          var scheme =
-            stored === 'dark' || stored === 'light' || stored === 'auto'
-              ? stored
-              : 'light';
-          if (scheme === 'auto') {
-            scheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-              ? 'dark'
-              : 'light';
-          }
-          document.documentElement.setAttribute('data-mantine-color-scheme', scheme);
-          document.documentElement.style.colorScheme = scheme;
-        } catch (e) {}
-      })();
-    </script>
+    <title>ZARO Dashboard</title>
   </head>
   <body>
     <div id="root"></div>

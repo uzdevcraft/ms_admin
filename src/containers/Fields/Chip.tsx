@@ -1,4 +1,4 @@
-import { Chip as MantineChip, type ChipProps } from '@mantine/core';
+import { Chip, type ChipProps } from '@mantine/core';
 import { useController, type FieldValues, type UseControllerProps } from 'react-hook-form';
 
 type IProps<T extends FieldValues> = UseControllerProps<T> &
@@ -6,7 +6,7 @@ type IProps<T extends FieldValues> = UseControllerProps<T> &
     value: number;
   };
 
-export function Chip<T extends FieldValues>({ control, name, rules, defaultValue, value, ...rest }: IProps<T>) {
+export function ChipField<T extends FieldValues>({ control, name, rules, defaultValue, value, ...rest }: IProps<T>) {
   const { field } = useController<T>({
     name,
     control,
@@ -18,13 +18,10 @@ export function Chip<T extends FieldValues>({ control, name, rules, defaultValue
 
   const handleChange = (checked: boolean) => {
     const newValue = checked ? [...selectedValues, value] : selectedValues.filter(v => v !== value);
-
     field.onChange(newValue);
   };
 
-  return (
-    <MantineChip {...rest} checked={selectedValues.includes(value)} onChange={handleChange} value={String(value)} />
-  );
+  return <Chip {...rest} checked={selectedValues.includes(value)} onChange={handleChange} value={String(value)} />;
 }
 
-export default Chip;
+export default ChipField;

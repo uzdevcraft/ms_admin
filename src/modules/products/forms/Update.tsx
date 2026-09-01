@@ -10,10 +10,10 @@ import type * as Types from "../types";
 import {
   productUpdateFormSchema,
   updateDefaultValues,
-  type ProductUpdateFormValues,
+  type UpdateFormValues,
 } from "./schema";
 
-interface IChildren extends UseFormReturn<ProductUpdateFormValues> {
+interface IChildren extends UseFormReturn<UpdateFormValues> {
   isLoading: boolean;
 }
 
@@ -28,7 +28,7 @@ interface IProps {
 
 const toFormValues = (
   product: Types.IEntity.Product,
-): ProductUpdateFormValues => ({
+): UpdateFormValues => ({
   id: product.id,
   categoryId: product.categoryId,
   name: product.name,
@@ -55,7 +55,7 @@ const UpdateForm = ({
 }: IProps) => {
   const update = useUpdate();
 
-  const form = useForm<ProductUpdateFormValues>({
+  const form = useForm<UpdateFormValues>({
     defaultValues: updateDefaultValues,
     resolver: yupResolver(productUpdateFormSchema),
   });

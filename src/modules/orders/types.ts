@@ -1,12 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace -- module architecture uses IApi/IEntity/IQuery/IForm namespaces */
 
-export type OrderStatus =
-  | 'PENDING'
-  | 'PAID'
-  | 'PROCESSING'
-  | 'SHIPPED'
-  | 'DELIVERED'
-  | 'CANCELLED';
+export type OrderStatus = 'PENDING' | 'PAID' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
 
 export type PaymentStatus = 'WAITING' | 'PREPARED' | 'PAID' | 'CANCELLED' | 'FAILED';
 
@@ -70,6 +64,7 @@ export declare namespace IEntity {
     merchantTransId: string;
     amount: number;
     status: PaymentStatus;
+    receiptImageUrl: string | null;
     paymentUrl: string;
     createdAt: string;
   }
@@ -124,5 +119,9 @@ export declare namespace IForm {
 
   export interface UpdateStatus {
     status: OrderStatus;
+  }
+
+  export interface Filter {
+    status: OrderStatus | null;
   }
 }

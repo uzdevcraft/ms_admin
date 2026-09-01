@@ -1,11 +1,10 @@
-export { default as Create } from "./Create";
-export { default as Update } from "./Update";
-export { ProductFormFields } from "./ProductFormFields";
+export { default as CreateForm } from './Create';
+export { default as UpdateForm } from './Update';
 export {
   defaultValues,
   productFormSchema,
   productUpdateFormSchema,
   updateDefaultValues,
-  type ProductFormValues,
-  type ProductUpdateFormValues,
-} from "./schema";
+  type CreateFormValues,
+  type UpdateFormValues
+} from './schema';

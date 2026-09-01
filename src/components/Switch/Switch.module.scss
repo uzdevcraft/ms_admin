@@ -1,0 +1,17 @@
+.track {
+  input:checked + & {
+    background-color: var(--active);
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+// .thumb {
+//   background-color: var(--active);
+// }
+
+// .thumb::before {
+//   display: none;
+// }

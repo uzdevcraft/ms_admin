@@ -1,11 +1,13 @@
-import { Button, Group, Modal } from "@mantine/core";
+import { toast } from '@/common/utils/toast';
+import { common, products } from '@/locale/uz';
 
-import { toast } from "@/common/utils/toast";
-import { common, products } from "@/locale/uz";
-import * as ProductsModule from "@/modules/products";
-import { Form } from "@/pages/Products/components/form";
+import { Group, Modal } from '@mantine/core';
+import { Button } from '@/components/Button';
 
-import classes from "./Form.module.css";
+import { CreateForm } from '@/modules/products/forms';
+import { Form } from '@/pages/Products/components/form';
+
+import classes from './Form.module.css';
 
 type IProps = {
   opened: boolean;
@@ -14,37 +16,28 @@ type IProps = {
 
 const Create = ({ opened, onClose }: IProps) => {
   return (
-    <Modal
-      opened={opened}
-      onClose={onClose}
-      title={products.addModal}
-      size="lg"
-    >
-      <ProductsModule.Forms.Create
+    <Modal opened={opened} onClose={onClose} title={products.addModal} size="xl">
+      <CreateForm
         className={classes.form}
         onSuccess={() => {
           toast.success(products.createSuccess);
           onClose();
         }}
-        onError={(message) => {
+        onError={message => {
           toast.error(message || common.somethingWentWrong);
         }}
       >
-        {({ isLoading, register, control, formState: { errors } }) => (
+        {({ isLoading }) => (
           <>
-            <Form register={register} control={control} errors={errors} />
+            <Form />
 
             <Group justify="flex-end" mt="md">
-              <Button variant="default" onClick={onClose}>
-                {common.cancel}
-              </Button>
-              <Button type="submit" loading={isLoading}>
-                {common.create}
-              </Button>
+              <Button variant="default" title={common.cancel} onClick={onClose} />
+              <Button type="submit" title={common.create} loading={isLoading} />
             </Group>
           </>
         )}
-      </ProductsModule.Forms.Create>
+      </CreateForm>
     </Modal>
   );
 };

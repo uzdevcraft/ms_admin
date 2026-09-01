@@ -1,21 +1,28 @@
 import { useMutation } from "@tanstack/react-query";
 
+import getApiError from "@common/utils/getApiError";
+
 import * as Api from "../api";
 import * as Mappers from "../mappers";
+import type * as Types from "../types";
 
-import { useAuthStore } from "@/modules/auth/store";
-import { http } from "@/common/services";
+import { useAuthStore } from "../store";
 
 const useLogin = () => {
   return useMutation({
-    mutationFn: async (payload: { username: string; password: string }) => {
-      const { data } = await Api.Login(payload);
-      const mappedData = Mappers.Login(data);
+    mutationFn: async (values: Types.IForm.Login) => {
+      const { data } = await Api.Login(values);
+      return Mappers.Login(data);
+    },
 
-      http.persistSession(mappedData);
-      useAuthStore.getState().loginSuccess();
+    // The store writes the access token to localStorage and the refresh
+    // token to its cookie, so the session survives a reload.
+    onSuccess: (session) => {
+      useAuthStore.getState().login(session);
+    },
 
-      return mappedData;
+    onError: (error) => {
+      useAuthStore.getState().setError(getApiError(error).message);
     },
   });
 };

@@ -1,13 +1,13 @@
-import type { Control, FieldErrors } from "react-hook-form";
+import { Stack } from '@mantine/core';
 
-import { UpdateStatusFormFields } from "@/modules/orders/forms";
-import type { UpdateStatusFormValues } from "@/modules/orders/forms";
+import * as Fields from '@/containers/Fields';
+import { forms } from '@/locale/uz';
+import { ORDER_STATUS_OPTIONS } from '@/modules/orders/forms';
 
-type IProps = {
-  control: Control<UpdateStatusFormValues>;
-  errors: FieldErrors<UpdateStatusFormValues>;
-};
-
-export default function Form({ control, errors }: IProps) {
-  return <UpdateStatusFormFields control={control} errors={errors} />;
+export default function Form() {
+  return (
+    <Stack gap="sm">
+      <Fields.Select name="status" label={forms.status} data={ORDER_STATUS_OPTIONS} />
+    </Stack>
+  );
 }

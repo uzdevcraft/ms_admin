@@ -1,0 +1,30 @@
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+}
+
+.card {
+  background: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
+  height: 100%;
+}
+
+.label {
+  font-size: 0.8rem;
+  color: var(--mantine-color-dimmed);
+}
+
+.receipt {
+  max-height: 320px;
+  cursor: zoom-in;
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+}
+
+.value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: right;
+  word-break: break-word;
+}

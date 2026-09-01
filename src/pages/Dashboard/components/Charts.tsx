@@ -14,7 +14,7 @@ import type {
   OrdersTrendPoint,
   ProductsByCategoryPoint,
 } from "../analytics";
-import classes from "../Dashboard.module.css";
+import classes from "../Dashboard.module.scss";
 
 type IProps = {
   stats: DashboardStats;

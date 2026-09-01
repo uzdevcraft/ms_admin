@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+$colors:
+  dark, gray, red, pink, grape, violet, indigo, blue, cyan, teal, green, lime,
+  yellow, orange;
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+::selection {
+  color: #fff;
+  background: var(--mantine-color-blue-6);
+}
+
+:root {
+  // font
+  --inter: "Inter", sans-serif;
+
+  --white: var(--mantine-color-white);
+
+  // active colors
+  --active: var(--mantine-color-blue-6);
+  --active-hover: var(--mantine-color-blue-7);
+
+  @each $color in $colors {
+    @for $i from 0 through 9 {
+      --#{$color}-#{$i}: var(--mantine-color-#{$color}-#{$i});
+    }
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--inter);
+  -webkit-font-smoothing: antialiased;
+}

@@ -7,9 +7,9 @@ import { keepOptions } from "@/helpers";
 
 import useCreate from "../hooks/useCreate";
 import type * as Types from "../types";
-import { defaultValues, productFormSchema, type ProductFormValues } from "./schema";
+import { defaultValues, productFormSchema, type CreateFormValues } from "./schema";
 
-interface IChildren extends UseFormReturn<ProductFormValues> {
+interface IChildren extends UseFormReturn<CreateFormValues> {
   isLoading: boolean;
 }
 
@@ -30,7 +30,7 @@ const CreateForm = ({
 }: IProps) => {
   const create = useCreate();
 
-  const form = useForm<ProductFormValues>({
+  const form = useForm<CreateFormValues>({
     defaultValues,
     resolver: yupResolver(productFormSchema),
   });

@@ -1,18 +1,14 @@
-import type { ReactNode } from "react";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
+import type { ReactNode } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, useForm, type UseFormReturn } from 'react-hook-form';
 
-import getApiError from "@common/utils/getApiError";
-import { keepOptions } from "@/helpers";
+import getApiError from '@common/utils/getApiError';
+import { keepOptions } from '@/helpers';
 
-import useCreate from "../hooks/useCreate";
-import {
-  createDefaultValues,
-  createOrderSchema,
-  type CreateOrderFormValues,
-} from "./schema";
+import useCreate from '../hooks/useCreate';
+import { defaultValues, orderFormSchema, type CreateFormValues } from './schema';
 
-interface IChildren extends UseFormReturn<CreateOrderFormValues> {
+interface IChildren extends UseFormReturn<CreateFormValues> {
   isLoading: boolean;
 }
 
@@ -24,32 +20,26 @@ interface IProps {
   onSuccess?: () => void;
 }
 
-const CreateForm = ({
-  children,
-  className,
-  onError,
-  onSettled,
-  onSuccess,
-}: IProps) => {
+const CreateForm = ({ children, className, onError, onSettled, onSuccess }: IProps) => {
   const create = useCreate();
 
-  const form = useForm<CreateOrderFormValues>({
-    defaultValues: createDefaultValues,
-    resolver: yupResolver(createOrderSchema),
+  const form = useForm<CreateFormValues>({
+    defaultValues,
+    resolver: yupResolver(orderFormSchema)
   });
 
-  const onSubmit = form.handleSubmit((values) => {
+  const onSubmit = form.handleSubmit(values => {
     create.mutate(values, {
       onSuccess: () => {
         onSuccess?.();
       },
-      onError: (error) => {
+      onError: error => {
         onError?.(getApiError(error).message || error.message);
       },
       onSettled: () => {
         form.reset({ ...form.getValues() }, { ...keepOptions });
         onSettled?.();
-      },
+      }
     });
   });
 

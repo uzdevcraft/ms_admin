@@ -18,6 +18,7 @@ export const Payment = (src: unknown): Types.IEntity.Payment => ({
   amount: get(src, 'amount', 0),
   status: get(src, 'status', 'WAITING'),
   paymentUrl: get(src, 'paymentUrl', ''),
+  receiptImageUrl: get(src, 'receiptImageUrl', null),
   createdAt: get(src, 'createdAt', ''),
 });
 

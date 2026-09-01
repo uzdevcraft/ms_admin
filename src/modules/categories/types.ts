@@ -65,7 +65,7 @@ export declare namespace IForm {
     description: string;
     imageUrl: string;
     isActive: boolean;
-    sortOrder: number;
+    sortOrder: number | null;
   }
 
   export interface Update extends Create {

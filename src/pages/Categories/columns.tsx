@@ -1,10 +1,11 @@
-import { ActionIcon, Badge, Group, Image, Text } from "@mantine/core";
-import { IconPencil, IconTrash } from "@tabler/icons-react";
+import { ActionIcon, Badge, Group, Image, Text } from '@mantine/core';
+import { IconPencil, IconTrash } from '@tabler/icons-react';
 
-import type { TableColumn } from "@/components/Table";
-import { formatDate } from "@/common/utils/format";
-import { categories as categoriesLocale, common } from "@/locale/uz";
-import type * as Types from "@/modules/categories/types";
+import type { TableColumn } from '@/components/Table';
+import { formatDate } from '@/common/utils/format';
+import { categories as categoriesLocale, common } from '@/locale/uz';
+import type * as Types from '@/modules/categories/types';
+import dayjs from 'dayjs';
 
 type CategoryColumnsOptions = {
   onEdit: (category: Types.IEntity.Category) => void;
@@ -13,32 +14,25 @@ type CategoryColumnsOptions = {
 
 export const getCategoryColumns = ({
   onEdit,
-  onDelete,
+  onDelete
 }: CategoryColumnsOptions): TableColumn<Types.IEntity.Category>[] => [
   {
-    key: "imageUrl",
-    title: "",
+    key: 'imageUrl',
+    title: '',
     width: 64,
-    render: (category) =>
+    render: category =>
       category.imageUrl ? (
-        <Image
-          src={category.imageUrl}
-          alt={category.name}
-          w={40}
-          h={40}
-          radius="sm"
-          fit="cover"
-        />
+        <Image src={category.imageUrl} alt={category.name} w={40} h={40} radius="sm" fit="cover" />
       ) : (
         <Text c="dimmed" size="sm">
           {common.dash}
         </Text>
-      ),
+      )
   },
   {
-    key: "name",
+    key: 'name',
     title: categoriesLocale.category,
-    render: (category) => (
+    render: category => (
       <div>
         <Text fw={500} size="sm">
           {category.name || common.dash}
@@ -49,48 +43,40 @@ export const getCategoryColumns = ({
           </Text>
         ) : null}
       </div>
-    ),
+    )
   },
   {
-    key: "sortOrder",
+    key: 'sortOrder',
     title: categoriesLocale.sortOrder,
-    align: "center",
+    align: 'center'
   },
   {
-    key: "isActive",
+    key: 'isActive',
     title: categoriesLocale.status,
-    render: (category) => (
-      <Badge color={category.isActive ? "green" : "gray"} radius="md">
+    render: category => (
+      <Badge color={category.isActive ? 'teal' : 'gray'} radius="sm" variant="outline">
         {category.isActive ? common.active : common.inactive}
       </Badge>
-    ),
+    )
   },
   {
-    key: "createdAt",
+    key: 'createdAt',
     title: categoriesLocale.created,
-    render: (category) =>
-      category.createdAt ? formatDate(category.createdAt) : common.dash,
+    render: category =>
+      category.createdAt ? `${dayjs(`${category.createdAt}`).format('DD/MM/YYYY HH:mm')}` : common.dash
   },
   {
-    key: "actions",
+    key: 'actions',
     title: common.actions,
-    render: (category) => (
+    render: category => (
       <Group gap={8} wrap="nowrap">
-        <ActionIcon
-          color="blue"
-          aria-label={common.edit}
-          onClick={() => onEdit(category)}
-        >
+        <ActionIcon color="blue" aria-label={common.edit} onClick={() => onEdit(category)}>
           <IconPencil size={16} />
         </ActionIcon>
-        <ActionIcon
-          color="red"
-          aria-label={common.delete}
-          onClick={() => onDelete(category)}
-        >
+        <ActionIcon color="red" aria-label={common.delete} onClick={() => onDelete(category)}>
           <IconTrash size={16} />
         </ActionIcon>
       </Group>
-    ),
-  },
+    )
+  }
 ];

@@ -4,7 +4,7 @@ import { useController, type FieldValues, type UseControllerProps } from 'react-
 type IProps<T extends FieldValues> = UseControllerProps<T> &
   Omit<PasswordInputProps, 'name' | 'value' | 'onChange' | 'error'>;
 
-export function Password<T extends FieldValues>({ control, name, rules, defaultValue, ...rest }: IProps<T>) {
+export function PasswordField<T extends FieldValues>({ control, name, rules, defaultValue, ...rest }: IProps<T>) {
   const {
     field,
     fieldState: { error }
@@ -25,4 +25,4 @@ export function Password<T extends FieldValues>({ control, name, rules, defaultV
   );
 }
 
-export default Password;
+export default PasswordField;

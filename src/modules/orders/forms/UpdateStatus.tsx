@@ -9,7 +9,7 @@ import useUpdateStatus from "../hooks/useUpdateStatus";
 import type * as Types from "../types";
 import {
   updateStatusDefaultValues,
-  updateStatusSchema,
+  orderUpdateStatusSchema,
   type UpdateStatusFormValues,
 } from "./schema";
 
@@ -38,7 +38,7 @@ const UpdateStatusForm = ({
 
   const form = useForm<UpdateStatusFormValues>({
     defaultValues: updateStatusDefaultValues,
-    resolver: yupResolver(updateStatusSchema),
+    resolver: yupResolver(orderUpdateStatusSchema),
   });
 
   useEffect(() => {

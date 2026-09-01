@@ -1,13 +1,13 @@
-import { Button, Group, Modal, Stack, Text } from "@mantine/core";
+import { Button, Group, Modal, Stack, Text } from '@mantine/core';
 
-import formatPrice from "@common/utils/formatPrice";
-import { toast } from "@/common/utils/toast";
-import { common, orders } from "@/locale/uz";
-import * as OrdersModule from "@/modules/orders";
-import type * as Types from "@/modules/orders/types";
-import { Form } from "@/pages/Orders/components/form";
+import formatPrice from '@common/utils/formatPrice';
+import { toast } from '@/common/utils/toast';
+import { common, orders } from '@/locale/uz';
+import { UpdateStatusForm } from '@/modules/orders/forms';
+import type * as Types from '@/modules/orders/types';
+import { Form } from '@/pages/Orders/components/form';
 
-import classes from "./Form.module.css";
+import classes from './Form.module.css';
 
 type IProps = {
   opened: boolean;
@@ -19,12 +19,7 @@ const UpdateStatus = ({ opened, onClose, order }: IProps) => {
   if (!order) return null;
 
   return (
-    <Modal
-      opened={opened}
-      onClose={onClose}
-      title={orders.updateStatusModal}
-      size="md"
-    >
+    <Modal opened={opened} onClose={onClose} title={orders.updateStatusModal} size="md">
       <Stack gap="sm" mb="md">
         <Text size="sm">
           Buyurtma <strong>#{order.id}</strong> — {order.userFullName}
@@ -34,32 +29,32 @@ const UpdateStatus = ({ opened, onClose, order }: IProps) => {
         </Text>
       </Stack>
 
-      <OrdersModule.Forms.UpdateStatus
+      <UpdateStatusForm
         className={classes.form}
         order={order}
         onSuccess={() => {
           toast.success(orders.statusUpdated);
           onClose();
         }}
-        onError={(message) => {
+        onError={message => {
           toast.error(message || common.somethingWentWrong);
         }}
       >
-        {({ isLoading, control, formState: { errors } }) => (
+        {({ isLoading }) => (
           <>
-            <Form control={control} errors={errors} />
+            <Form />
 
             <Group justify="flex-end" mt="md">
               <Button variant="default" onClick={onClose}>
                 {common.cancel}
               </Button>
               <Button type="submit" loading={isLoading}>
-                {common.saveChanges}
+                {common.save}
               </Button>
             </Group>
           </>
         )}
-      </OrdersModule.Forms.UpdateStatus>
+      </UpdateStatusForm>
     </Modal>
   );
 };

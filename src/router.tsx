@@ -1,32 +1,42 @@
-import type { RouteObject } from "react-router-dom";
+import type { RouteObject } from 'react-router-dom';
 
-import queryString from "query-string";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
+import queryString from 'query-string';
+import { QueryParamProvider } from 'use-query-params';
+import { ReactRouter6Adapter } from 'use-query-params/adapters/react-router-6';
 
 // layouts
-import { MainLayout } from "@/layouts";
+import { MainLayout } from '@/layouts';
 
-// auth container
-import { Auth } from "@/modules/auth/containers/Auth";
+// auth containers
+import { Auth, Guest } from '@/modules/auth/containers';
 
 // not found page
-import { NotFound } from "@/components/NotFound";
+import { NotFound } from '@/components/NotFound';
 
 // pages
-import { Categories } from "@/pages/Categories";
-import { Dashboard } from "@/pages/Dashboard";
-import { Orders } from "@/pages/Orders";
-import { Products } from "@/pages/Products";
+import { Categories } from '@/pages/Categories';
+import { Dashboard } from '@/pages/Dashboard';
+import { Login } from '@/pages/Login';
+import { Orders } from '@/pages/Orders';
+import { Products } from '@/pages/Products';
+import { SingleOrder } from '@/pages/SingleOrder';
 
 const getRoutesData = (): RouteObject[] => [
+  {
+    path: '/login',
+    element: (
+      <Guest>
+        <Login />
+      </Guest>
+    )
+  },
   {
     element: (
       <QueryParamProvider
         adapter={ReactRouter6Adapter}
         options={{
           searchStringToObject: queryString.parse,
-          objectToSearchString: queryString.stringify,
+          objectToSearchString: queryString.stringify
         }}
       >
         <Auth>
@@ -36,28 +46,32 @@ const getRoutesData = (): RouteObject[] => [
     ),
     children: [
       {
-        path: "/",
+        path: '/',
         index: true,
-        element: <Dashboard />,
+        element: <Dashboard />
       },
       {
-        path: "/products",
-        element: <Products />,
+        path: '/products',
+        element: <Products />
       },
       {
-        path: "/categories",
-        element: <Categories />,
+        path: '/categories',
+        element: <Categories />
       },
       {
-        path: "/orders",
-        element: <Orders />,
+        path: '/orders',
+        element: <Orders />
       },
-    ],
+      {
+        path: '/orders/:id',
+        element: <SingleOrder />
+      }
+    ]
   },
   {
-    path: "*",
-    element: <NotFound />,
-  },
+    path: '*',
+    element: <NotFound />
+  }
 ];
 
 export default getRoutesData;

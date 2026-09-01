@@ -1,27 +1,21 @@
-import type { Control, FieldErrors, UseFormRegister } from "react-hook-form";
+import * as Fields from '@/containers/Fields';
 
-import { CategoryFormFields } from "@/modules/categories/forms";
-import type { CategoryFormValues } from "@/modules/categories/forms";
+import { forms } from '@/locale/uz';
 
-type IProps<T extends CategoryFormValues> = {
-  register: UseFormRegister<T>;
-  control: Control<T>;
-  errors: FieldErrors<T>;
-  showId?: boolean;
-};
+import { Stack } from '@mantine/core';
 
-export default function Form<T extends CategoryFormValues>({
-  register,
-  control,
-  errors,
-  showId,
-}: IProps<T>) {
+export default function Form() {
   return (
-    <CategoryFormFields
-      register={register as unknown as UseFormRegister<CategoryFormValues>}
-      control={control as unknown as Control<CategoryFormValues>}
-      errors={errors as unknown as FieldErrors<CategoryFormValues>}
-      showId={showId}
-    />
+    <Stack>
+      <Fields.Text name="name" label={forms.name} placeholder="Bo'lim nomini kiriting" />
+
+      <Fields.Textarea name="description" label={forms.description} placeholder="Bo'lim tavsifi" />
+
+      <Fields.Image name="imageUrl" label={forms.imageUrl} placeholder={forms.imagePlaceholder} />
+
+      <Fields.Number name="sortOrder" label={forms.sortOrder} placeholder="Bo'sh qoldirilsa avtomatik tartiblash" />
+
+      <Fields.Switch name="isActive" label={forms.activeVisible} size="md" />
+    </Stack>
   );
 }

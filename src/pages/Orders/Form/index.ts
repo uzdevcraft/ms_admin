@@ -1,1 +1,2 @@
-export { default as UpdateStatus } from "./UpdateStatus";
+export { default as Filter } from './Filter';
+export { default as UpdateStatus } from './UpdateStatus';

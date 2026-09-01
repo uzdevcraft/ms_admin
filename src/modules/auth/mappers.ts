@@ -16,12 +16,12 @@ export const Refresh = (src: Types.IApi.Refresh): Types.IEntity.Login => ({
 
 export const User = (src: Types.IApi.User): Types.IEntity.User => ({
   id: get(src, "id", 0),
-  telegramId: get(src, "telegramId", 0),
-  firstName: get(src, "firstName", ""),
-  lastName: get(src, "lastName", ""),
   username: get(src, "username", ""),
-  phoneNumber: get(src, "phoneNumber", ""),
-  role: get(src, "role", "USER"),
+  firstName: get(src, "firstName", ""),
+  telegramId: get(src, "telegramId", 0),
+  lastName: get(src, "lastName", null),
+  phoneNumber: get(src, "phoneNumber", null),
+  role: get(src, "role", "ADMIN"),
   isActive: get(src, "isActive", false),
   createdAt: get(src, "createdAt", ""),
 });

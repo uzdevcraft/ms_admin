@@ -1,19 +1,15 @@
-import { useEffect, type ReactNode } from "react";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
+import { useEffect, type ReactNode } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, useForm, type UseFormReturn } from 'react-hook-form';
 
-import getApiError from "@common/utils/getApiError";
-import { keepOptions } from "@/helpers";
+import getApiError from '@common/utils/getApiError';
+import { keepOptions } from '@/helpers';
 
-import useUpdate from "../hooks/useUpdate";
-import type * as Types from "../types";
-import {
-  categoryUpdateFormSchema,
-  updateDefaultValues,
-  type CategoryUpdateFormValues,
-} from "./schema";
+import useUpdate from '../hooks/useUpdate';
+import type * as Types from '../types';
+import { categoryUpdateFormSchema, updateDefaultValues, type UpdateFormValues } from './schema';
 
-interface IChildren extends UseFormReturn<CategoryUpdateFormValues> {
+interface IChildren extends UseFormReturn<UpdateFormValues> {
   isLoading: boolean;
 }
 
@@ -26,9 +22,7 @@ interface IProps {
   onSuccess?: (value: Types.IEntity.Category) => void;
 }
 
-const toFormValues = (
-  category: Types.IEntity.Category,
-): CategoryUpdateFormValues => ({
+const toFormValues = (category: Types.IEntity.Category): UpdateFormValues => ({
   id: category.id,
   name: category.name,
   nameUz: category.nameUz,
@@ -36,43 +30,36 @@ const toFormValues = (
   description: category.description,
   imageUrl: category.imageUrl,
   isActive: category.isActive,
-  sortOrder: category.sortOrder,
+  sortOrder: category.sortOrder
 });
 
-const UpdateForm = ({
-  category,
-  children,
-  className,
-  onError,
-  onSettled,
-  onSuccess,
-}: IProps) => {
+const UpdateForm = ({ category, children, className, onError, onSettled, onSuccess }: IProps) => {
   const update = useUpdate();
 
-  const form = useForm<CategoryUpdateFormValues>({
+  const form = useForm<UpdateFormValues>({
     defaultValues: updateDefaultValues,
-    resolver: yupResolver(categoryUpdateFormSchema),
+    resolver: yupResolver(categoryUpdateFormSchema)
   });
 
   useEffect(() => {
     form.reset(toFormValues(category));
   }, [category, form.reset]);
 
-  const onSubmit = form.handleSubmit((values) => {
+  const onSubmit = form.handleSubmit(values => {
     update.mutate(
       { id: category.id, values },
       {
-        onSuccess: (data) => {
+        onSuccess: data => {
           onSuccess?.(data);
         },
-        onError: (error) => {
+        onError: error => {
           onError?.(getApiError(error).message || error.message);
         },
         onSettled: () => {
           form.reset({ ...form.getValues() }, { ...keepOptions });
           onSettled?.();
-        },
-      },
+        }
+      }
     );
   });
 

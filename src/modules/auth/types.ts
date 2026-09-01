@@ -1,5 +1,3 @@
-import { ROLES } from "./constants";
-
 export declare namespace IApi {
   export interface Login {
     token: string;
@@ -7,10 +5,10 @@ export declare namespace IApi {
     success: boolean;
   }
 
-  // POST /auth/refresh returns the same AuthResponse payload as /auth/login.
+  // POST /auth/refresh returns the same payload as /auth/login.
   export interface Refresh {
     token: string;
-    refreshToken: string;
+    refreshToken?: string;
     success: boolean;
   }
 
@@ -26,17 +24,22 @@ export declare namespace IEntity {
 
   export interface User {
     id: number;
-    telegramId: number;
-    firstName: string;
-    lastName: string | null;
     username: string;
-    phoneNumber: string;
-    role: Role;
+    firstName: string;
+    telegramId: number;
+    lastName: string | null;
+    phoneNumber: string | null;
+    role: "ADMIN";
     isActive: boolean;
     createdAt: string;
   }
+}
 
-  export type Role = (typeof ROLES)[keyof typeof ROLES];
+export declare namespace IForm {
+  export interface Login {
+    username: string;
+    password: string;
+  }
 }
 
 export declare namespace IStore {
@@ -47,7 +50,9 @@ export declare namespace IStore {
     accessToken: string | null;
 
     logout: () => void;
-    loginSuccess: () => void;
+    login: (session: IEntity.Login) => void;
+    setUser: (user: IEntity.User | null) => void;
+    setError: (error: string | null) => void;
     setAccessToken: (accessToken: string) => void;
   }
 }

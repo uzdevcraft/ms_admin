@@ -1,19 +1,15 @@
-import type { ReactNode } from "react";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
+import type { ReactNode } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, useForm, type UseFormReturn } from 'react-hook-form';
 
-import getApiError from "@common/utils/getApiError";
-import { keepOptions } from "@/helpers";
+import getApiError from '@common/utils/getApiError';
+import { keepOptions } from '@/helpers';
 
-import useCreate from "../hooks/useCreate";
-import type * as Types from "../types";
-import {
-  categoryFormSchema,
-  defaultValues,
-  type CategoryFormValues,
-} from "./schema";
+import useCreate from '../hooks/useCreate';
+import type * as Types from '../types';
+import { categoryFormSchema, defaultValues, type CreateFormValues } from './schema';
 
-interface IChildren extends UseFormReturn<CategoryFormValues> {
+interface IChildren extends UseFormReturn<CreateFormValues> {
   isLoading: boolean;
 }
 
@@ -25,32 +21,26 @@ interface IProps {
   onSuccess?: (value: Types.IEntity.Category) => void;
 }
 
-const CreateForm = ({
-  children,
-  className,
-  onError,
-  onSettled,
-  onSuccess,
-}: IProps) => {
+const CreateForm = ({ children, className, onError, onSettled, onSuccess }: IProps) => {
   const create = useCreate();
 
-  const form = useForm<CategoryFormValues>({
+  const form = useForm<CreateFormValues>({
     defaultValues,
-    resolver: yupResolver(categoryFormSchema),
+    resolver: yupResolver(categoryFormSchema)
   });
 
-  const onSubmit = form.handleSubmit((values) => {
+  const onSubmit = form.handleSubmit(values => {
     create.mutate(values, {
-      onSuccess: (data) => {
+      onSuccess: data => {
         onSuccess?.(data);
       },
-      onError: (error) => {
+      onError: error => {
         onError?.(getApiError(error).message || error.message);
       },
       onSettled: () => {
         form.reset({ ...form.getValues() }, { ...keepOptions });
         onSettled?.();
-      },
+      }
     });
   });
 

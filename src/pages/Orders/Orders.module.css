@@ -1,0 +1,17 @@
+.container {
+  transition: all 0.3s ease;
+}
+
+.opened {
+  height: auto;
+  overflow: visible;
+}
+
+.closed {
+  height: 0;
+  overflow: hidden;
+}
+
+.content {
+  padding-bottom: 1rem;
+}

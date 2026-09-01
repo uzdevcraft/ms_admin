@@ -1,10 +1,10 @@
-import { ActionIcon, Badge, Group, Image, Text } from "@mantine/core";
-import { IconPencil, IconTrash } from "@tabler/icons-react";
+import { ActionIcon, Badge, Group, Image, Text } from '@mantine/core';
+import { IconPencil, IconTrash } from '@tabler/icons-react';
 
-import type { TableColumn } from "@/components/Table";
-import formatPrice from "@common/utils/formatPrice";
-import { common, products as productsLocale } from "@/locale/uz";
-import type * as Types from "@/modules/products/types";
+import type { TableColumn } from '@/components/Table';
+import formatPrice from '@common/utils/formatPrice';
+import { common, products as productsLocale } from '@/locale/uz';
+import type * as Types from '@/modules/products/types';
 
 type ProductColumnsOptions = {
   onEdit: (product: Types.IEntity.Product) => void;
@@ -13,32 +13,25 @@ type ProductColumnsOptions = {
 
 export const getProductColumns = ({
   onEdit,
-  onDelete,
+  onDelete
 }: ProductColumnsOptions): TableColumn<Types.IEntity.Product>[] => [
   {
-    key: "imageUrl",
-    title: "",
+    key: 'imageUrl',
+    title: '',
     width: 64,
-    render: (product) =>
+    render: product =>
       product.imageUrl ? (
-        <Image
-          src={product.imageUrl}
-          alt={product.name}
-          w={40}
-          h={40}
-          radius="sm"
-          fit="cover"
-        />
+        <Image src={product.imageUrl} alt={product.name} w={40} h={40} radius="sm" fit="cover" />
       ) : (
         <Text c="dimmed" size="sm">
           {common.dash}
         </Text>
-      ),
+      )
   },
   {
-    key: "name",
+    key: 'name',
     title: productsLocale.product,
-    render: (product) => (
+    render: product => (
       <div>
         <Text fw={500} size="sm">
           {product.name || common.dash}
@@ -49,17 +42,17 @@ export const getProductColumns = ({
           </Text>
         ) : null}
       </div>
-    ),
+    )
   },
   {
-    key: "categoryName",
+    key: 'categoryName',
     title: productsLocale.category,
-    render: (product) => product.categoryName || common.uncategorized,
+    render: product => product.categoryName || common.uncategorized
   },
   {
-    key: "price",
+    key: 'price',
     title: productsLocale.price,
-    render: (product) => (
+    render: product => (
       <Group gap={6} wrap="nowrap">
         <Text size="sm" fw={500}>
           {formatPrice(product.effectivePrice || product.price)}
@@ -70,42 +63,34 @@ export const getProductColumns = ({
           </Text>
         ) : null}
       </Group>
-    ),
+    )
   },
   {
-    key: "stockQuantity",
+    key: 'stockQuantity',
     title: productsLocale.stock,
-    align: "center",
+    align: 'center'
   },
   {
-    key: "isActive",
+    key: 'isActive',
     title: productsLocale.status,
-    render: (product) => (
-      <Badge color={product.isActive ? "green" : "gray"} radius="md">
+    render: product => (
+      <Badge color={product.isActive ? 'teal' : 'gray'} radius="sm" variant="outline">
         {product.isActive ? common.active : common.inactive}
       </Badge>
-    ),
+    )
   },
   {
-    key: "actions",
+    key: 'actions',
     title: common.actions,
-    render: (product) => (
+    render: product => (
       <Group gap={8} wrap="nowrap">
-        <ActionIcon
-          color="blue"
-          aria-label={common.edit}
-          onClick={() => onEdit(product)}
-        >
+        <ActionIcon color="blue" aria-label={common.edit} onClick={() => onEdit(product)}>
           <IconPencil size={16} />
         </ActionIcon>
-        <ActionIcon
-          color="red"
-          aria-label={common.delete}
-          onClick={() => onDelete(product)}
-        >
+        <ActionIcon color="red" aria-label={common.delete} onClick={() => onDelete(product)}>
           <IconTrash size={16} />
         </ActionIcon>
       </Group>
-    ),
-  },
+    )
+  }
 ];

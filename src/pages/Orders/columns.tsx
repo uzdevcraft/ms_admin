@@ -1,114 +1,104 @@
-import { ActionIcon, Badge, Group, Text } from "@mantine/core";
-import { IconPencil, IconTrash } from "@tabler/icons-react";
-import dayjs from "dayjs";
+import { ActionIcon, Badge, Group, Text } from '@mantine/core';
+import { IconEye, IconPencil, IconTrash } from '@tabler/icons-react';
+import dayjs from 'dayjs';
 
-import type { TableColumn } from "@/components/Table";
-import formatPrice from "@common/utils/formatPrice";
-import { common, orderStatus, orders as ordersLocale } from "@/locale/uz";
-import type * as Types from "@/modules/orders/types";
+import type { TableColumn } from '@/components/Table';
+import formatPrice from '@common/utils/formatPrice';
+import { common, orderStatus, orders as ordersLocale } from '@/locale/uz';
+import type * as Types from '@/modules/orders/types';
 
-const STATUS_COLORS: Record<Types.OrderStatus, string> = {
-  PENDING: "yellow",
-  PAID: "teal",
-  PROCESSING: "blue",
-  SHIPPED: "cyan",
-  DELIVERED: "green",
-  CANCELLED: "red",
+export const STATUS_COLORS: Record<Types.OrderStatus, string> = {
+  PENDING: 'yellow',
+  PAID: 'teal',
+  PROCESSING: 'blue',
+  SHIPPED: 'cyan',
+  DELIVERED: 'green',
+  CANCELLED: 'red'
 };
 
-const STATUS_LABELS: Record<Types.OrderStatus, string> = {
+export const STATUS_LABELS: Record<Types.OrderStatus, string> = {
   PENDING: orderStatus.pending,
   PAID: orderStatus.paid,
   PROCESSING: orderStatus.processing,
   SHIPPED: orderStatus.shipped,
   DELIVERED: orderStatus.delivered,
-  CANCELLED: orderStatus.cancelled,
+  CANCELLED: orderStatus.cancelled
 };
 
 type OrderColumnsOptions = {
+  onOpen: (order: Types.IEntity.Order) => void;
   onEdit: (order: Types.IEntity.Order) => void;
   onDelete: (order: Types.IEntity.Order) => void;
 };
 
 export const getOrderColumns = ({
+  onOpen,
   onEdit,
-  onDelete,
+  onDelete
 }: OrderColumnsOptions): TableColumn<Types.IEntity.Order>[] => [
   {
-    key: "id",
+    key: 'id',
     title: ordersLocale.orderNumber,
-    render: (order) => (
+    render: order => (
       <Text size="sm" fw={600}>
         #{order.id}
       </Text>
-    ),
+    )
   },
   {
-    key: "userFullName",
+    key: 'userFullName',
     title: ordersLocale.customer,
-    render: (order) => order.userFullName || common.dash,
+    render: order => order.userFullName || common.dash
   },
   {
-    key: "items",
+    key: 'items',
     title: ordersLocale.items,
-    render: (order) =>
-      order.items.length > 0
-        ? order.items
-            .map((item) => `${item.productName} ×${item.quantity}`)
-            .join(", ")
-        : common.dash,
+    render: order =>
+      order.items.length > 0 ? order.items.map(item => `${item.productName} ×${item.quantity}`).join(', ') : common.dash
   },
   {
-    key: "totalAmount",
+    key: 'totalAmount',
     title: ordersLocale.total,
-    render: (order) => formatPrice(order.totalAmount),
+    render: order => formatPrice(order.totalAmount)
   },
   {
-    key: "status",
+    key: 'status',
     title: ordersLocale.status,
-    render: (order) => (
-      <Badge color={STATUS_COLORS[order.status]} radius="md">
+    render: order => (
+      <Badge color={STATUS_COLORS[order.status]} radius="sm" variant="outline">
         {STATUS_LABELS[order.status] || order.status}
       </Badge>
-    ),
+    )
   },
   {
-    key: "deliveryAddress",
+    key: 'deliveryAddress',
     title: ordersLocale.delivery,
-    render: (order) => (
+    render: order => (
       <Text size="sm" lineClamp={1} maw={200}>
         {order.deliveryAddress || common.dash}
       </Text>
-    ),
+    )
   },
   {
-    key: "createdAt",
+    key: 'createdAt',
     title: ordersLocale.date,
-    render: (order) =>
-      order.createdAt
-        ? `${dayjs(`${order.createdAt}`).format("DD/MM/YYYY HH:mm")}`
-        : common.dash,
+    render: order => (order.createdAt ? `${dayjs(`${order.createdAt}`).format('DD/MM/YYYY HH:mm')}` : common.dash)
   },
   {
-    key: "actions",
+    key: 'actions',
     title: common.actions,
-    render: (order) => (
+    render: order => (
       <Group gap={8} wrap="nowrap">
-        <ActionIcon
-          color="blue"
-          aria-label={common.updateStatus}
-          onClick={() => onEdit(order)}
-        >
+        <ActionIcon color="teal" aria-label={ordersLocale.open} onClick={() => onOpen(order)}>
+          <IconEye size={16} />
+        </ActionIcon>
+        <ActionIcon color="blue" aria-label={common.updateStatus} onClick={() => onEdit(order)}>
           <IconPencil size={16} />
         </ActionIcon>
-        <ActionIcon
-          color="red"
-          aria-label={common.delete}
-          onClick={() => onDelete(order)}
-        >
+        <ActionIcon color="red" aria-label={common.delete} onClick={() => onDelete(order)}>
           <IconTrash size={16} />
         </ActionIcon>
       </Group>
-    ),
-  },
+    )
+  }
 ];

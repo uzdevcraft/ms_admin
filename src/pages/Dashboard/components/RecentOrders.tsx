@@ -1,21 +1,21 @@
-import { Badge, Group, Paper, Text, Title } from "@mantine/core";
-import { Link } from "react-router-dom";
-import dayjs from "dayjs";
+import { Badge, Group, Paper, Text, Title } from '@mantine/core';
+import { Link } from 'react-router-dom';
+import dayjs from 'dayjs';
 
-import { Table, type TableColumn } from "@/components/Table";
-import formatPrice from "@common/utils/formatPrice";
-import { common, dashboard, orderStatus, orders as ordersLocale } from "@/locale/uz";
-import type * as Types from "@/modules/orders/types";
+import { Table, type TableColumn } from '@/components/Table';
+import formatPrice from '@common/utils/formatPrice';
+import { common, dashboard, orderStatus, orders as ordersLocale } from '@/locale/uz';
+import type * as Types from '@/modules/orders/types';
 
-import classes from "../Dashboard.module.css";
+import classes from '../Dashboard.module.scss';
 
 const STATUS_COLORS: Record<Types.OrderStatus, string> = {
-  PENDING: "yellow",
-  PAID: "teal",
-  PROCESSING: "blue",
-  SHIPPED: "cyan",
-  DELIVERED: "green",
-  CANCELLED: "red",
+  PENDING: 'yellow',
+  PAID: 'teal',
+  PROCESSING: 'blue',
+  SHIPPED: 'cyan',
+  DELIVERED: 'green',
+  CANCELLED: 'red'
 };
 
 const STATUS_LABELS: Record<Types.OrderStatus, string> = {
@@ -24,46 +24,43 @@ const STATUS_LABELS: Record<Types.OrderStatus, string> = {
   PROCESSING: orderStatus.processing,
   SHIPPED: orderStatus.shipped,
   DELIVERED: orderStatus.delivered,
-  CANCELLED: orderStatus.cancelled,
+  CANCELLED: orderStatus.cancelled
 };
 
 const columns: TableColumn<Types.IEntity.Order>[] = [
   {
-    key: "id",
+    key: 'id',
     title: ordersLocale.orderNumber,
-    render: (order) => (
+    render: order => (
       <Text size="sm" fw={600}>
         #{order.id}
       </Text>
-    ),
+    )
   },
   {
-    key: "userFullName",
+    key: 'userFullName',
     title: ordersLocale.customer,
-    render: (order) => order.userFullName || common.dash,
+    render: order => order.userFullName || common.dash
   },
   {
-    key: "totalAmount",
+    key: 'totalAmount',
     title: ordersLocale.total,
-    render: (order) => formatPrice(order.totalAmount),
+    render: order => formatPrice(order.totalAmount)
   },
   {
-    key: "status",
+    key: 'status',
     title: ordersLocale.status,
-    render: (order) => (
-      <Badge color={STATUS_COLORS[order.status]} radius="md">
+    render: order => (
+      <Badge color={STATUS_COLORS[order.status]} radius="sm" variant="outline">
         {STATUS_LABELS[order.status] || order.status}
       </Badge>
-    ),
+    )
   },
   {
-    key: "createdAt",
+    key: 'createdAt',
     title: ordersLocale.date,
-    render: (order) =>
-      order.createdAt
-        ? dayjs(order.createdAt).format("DD/MM/YYYY HH:mm")
-        : common.dash,
-  },
+    render: order => (order.createdAt ? dayjs(order.createdAt).format('DD/MM/YYYY HH:mm') : common.dash)
+  }
 ];
 
 type IProps = {
@@ -82,13 +79,7 @@ const RecentOrders = ({ orders }: IProps) => {
             {dashboard.recentOrdersDesc}
           </Text>
         </div>
-        <Text
-          component={Link}
-          to="/orders"
-          size="sm"
-          fw={500}
-          className={classes.viewAll}
-        >
+        <Text component={Link} to="/orders" size="sm" fw={500} className={classes.viewAll}>
           {dashboard.viewAllOrders}
         </Text>
       </Group>
@@ -98,7 +89,7 @@ const RecentOrders = ({ orders }: IProps) => {
         data={orders}
         loading={false}
         emptyMessage={dashboard.noOrders}
-        rowKey={(order) => order.id}
+        rowKey={order => order.id}
         minWidth={640}
       />
     </Paper>

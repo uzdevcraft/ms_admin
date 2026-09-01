@@ -1,20 +1,11 @@
 import axios, { AxiosError, type AxiosRequestHeaders } from "axios";
 import createAuthRefreshInterceptor from "axios-auth-refresh";
-import type { IApi, IEntity } from "@/modules/auth/types";
+
+import type { IApi } from "@/modules/auth/types";
 import * as authMappers from "@/modules/auth/mappers";
-import { isTokenExpiring } from "@/modules/auth/utils/token";
-import authEvents from "@/common/services/authEvents";
-import storage from "./storage";
-import {
-  ACCESS_TOKEN_KEY,
-  GUEST_WARNING_MESSAGE,
-  REFRESH_TOKEN_KEY,
-} from "@/modules/auth/constants";
+import { getRefreshToken, useAuthStore } from "@/modules/auth/store";
 
-import { useAuthStore } from "@/modules/auth/store";
-import { VITE_API_BASE_URL } from "./env";
-
-const BASE_URL = VITE_API_BASE_URL as string;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
 
 // Used for /auth/login and /auth/refresh — never carries an Authorization
 // header and never triggers a refresh (which would recurse).
@@ -24,70 +15,8 @@ const pureRequest = axios.create({ baseURL: BASE_URL });
 // axios-auth-refresh is attached to this instance below.
 const request = axios.create({ baseURL: BASE_URL });
 
-export function persistSession(session: IEntity.Login): void {
-  useAuthStore.getState().setAccessToken(session.accessToken);
-  storage.local.set(ACCESS_TOKEN_KEY, session.accessToken);
-  if (session.refreshToken) {
-    storage.local.set(REFRESH_TOKEN_KEY, session.refreshToken);
-  }
-}
-
-export function clearSession(): void {
-  useAuthStore.getState().logout();
-  storage.local.remove(ACCESS_TOKEN_KEY);
-  storage.local.remove(REFRESH_TOKEN_KEY);
-}
-
-function fallbackToGuest(message: string = GUEST_WARNING_MESSAGE): void {
-  clearSession();
-  authEvents.emitGuest({ message });
-}
-
-let refreshPromise: Promise<string> | null = null;
-
-/**
- * Exchanges the stored refresh token for a fresh access token and persists
- * both. Concurrent callers share one in-flight request, so a burst of
- * expired requests only hits /auth/refresh once. Rejects (leaving the
- * session untouched) when there is no refresh token or the server says no —
- * callers decide whether that means guest mode.
- */
-export async function refreshSession(): Promise<string> {
-  if (!refreshPromise) {
-    refreshPromise = (async () => {
-      const refreshToken = storage.local.get(REFRESH_TOKEN_KEY);
-      if (!refreshToken) throw new Error("Missing refresh token");
-
-      const { data } = await pureRequest.post<IApi.Refresh>("/auth/refresh", {
-        refreshToken,
-      });
-
-      const session = authMappers.Refresh(data);
-      if (!session.accessToken) throw new Error("Refresh returned no token");
-
-      persistSession(session);
-      return session.accessToken;
-    })().finally(() => {
-      refreshPromise = null;
-    });
-  }
-
-  return refreshPromise;
-}
-
-request.interceptors.request.use(async (cfg) => {
-  let token = useAuthStore.getState().accessToken;
-
-  // Proactive refresh: swap an expired (or nearly expired) access token
-  // before the request leaves, instead of paying for a 401 round-trip.
-  if (token && isTokenExpiring(token)) {
-    try {
-      token = await refreshSession();
-    } catch (error) {
-      fallbackToGuest();
-      throw error;
-    }
-  }
+request.interceptors.request.use((cfg) => {
+  const token = useAuthStore.getState().accessToken;
 
   if (token) {
     cfg.headers = cfg.headers ?? ({} as AxiosRequestHeaders);
@@ -97,11 +26,48 @@ request.interceptors.request.use(async (cfg) => {
   return cfg;
 });
 
+let refreshPromise: Promise<string> | null = null;
+
 /**
- * Reactive refresh, for tokens the server rejects even though they looked
- * valid to us (revoked, unreadable `exp`, clock skew). axios-auth-refresh
- * calls this once per 401 while queueing other requests, then retries them.
- * If refreshing is impossible we drop into guest mode.
+ * Exchanges the refresh token (read from its cookie) for a fresh access
+ * token, then lets the store persist both again. Concurrent callers share
+ * one in-flight request, so a burst of expired requests only hits
+ * /auth/refresh once. Rejects — leaving the session untouched — when there
+ * is no refresh token or the server says no; callers decide what that means.
+ */
+export async function refreshSession(): Promise<string> {
+  if (!refreshPromise) {
+    refreshPromise = (async () => {
+      const refreshToken = getRefreshToken();
+      if (!refreshToken) throw new Error("Missing refresh token");
+
+      const { data } = await pureRequest.post<IApi.Refresh>("/auth/refresh", {
+        refreshToken,
+      });
+
+      const session = authMappers.Refresh(data);
+      if (!session.accessToken) throw new Error("Refresh returned no token");
+
+      // Keep the current refresh token when the server doesn't rotate it.
+      useAuthStore.getState().login({
+        ...session,
+        refreshToken: session.refreshToken || refreshToken,
+      });
+
+      return session.accessToken;
+    })().finally(() => {
+      refreshPromise = null;
+    });
+  }
+
+  return refreshPromise;
+}
+
+/**
+ * axios-auth-refresh's refresh logic: called once per 401 (other requests
+ * are queued meanwhile), then the failed request is retried with the new
+ * token. If refreshing is impossible the session is dropped, which sends
+ * the user back to the login page via the `Auth` route guard.
  */
 const refreshAuthLogic = async (failedRequest: AxiosError) => {
   try {
@@ -115,7 +81,7 @@ const refreshAuthLogic = async (failedRequest: AxiosError) => {
 
     return Promise.resolve();
   } catch {
-    fallbackToGuest();
+    useAuthStore.getState().logout();
     return Promise.reject(failedRequest);
   }
 };
@@ -126,16 +92,15 @@ createAuthRefreshInterceptor(request, refreshAuthLogic, {
 
 /**
  * 403 is a different case from 401: it's not "session expired, try to
- * refresh" — it's "not registered", and per spec should never be treated
- * as an error state. It drops straight to guest mode on both clients,
- * without ever attempting a refresh.
+ * refresh" — it's "this account may not be here", so it drops straight to
+ * guest mode on both clients without ever attempting a refresh.
  */
 function attachGuestFallback(client: typeof request): void {
   client.interceptors.response.use(
     (response) => response,
     (error) => {
       if (error?.response?.status === 403) {
-        fallbackToGuest();
+        useAuthStore.getState().logout();
       }
       return Promise.reject(error);
     },
@@ -145,12 +110,6 @@ function attachGuestFallback(client: typeof request): void {
 attachGuestFallback(request);
 attachGuestFallback(pureRequest);
 
-const http = {
-  request,
-  pureRequest,
-  refreshSession,
-  persistSession,
-  clearSession,
-};
+const http = { request, pureRequest, refreshSession };
 
 export default http;

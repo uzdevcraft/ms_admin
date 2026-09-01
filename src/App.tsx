@@ -1,10 +1,6 @@
-import "@mantine/core/styles.css";
-import "@mantine/charts/styles.css";
-
 import { useMemo } from "react";
 
 import { Toaster } from "sonner";
-import { AuthProvider } from "@/containers";
 import { ModalsProvider } from "@mantine/modals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -38,12 +34,10 @@ export default function App() {
         defaultColorScheme="dark"
         colorSchemeManager={colorSchemeManager}
       >
-        <AuthProvider>
-          <Toaster position="top-right" richColors closeButton />
-          <ModalsProvider>
-            <RouterProvider router={router} />
-          </ModalsProvider>
-        </AuthProvider>
+        <Toaster position="top-right" richColors closeButton />
+        <ModalsProvider>
+          <RouterProvider router={router} />
+        </ModalsProvider>
       </MantineProvider>
     </QueryClientProvider>
   );

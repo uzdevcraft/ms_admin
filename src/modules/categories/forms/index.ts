@@ -1,11 +1,10 @@
-export { default as Create } from "./Create";
-export { default as Update } from "./Update";
-export { CategoryFormFields } from "./CategoryFormFields";
+export { default as CreateForm } from "./Create";
+export { default as UpdateForm } from "./Update";
 export {
   defaultValues,
   categoryFormSchema,
-  categoryUpdateFormSchema,
   updateDefaultValues,
-  type CategoryFormValues,
-  type CategoryUpdateFormValues,
+  categoryUpdateFormSchema,
+  type CreateFormValues,
+  type UpdateFormValues,
 } from "./schema";
