@@ -1,9 +1,9 @@
 .table {
   width: 100%;
   overflow: hidden;
-  border: 1px solid var(--mantine-color-default-border);
+  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
   border-radius: var(--mantine-radius-md);
-  background: var(--mantine-color-body);
+  background: light-dark(var(--white), var(--dark-7));
 }
 
 .state {
@@ -11,7 +11,7 @@
   align-items: center;
   justify-content: center;
   min-height: 180px;
-  border: 1px solid var(--mantine-color-default-border);
+  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
   border-radius: var(--mantine-radius-md);
-  background: var(--mantine-color-body);
+  background: light-dark(var(--white), var(--dark-7));
 }

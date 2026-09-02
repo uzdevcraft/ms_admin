@@ -1,0 +1,17 @@
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  min-height: 100vh;
+  background-color: light-dark(var(--gray-1), var(--dark-9));
+}
+
+.paper {
+  width: 400px;
+  max-width: 100%;
+  padding: 30px 20px;
+  border-radius: 12px;
+  border: 1px solid light-dark(var(--gray-3), var(--gray-8));
+  background-color: light-dark(var(--white), var(--dark-8));
+}

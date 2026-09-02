@@ -6,19 +6,19 @@
 }
 
 .card {
-  background: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
+  background: light-dark(var(--white), var(--dark-6));
   height: 100%;
 }
 
 .label {
   font-size: 0.8rem;
-  color: var(--mantine-color-dimmed);
+  color: light-dark(var(--gray-6), var(--dark-2));
 }
 
 .receipt {
   max-height: 320px;
   cursor: zoom-in;
-  border: 1px solid var(--mantine-color-default-border);
+  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
   border-radius: var(--mantine-radius-md);
 }
 

@@ -10,14 +10,14 @@
 }
 
 .statCard {
-  background: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
+  background: light-dark(var(--white), var(--dark-6));
   transition: box-shadow 0.15s ease;
 }
 
 .statLabel {
   font-weight: 600;
   font-size: 0.75rem;
-  color: var(--gray-4);
+  color: light-dark(var(--gray-6), var(--gray-5));
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -25,17 +25,17 @@
 .statValue {
   font-size: 1.75rem;
   font-weight: 700;
-  color: light-dark(var(--mantine-color-gray-9), var(--mantine-color-gray-0));
+  color: light-dark(var(--gray-9), var(--gray-0));
   line-height: 1.2;
 }
 
 .chartCard {
-  background: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
+  background: light-dark(var(--white), var(--dark-6));
   min-height: 360px;
 }
 
 .viewAll {
-  color: var(--mantine-color-blue-6);
+  color: light-dark(var(--blue-6), var(--blue-4));
   text-decoration: none;
 }
 

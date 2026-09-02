@@ -18,8 +18,8 @@
   width: 100%;
   padding: 32px 24px;
 
-  background: c(neutral, 0);
-  border: 1px solid c(border);
+  background: light-dark(var(--white), var(--dark-7));
+  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
 
   backdrop-filter: blur(12px);
 }
@@ -32,7 +32,7 @@
   line-height: 1;
   letter-spacing: -0.06em;
 
-  color: c(brand, 5);
+  color: light-dark(var(--blue-6), var(--blue-4));
 
   user-select: none;
 
@@ -41,7 +41,7 @@
     position: absolute;
     inset: -20px;
 
-    background: radial-gradient(circle, c(brand, 0) 0%, transparent 70%);
+    background: radial-gradient(circle, light-dark(var(--blue-2), var(--blue-9)) 0%, transparent 70%);
 
     opacity: 0.18;
     filter: blur(32px);
@@ -50,12 +50,12 @@
 }
 
 .title {
-  color: c(text);
+  color: light-dark(var(--gray-9), var(--white));
   margin-bottom: 8px;
 }
 
 .description {
-  color: c(text);
+  color: light-dark(var(--gray-9), var(--white));
   opacity: 0.7;
 
   max-width: 320px;
@@ -66,12 +66,12 @@
 }
 
 .button {
-  background: c(brand, 5);
-  color: c(white);
+  background: light-dark(var(--blue-6), var(--blue-5));
+  color: var(--white);
   border: none;
   transition: all 0.18s ease;
 
-  box-shadow: s(md);
+  box-shadow: var(--mantine-shadow-md);
 
   &:hover {
     transform: translateY(-1px);

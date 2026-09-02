@@ -25,9 +25,8 @@ const Categories = () => {
   const handleDelete = useCallback(
     (category: Types.IEntity.Category) => {
       modals.openConfirmModal({
+        centered: true,
         title: categoriesLocale.deleteTitle,
-        size: 'sm',
-        withCloseButton: false,
         children: (
           <Text size="sm">
             <strong>{category.name}</strong> ni o&apos;chirasizmi? Bu kategoriyadagi mahsulotlar o&apos;z holida qoladi.

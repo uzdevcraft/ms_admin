@@ -18,7 +18,7 @@ const Update = ({ opened, onClose, category }: IProps) => {
   if (!category) return null;
 
   return (
-    <Modal opened={opened} onClose={onClose} title={categories.editModal} size="lg">
+    <Modal centered opened={opened} onClose={onClose} title={categories.editModal} size="lg">
       <UpdateForm
         category={category}
         className={classes.form}

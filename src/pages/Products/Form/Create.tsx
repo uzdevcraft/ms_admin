@@ -16,7 +16,7 @@ type IProps = {
 
 const Create = ({ opened, onClose }: IProps) => {
   return (
-    <Modal opened={opened} onClose={onClose} title={products.addModal} size="xl">
+    <Modal centered opened={opened} onClose={onClose} title={products.addModal} size="xl">
       <CreateForm
         className={classes.form}
         onSuccess={() => {

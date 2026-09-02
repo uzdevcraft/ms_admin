@@ -1,0 +1,22 @@
+.breadcrumbs {
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: light-dark(var(--gray-6), var(--dark-2));
+}
+
+.link {
+  font-size: 13px;
+  color: light-dark(var(--gray-6), var(--dark-2));
+  text-decoration: none;
+
+  &:hover {
+    color: var(--active);
+    text-decoration: none;
+  }
+}
+
+.current {
+  font-size: 13px;
+  font-weight: 500;
+  color: light-dark(var(--gray-9), var(--gray-3));
+}

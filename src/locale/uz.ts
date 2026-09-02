@@ -57,7 +57,7 @@ export const login = {
 } as const;
 
 export const dashboard = {
-  welcome: (name: string) => `${name} ga xush kelibsiz`,
+  welcome: 'Analitika',
   overview: 'Analitika — buyurtmalar, daromad, katalog holati va bozor faolligini kuzating.',
   customers: 'Mijozlar',
   products: 'Mahsulotlar',

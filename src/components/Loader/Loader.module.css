@@ -14,22 +14,22 @@
 }
 
 .ringA {
-  stroke: c(brand, 5);
+  stroke: light-dark(var(--blue-6), var(--blue-4));
 }
 
 .ringB {
   animation-name: ringB;
-  stroke: c(brand, 1);
+  stroke: light-dark(var(--blue-2), var(--blue-8));
 }
 
 .ringC {
   animation-name: ringC;
-  stroke: c(brand, 6);
+  stroke: light-dark(var(--blue-7), var(--blue-5));
 }
 
 .ringD {
   animation-name: ringD;
-  stroke: c(brand, 5);
+  stroke: light-dark(var(--blue-6), var(--blue-4));
 }
 
 @keyframes ringA {

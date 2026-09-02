@@ -52,7 +52,7 @@ const Dashboard = () => {
   };
 
   return (
-    <PageHeader title={dashboardLocale.welcome(displayName)} description={dashboardLocale.overview}>
+    <PageHeader title={dashboardLocale.welcome} description={dashboardLocale.overview}>
       {isError ? (
         <ErrorAlert isFetching={isFetching} refetch={refetch} />
       ) : isLoading ? (

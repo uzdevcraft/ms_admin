@@ -1,0 +1,119 @@
+.navLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  height: 40px;
+  padding: 0 0.75rem;
+  border: none;
+  border-radius: var(--mantine-radius-md);
+  background: transparent;
+  color: light-dark(var(--gray-7), var(--dark-1));
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.1s ease;
+
+  &:hover {
+    background: light-dark(var(--gray-1), var(--dark-5));
+    color: light-dark(var(--gray-9), var(--white));
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+.navLinkActive {
+  background: light-dark(var(--blue-0), var(--dark-5));
+  color: light-dark(var(--blue-7), var(--blue-4));
+
+  &:hover {
+    background: light-dark(var(--blue-1), var(--dark-4));
+    color: light-dark(var(--blue-8), var(--blue-3));
+  }
+}
+
+.navLinkIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: inherit;
+}f
+
+.navLinkLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Collapsed: icon-only square buttons, the active one keeps an accent pill. */
+.navLinks[data-collapsed],
+.footer[data-collapsed] {
+  align-items: center;
+}
+
+.navLinks[data-collapsed] {
+  gap: 0.375rem;
+
+  // No labels here, so the icons carry the contrast on their own.
+  .navLink {
+    justify-content: center;
+    width: 40px;
+    padding: 0;
+    gap: 0;
+    color: light-dark(var(--gray-8), var(--gray-4));
+
+    &:hover {
+      color: light-dark(var(--gray-9), var(--white));
+    }
+  }
+
+  .navLinkActive {
+    color: light-dark(var(--blue-7), var(--blue-4));
+
+    &:hover {
+      color: light-dark(var(--blue-8), var(--blue-3));
+    }
+  }
+
+  .navLinkLabel {
+    display: none;
+  }
+
+  .navLinkIcon {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.logoutIcon {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.1s ease;
+
+  &:active {
+    transform: scale(0.97);
+  }
+}

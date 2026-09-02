@@ -6,6 +6,11 @@
   gap: 20px;
 }
 
+.breadcrumbs {
+  /* Pulls the trail closer to the title than the container's 20px gap. */
+  margin-bottom: -12px;
+}
+
 .content {
   display: flex;
   justify-content: space-between;
@@ -36,5 +41,5 @@
 
 .description {
   font-size: 14px;
-  color: var(--mantine-color-gray-4);
+  color: light-dark(var(--gray-6), var(--gray-5));
 }

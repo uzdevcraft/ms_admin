@@ -21,7 +21,7 @@ const Update = ({ opened, onClose, product }: IProps) => {
   if (!product) return null;
 
   return (
-    <Modal opened={opened} onClose={onClose} title={products.editModal} size="xl">
+    <Modal centered opened={opened} onClose={onClose} title={products.editModal} size="xl">
       <UpdateForm
         product={product}
         className={classes.form}

@@ -19,7 +19,7 @@ const UpdateStatus = ({ opened, onClose, order }: IProps) => {
   if (!order) return null;
 
   return (
-    <Modal opened={opened} onClose={onClose} title={orders.updateStatusModal} size="md">
+    <Modal opened={opened} centered onClose={onClose} title={orders.updateStatusModal} size="md">
       <Stack gap="sm" mb="md">
         <Text size="sm">
           Buyurtma <strong>#{order.id}</strong> — {order.userFullName}

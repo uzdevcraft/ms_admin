@@ -4,9 +4,7 @@
   gap: 6px;
   width: max-content;
   height: max-content;
-}
-
-.logoWrapper:hover {
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -19,6 +17,6 @@
   font-size: 24px;
   font-weight: 700;
   user-select: none;
-  color: var(--white);
-  font-family: var(--momo);
+  letter-spacing: -0.02em;
+  color: light-dark(var(--gray-9), var(--white));
 }
