@@ -68,10 +68,10 @@ export default defineConfig(({ mode }) => {
 
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './src'),
-        '@common': path.resolve(__dirname, './src/common'),
-        '@modules': path.resolve(__dirname, './src/modules'),
-        '@pages': path.resolve(__dirname, './src/pages')
+        '@': path.resolve(import.meta.dirname, './src'),
+        '@common': path.resolve(import.meta.dirname, './src/common'),
+        '@modules': path.resolve(import.meta.dirname, './src/modules'),
+        '@pages': path.resolve(import.meta.dirname, './src/pages')
       }
     }
   };

@@ -9,6 +9,7 @@ export const ORDER_STATUS_OPTIONS = orderStatusOptions as unknown as {
 
 const orderItemSchema = yup.object({
   productId: yup.number().integer().min(1, validation.productRequired).required(validation.productRequired),
+  productVariantId: yup.number().integer().min(1).nullable().default(null),
   quantity: yup.number().integer().min(1, validation.quantityMin).required(validation.quantityRequired)
 });
 
@@ -38,7 +39,7 @@ export type UpdateStatusFormValues = Types.IForm.UpdateStatus;
 export type FilterFormValues = Types.IForm.Filter;
 
 export const defaultValues: CreateFormValues = {
-  items: [{ productId: 0, quantity: 1 }],
+  items: [{ productId: 0, productVariantId: null, quantity: 1 }],
   deliveryAddress: '',
   comment: ''
 };

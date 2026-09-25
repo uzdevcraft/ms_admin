@@ -45,6 +45,7 @@ export declare namespace IApi {
 export declare namespace IEntity {
   export interface OrderItemInput {
     productId: number;
+    productVariantId?: number | null;
     quantity: number;
   }
 
@@ -53,6 +54,8 @@ export declare namespace IEntity {
     productId: number;
     productName: string;
     productImage: string;
+    productVariantId: number | null;
+    variantLabel: string;
     quantity: number;
     price: number;
     totalPrice: number;

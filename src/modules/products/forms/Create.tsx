@@ -1,13 +1,13 @@
-import type { ReactNode } from "react";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
+import type { ReactNode } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, useForm, type UseFormReturn } from 'react-hook-form';
 
-import getApiError from "@common/utils/getApiError";
-import { keepOptions } from "@/helpers";
+import getApiError from '@common/utils/getApiError';
+import { keepOptions } from '@/helpers';
 
-import useCreate from "../hooks/useCreate";
-import type * as Types from "../types";
-import { defaultValues, productFormSchema, type CreateFormValues } from "./schema";
+import useCreate from '../hooks/useCreate';
+import type * as Types from '../types';
+import { defaultValues, productFormSchema, type CreateFormValues } from './schema';
 
 interface IChildren extends UseFormReturn<CreateFormValues> {
   isLoading: boolean;
@@ -16,37 +16,34 @@ interface IChildren extends UseFormReturn<CreateFormValues> {
 interface IProps {
   children: (props: IChildren) => ReactNode;
   className?: string;
+  onBeforeSubmit?: () => boolean;
   onError?: (error: string) => void;
   onSettled?: () => void;
   onSuccess?: (value: Types.IEntity.Product) => void;
 }
 
-const CreateForm = ({
-  children,
-  className,
-  onError,
-  onSettled,
-  onSuccess,
-}: IProps) => {
+const CreateForm = ({ children, className, onBeforeSubmit, onError, onSettled, onSuccess }: IProps) => {
   const create = useCreate();
 
   const form = useForm<CreateFormValues>({
     defaultValues,
-    resolver: yupResolver(productFormSchema),
+    resolver: yupResolver(productFormSchema)
   });
 
-  const onSubmit = form.handleSubmit((values) => {
+  const onSubmit = form.handleSubmit(values => {
+    if (onBeforeSubmit && !onBeforeSubmit()) return;
+
     create.mutate(values, {
-      onSuccess: (data) => {
+      onSuccess: data => {
         onSuccess?.(data);
       },
-      onError: (error) => {
+      onError: error => {
         onError?.(getApiError(error).message || error.message);
       },
       onSettled: () => {
         form.reset({ ...form.getValues() }, { ...keepOptions });
         onSettled?.();
-      },
+      }
     });
   });
 

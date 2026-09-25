@@ -1,5 +1,5 @@
-import { Group, Image, Text } from '@mantine/core';
-
+import { Group, Text } from '@mantine/core';
+import { ImagePreview } from '@/components/ImagePreview';
 import type { TableColumn } from '@/components/Table';
 import formatPrice from '@common/utils/formatPrice';
 import mediaUrl from '@common/utils/mediaUrl';
@@ -13,7 +13,7 @@ export const getOrderItemColumns = (): TableColumn<Types.IEntity.OrderItem>[] =>
     width: 72,
     render: item =>
       item.productImage ? (
-        <Image src={mediaUrl(item.productImage)} alt={item.productName} w={56} h={56} radius="sm" fit="cover" />
+        <ImagePreview src={mediaUrl(item.productImage)} alt={item.productName} w={56} h={56} radius="sm" fit="cover" />
       ) : (
         <Text c="dimmed" size="sm">
           {common.dash}

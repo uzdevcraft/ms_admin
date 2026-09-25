@@ -1,6 +1,7 @@
-import { ActionIcon, Badge, Group, Image, Text } from '@mantine/core';
-import { IconPencil, IconTrash } from '@tabler/icons-react';
+import { ActionIcon, Badge, Group, Text } from '@mantine/core';
+import { IconPencil, IconTags, IconTrash } from '@tabler/icons-react';
 
+import { ImagePreview } from '@/components/ImagePreview';
 import type { TableColumn } from '@/components/Table';
 import formatPrice from '@common/utils/formatPrice';
 import mediaUrl from '@common/utils/mediaUrl';
@@ -10,11 +11,13 @@ import type * as Types from '@/modules/products/types';
 type ProductColumnsOptions = {
   onEdit: (product: Types.IEntity.Product) => void;
   onDelete: (product: Types.IEntity.Product) => void;
+  onAttributes: (product: Types.IEntity.Product) => void;
 };
 
 export const getProductColumns = ({
   onEdit,
-  onDelete
+  onDelete,
+  onAttributes
 }: ProductColumnsOptions): TableColumn<Types.IEntity.Product>[] => [
   {
     key: 'imageUrl',
@@ -22,7 +25,7 @@ export const getProductColumns = ({
     width: 64,
     render: product =>
       product.imageUrl ? (
-        <Image src={mediaUrl(product.imageUrl)} alt={product.name} w={40} h={40} radius="sm" fit="cover" />
+        <ImagePreview src={mediaUrl(product.imageUrl)} alt={product.name} w={40} h={40} radius="sm" fit="cover" />
       ) : (
         <Text c="dimmed" size="sm">
           {common.dash}
@@ -87,6 +90,9 @@ export const getProductColumns = ({
       <Group gap={8} wrap="nowrap">
         <ActionIcon color="blue" aria-label={common.edit} onClick={() => onEdit(product)}>
           <IconPencil size={16} />
+        </ActionIcon>
+        <ActionIcon color="teal" aria-label={productsLocale.attributes} onClick={() => onAttributes(product)}>
+          <IconTags size={16} />
         </ActionIcon>
         <ActionIcon color="red" aria-label={common.delete} onClick={() => onDelete(product)}>
           <IconTrash size={16} />

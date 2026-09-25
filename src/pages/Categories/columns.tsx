@@ -1,8 +1,8 @@
-import { ActionIcon, Badge, Group, Image, Text } from '@mantine/core';
+import { ActionIcon, Badge, Group, Text } from '@mantine/core';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
 
+import { ImagePreview } from '@/components/ImagePreview';
 import type { TableColumn } from '@/components/Table';
-import { formatDate } from '@/common/utils/format';
 import mediaUrl from '@common/utils/mediaUrl';
 import { categories as categoriesLocale, common } from '@/locale/uz';
 import type * as Types from '@/modules/categories/types';
@@ -23,7 +23,7 @@ export const getCategoryColumns = ({
     width: 64,
     render: category =>
       category.imageUrl ? (
-        <Image src={mediaUrl(category.imageUrl)} alt={category.name} w={40} h={40} radius="sm" fit="cover" />
+        <ImagePreview src={mediaUrl(category.imageUrl)} alt={category.name} w={40} h={40} radius="sm" fit="cover" />
       ) : (
         <Text c="dimmed" size="sm">
           {common.dash}

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Box, Center, FileInput, Group, Image, Loader, Stack, Text } from '@mantine/core';
-
 import { useUpload } from '@/modules/files/hooks/useUpload';
 import getApiError from '@common/utils/getApiError';
 import mediaUrl from '@common/utils/mediaUrl';
+import { toast } from '@common/utils';
 import { forms } from '@/locale/uz';
 
 interface ImageUploadProps {
@@ -15,7 +15,13 @@ interface ImageUploadProps {
   accept?: string;
 }
 
-const DEFAULT_ACCEPT = 'image/png,image/jpeg,image/jpg,image/webp';
+const DEFAULT_ACCEPT = 'image/png,image/jpeg,image/jpg,image/webp,.png,.jpg,.jpeg,.webp';
+
+const isAcceptedImage = (file: File) => {
+  const accepted = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+  if (accepted.includes(file.type)) return true;
+  return /\.(png|jpe?g|webp)$/i.test(file.name);
+};
 
 export default function ImageUpload({
   value,
@@ -29,6 +35,12 @@ export default function ImageUpload({
   const [file, setFile] = useState<File | null>(null);
 
   const handleChange = (nextFile: File | null) => {
+    if (nextFile && !isAcceptedImage(nextFile)) {
+      toast.error('Faqat PNG, JPG, JPEG va WEBP rasmlar yuklash mumkin');
+      setFile(null);
+      return;
+    }
+
     setFile(nextFile);
 
     if (!nextFile) {

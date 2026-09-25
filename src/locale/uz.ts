@@ -101,7 +101,10 @@ export const products = {
   createSuccess: 'Mahsulot yaratildi',
   updateSuccess: 'Mahsulot yangilandi',
   addModal: "Mahsulot qo'shish",
-  editModal: 'Mahsulotni tahrirlash'
+  editModal: 'Mahsulotni tahrirlash',
+  attributes: 'Xususiyatlar',
+  attributesModal: 'Mahsulot xususiyatlari',
+  attributesSaved: 'Xususiyatlar saqlandi'
 } as const;
 
 export const categories = {

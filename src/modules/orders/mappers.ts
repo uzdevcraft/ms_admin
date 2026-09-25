@@ -6,6 +6,8 @@ export const OrderItem = (src: unknown): Types.IEntity.OrderItem => ({
   productId: get(src, 'productId', 0),
   productName: get(src, 'productName', ''),
   productImage: get(src, 'productImage', ''),
+  productVariantId: get(src, 'productVariantId', null),
+  variantLabel: get(src, 'variantLabel', ''),
   quantity: get(src, 'quantity', 0),
   price: get(src, 'price', 0),
   totalPrice: get(src, 'totalPrice', 0),
@@ -57,7 +59,11 @@ export const List = (src: unknown): Types.IQuery.List => {
 };
 
 export const CreateRequest = (values: Types.IForm.Create): Types.IApi.Create.Request => ({
-  items: values.items,
+  items: values.items.map(item => ({
+    productId: item.productId,
+    quantity: item.quantity,
+    ...(item.productVariantId ? { productVariantId: item.productVariantId } : {})
+  })),
   deliveryAddress: values.deliveryAddress,
   comment: values.comment,
 });
