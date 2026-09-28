@@ -19,6 +19,8 @@ const LOGOUT_LABEL = 'Chiqish';
 
 const Sidebar = ({ collapsed, onNavigate }: IProps) => {
   const logout = useAuthStore(state => state.logout);
+  const userRole = useAuthStore(state => state.user?.role);
+  const navItems = NAV_ITEMS.filter(item => item.to !== '/attributes' || userRole === 'ADMIN');
 
   const handleLogout = () => {
     modals.openConfirmModal({
@@ -33,7 +35,7 @@ const Sidebar = ({ collapsed, onNavigate }: IProps) => {
   return (
     <>
       <AppShell.Section py="md" px="xs" grow className={classes.navLinks} data-collapsed={collapsed || undefined}>
-        {NAV_ITEMS.map(item => (
+        {navItems.map(item => (
           <Item key={item.to} item={item} collapsed={collapsed} onNavigate={onNavigate} />
         ))}
       </AppShell.Section>
