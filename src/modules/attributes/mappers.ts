@@ -68,3 +68,18 @@ export const OptionUpdateRequest = (
   id,
   ...OptionCreateRequest(values, displayType)
 });
+
+export const CategoryAttribute = (src: unknown): Types.IEntity.CategoryAttribute => ({
+  ...AttributeDefinition(src),
+  required: get(src, 'required', false),
+  options: OptionList(get(src, 'options', []))
+});
+
+export const CategoryAttributes = (
+  items: Types.IEntity.CategoryAttribute[],
+  source: Types.IQuery.CategoryAttributes['source']
+): Types.IQuery.CategoryAttributes => ({
+  specs: items.filter(item => !item.variant),
+  variants: items.filter(item => item.variant),
+  source
+});

@@ -1,20 +1,34 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import * as Api from "../api";
-import * as Mappers from "../mappers";
-import type * as Types from "../types";
+import * as ProductAttributesApi from '@/modules/product-attributes/api';
+import * as ProductAttributesMappers from '@/modules/product-attributes/mappers';
 
+import * as Api from '../api';
+import * as Mappers from '../mappers';
+import type * as Types from '../types';
+
+/** Creates the product, then saves its generated variants (if any). */
 const useCreate = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (values: Types.IForm.Create) => {
       const { data } = await Api.Create(Mappers.CreateRequest(values));
-      return Mappers.Product(data);
+      const product = Mappers.Product(data);
+
+      if (values.variants.length && product.id) {
+        await ProductAttributesApi.SaveProductVariants({
+          productId: product.id,
+          request: ProductAttributesMappers.SaveVariantsRequest(Mappers.VariantsRequest(values))
+        });
+      }
+
+      return product;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products", "list"] });
-    },
+    onSuccess: product => {
+      queryClient.invalidateQueries({ queryKey: ['products', 'list'] });
+      queryClient.invalidateQueries({ queryKey: ['product-attributes', product.id] });
+    }
   });
 };
 

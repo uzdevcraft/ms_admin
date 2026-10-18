@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
 
@@ -10,7 +11,6 @@ import { toast } from '@/common/utils/toast';
 import { common, products as productsLocale } from '@/locale/uz';
 import { useDelete, useList } from '@/modules/products/hooks';
 import type * as Types from '@/modules/products/types';
-import { Create, Update } from '@/pages/Products/Form';
 import { AttributesModal } from '@/pages/Products/components/AttributesModal';
 
 import { getProductColumns } from './columns';
@@ -18,8 +18,7 @@ import { getProductColumns } from './columns';
 const Products = () => {
   const { data, isLoading, isError, refetch, isFetching } = useList();
   const remove = useDelete();
-  const [createOpen, setCreateOpen] = useState(false);
-  const [editing, setEditing] = useState<Types.IEntity.Product | null>(null);
+  const navigate = useNavigate();
   const [attributesProduct, setAttributesProduct] = useState<Types.IEntity.Product | null>(null);
 
   const products = data?.data ?? [];
@@ -52,18 +51,18 @@ const Products = () => {
   const columns = useMemo(
     () =>
       getProductColumns({
-        onEdit: setEditing,
+        onEdit: product => navigate(`/products/${product.id}/edit`),
         onDelete: handleDelete,
         onAttributes: setAttributesProduct
       }),
-    [handleDelete]
+    [handleDelete, navigate]
   );
 
   return (
     <PageHeader
       title={productsLocale.title}
       description={productsLocale.description}
-      actions={<Button onClick={() => setCreateOpen(true)}>{productsLocale.add}</Button>}
+      actions={<Button onClick={() => navigate('/products/new')}>{productsLocale.add}</Button>}
     >
       {isError ? (
         <ErrorAlert isFetching={isFetching} refetch={refetch} />
@@ -78,8 +77,6 @@ const Products = () => {
         />
       )}
 
-      <Create opened={createOpen} onClose={() => setCreateOpen(false)} />
-      <Update opened={!!editing} product={editing} onClose={() => setEditing(null)} />
       {attributesProduct && (
         <AttributesModal opened product={attributesProduct} onClose={() => setAttributesProduct(null)} />
       )}

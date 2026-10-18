@@ -1,0 +1,379 @@
+/*
+ * Product editor styles — same tokens as the rest of the admin panel:
+ * white cards on the gray app background, gray-3/dark-4 borders,
+ * blue (--active) as the accent, Inter from the theme.
+ */
+
+/* ---------- section card ---------- */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
+  border-radius: var(--mantine-radius-md);
+  background: light-dark(var(--white), var(--dark-7));
+
+  @media (max-width: 576px) {
+    padding: 16px;
+  }
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid light-dark(var(--gray-3), var(--dark-4));
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  color: light-dark(var(--gray-9), var(--gray-0));
+}
+
+.sectionNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--mantine-radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: light-dark(var(--blue-7), var(--blue-3));
+  background: light-dark(var(--blue-0), rgba(34, 139, 230, 0.15));
+}
+
+.fieldBody {
+  margin-top: 8px;
+}
+
+/* ---------- field label with hint ---------- */
+.labelHint {
+  margin-left: 6px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: light-dark(var(--gray-6), var(--gray-5));
+}
+
+.labelRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 28px;
+  white-space: nowrap;
+}
+
+/* ---------- specs ---------- */
+.loading {
+  gap: 8px;
+}
+
+/* ---------- category ---------- */
+.path {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: light-dark(var(--gray-6), var(--gray-5));
+}
+
+.pathCurrent {
+  font-weight: 600;
+  color: light-dark(var(--gray-9), var(--gray-0));
+}
+
+.hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+/* ---------- banners ---------- */
+.banner {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--mantine-radius-md);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: light-dark(var(--blue-9), var(--blue-2));
+  background: light-dark(var(--blue-0), rgba(34, 139, 230, 0.12));
+}
+
+.bannerMuted {
+  color: light-dark(var(--gray-7), var(--gray-4));
+  background: light-dark(var(--gray-0), var(--dark-6));
+  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
+}
+
+.bannerIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ---------- option chips ---------- */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
+  border-radius: var(--mantine-radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: light-dark(var(--gray-7), var(--gray-3));
+  background: light-dark(var(--white), var(--dark-6));
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    color 120ms ease,
+    border-color 120ms ease;
+
+  &:hover {
+    border-color: light-dark(var(--blue-4), var(--blue-6));
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--active);
+    outline-offset: 2px;
+  }
+}
+
+/* Doubled class: postcss-preset-mantine turns light-dark() into scheme-scoped rules with higher specificity. */
+.chip.chipSelected {
+  color: var(--white);
+  background: var(--active);
+  border-color: var(--active);
+
+  &:hover {
+    background: var(--active-hover);
+    border-color: var(--active-hover);
+  }
+}
+
+.chipSquare {
+  min-width: 44px;
+  justify-content: center;
+  padding: 0 12px;
+}
+
+.swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid light-dark(var(--gray-4), var(--dark-3));
+}
+
+.chip.chipError {
+  border-color: var(--mantine-color-error);
+}
+
+/* ---------- pricing ---------- */
+.prices {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 576px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed light-dark(var(--gray-3), var(--dark-4));
+  font-size: 0.8rem;
+}
+
+.breakdownRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: light-dark(var(--gray-6), var(--gray-5));
+
+  & > span:last-child {
+    white-space: nowrap;
+  }
+}
+
+.breakdownStrong {
+  font-weight: 600;
+  color: light-dark(var(--gray-9), var(--gray-0));
+}
+
+.negative {
+  color: light-dark(var(--red-7), var(--red-5));
+}
+
+.positive {
+  font-weight: 600;
+  color: light-dark(var(--teal-7), var(--teal-5));
+}
+
+.variantTable {
+  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
+  border-radius: var(--mantine-radius-md);
+  overflow-x: auto;
+}
+
+/* ---------- images ---------- */
+.images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.imageTile {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: var(--mantine-radius-md);
+  overflow: hidden;
+  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
+  background: light-dark(var(--gray-0), var(--dark-6));
+
+  &:hover .imageActions {
+    opacity: 1;
+  }
+}
+
+.imageBadge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+}
+
+.imageActions {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 120ms ease;
+
+  @media (hover: none) {
+    opacity: 1;
+  }
+}
+
+.addTile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 120px;
+  height: 120px;
+  border: 1px dashed light-dark(var(--gray-4), var(--dark-3));
+  border-radius: var(--mantine-radius-md);
+  font-size: 0.875rem;
+  color: light-dark(var(--gray-6), var(--gray-5));
+  background: light-dark(var(--gray-0), var(--dark-6));
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--active);
+    color: var(--active);
+  }
+}
+
+.addTile.addTileError {
+  border-color: var(--mantine-color-error);
+}
+
+/* ---------- channels ---------- */
+.channels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+
+  @media (max-width: 576px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.channel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
+  border-radius: var(--mantine-radius-md);
+  background: light-dark(var(--gray-0), var(--dark-6));
+}
+
+.channelTitle {
+  font-weight: 600;
+  color: light-dark(var(--gray-9), var(--gray-0));
+}
+
+.channelHint {
+  font-size: 0.8rem;
+  color: light-dark(var(--gray-6), var(--gray-5));
+}
+
+/* ---------- similar products ---------- */
+.similar {
+  padding: 8px 12px;
+  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
+  border-radius: var(--mantine-radius-md);
+  background: light-dark(var(--gray-0), var(--dark-6));
+}
+
+.similarTitle {
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: light-dark(var(--gray-6), var(--gray-5));
+}
+
+.similarItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
+
+.similarItem + .similarItem {
+  border-top: 1px solid light-dark(var(--gray-3), var(--dark-4));
+}
+
+.similarText {
+  flex: 1;
+  min-width: 0;
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}

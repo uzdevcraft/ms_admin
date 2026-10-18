@@ -108,8 +108,6 @@ export const products = {
 } as const;
 
 export const productSuggestions = {
-  searching: 'Qidirilmoqda…',
-  nameHint: "Yozishni boshlang — mavjud mahsulotlar taklif qilinadi",
   similarTitle: "O'xshash mahsulotlar",
   copy: 'Nusxalash',
   copyHint: "Bo'lim, tavsif, narx va rasmni ushbu mahsulotdan olish",
@@ -122,12 +120,111 @@ export const productSuggestions = {
   priceRangeSimilar: "O'xshash mahsulotlar narxi:",
   priceRangeCategory: "Bo'limdagi narxlar:",
   median: "o'rtacha",
-  useMedian: "O'rtachani qo'yish",
-  discountPresets: 'Tez chegirma:',
-  nextSortOrder: (value: number) => `Bo'limdagi keyingi bo'sh raqam: ${value}`,
-  apply: "Qo'llash",
+  useMedian: "O'rtachani qo'yish"
+} as const;
+
+export const productEditor = {
+  breadcrumbNew: 'Yangi mahsulot',
+  breadcrumbEdit: 'Tahrirlash',
+  titleCreate: "Mahsulot qo'shish",
+  titleEdit: 'Mahsulotni tahrirlash',
+  cancel: 'Bekor qilish',
+  notFound: 'Mahsulot topilmadi',
+  retry: 'Qayta urinish',
+  optional: '(ixtiyoriy, lekin tavsiya etiladi)',
+
+  // 01
+  basic: "Asosiy ma'lumot",
+  name: 'Mahsulot nomi',
+  namePlaceholder: "Masalan: Ayollar yozgi ko'ylagi, gulli",
+  description: 'Tavsif',
+  descriptionPlaceholder: "Mahsulot haqida qisqacha ma'lumot: material, kesim, parvarish bo'yicha maslahat...",
+  category: 'Kategoriya',
+  categoryHint: "(nomi bo'yicha qidiring yoki pastdan bosqichma-bosqich tanlang)",
+  categorySearchPlaceholder: "Masalan: ko'ylak, smartfon, shampun, gilam...",
+  categoryNothingFound: 'Kategoriya topilmadi',
+  level1: "Bo'lim",
+  level2: 'Kategoriya',
+  level3: 'Subkategoriya',
+  choose: '— tanlang —',
+  chooseDeeper: "Aniqroq kategoriyani tanlang — xususiyatlar shunga qarab o'zgaradi",
+  variantChip: (names: string) => `Variant: ${names}`,
   translations: 'Tarjimalar (UZ / RU)',
-  translationsHint: "UZ maydonlari asosiy nom va tavsifdan avtomatik to'ldiriladi"
+  translationsHint: "UZ maydonlari bo'sh qolsa, asosiy nom va tavsif ishlatiladi",
+
+  // 02
+  specs: 'Kategoriyaga xos xususiyatlar',
+  specsChooseCategory: 'Avval kategoriyani tanlang — xususiyatlar shunga qarab serverdan yuklanadi.',
+  specsLoading: 'Xususiyatlar yuklanmoqda…',
+  specsEmpty: "Bu kategoriya uchun qo'shimcha xususiyatlar yo'q.",
+  specsError: "Xususiyatlarni yuklab bo'lmadi",
+  specsBannerCategory: (path: string) =>
+    `Maydonlar ${path} uchun serverdan keladi (kategoriyaning atribut to'plami). Boshqa kategoriya tanlansa, maydonlar o'zgaradi va avvalgi javoblar tozalanadi. * — majburiy. Narx, ombor va variantlar bu yerda emas — 03-bo'limda.`,
+  specsBannerGlobal:
+    "Kategoriyaga biriktirilgan atribut to'plami serverda hali yo'q, shuning uchun barcha xususiyatlar ko'rsatilmoqda. Narx, ombor va variantlar — 03-bo'limda.",
+  textPlaceholder: (name: string) => `Masalan: ${name}`,
+  yes: 'Ha',
+  no: "Yo'q",
+
+  // 03
+  pricing: 'Narxlar, foyda va variantlar',
+  commission: (percent: number, tier: string) => `ZARO komissiyasi: ${percent}%${tier ? ` · ${tier}` : ''}`,
+  variantInfoTitle: (names: string) => `Variant: ${names}.`,
+  variantInfo: 'Har bir kombinatsiya alohida SKU va ombor hosil qiladi; narxlarni pastda belgilaysiz.',
+  chooseMany: '(bir nechtasini tanlang)',
+  purchasePrice: 'Xarid narxi',
+  purchasePriceHint: '(sizga qancha turadi)',
+  purchasePriceNote: "Sof foydani hisoblash uchun ishlatiladi — buni hech kim (mijoz) ko'rmaydi",
+  onlinePrice: 'Onlayn sotuv narxi',
+  discount: 'Chegirma',
+  discountPrice: 'Chegirma narxi',
+  storePrice: "Do'kon narxi",
+  storePriceHint: '(komissiyasiz)',
+  defaultStock: 'Standart ombor',
+  stock: 'Ombor',
+  currency: "so'm",
+  pieces: 'dona',
+  commissionRow: (percent: number) => `Komissiya (${percent}%)`,
+  payout: 'Sizga tushadi',
+  onlineProfit: 'Sof foyda (xarid narxidan keyin)',
+  storeProfit: 'Sof foyda',
+  generate: 'Variantlarni generatsiya qilish',
+  regenerate: 'Variantlarni yangilash',
+  variantsCount: (count: number) => `${count} ta variant`,
+  variant: 'Variant',
+  sku: 'SKU',
+  variantPrice: 'Narx',
+  variantStock: 'Ombor',
+  removeVariant: "Variantni o'chirish",
+  applyToAll: "Hammasiga qo'llash",
+
+  // 04
+  images: 'Rasmlar',
+  addImage: "Qo'shish",
+  mainImage: 'Asosiy',
+  makeMain: 'Asosiy qilish',
+  removeImage: "O'chirish",
+  uploading: 'Yuklanmoqda…',
+  imagesHint: "Birinchi rasm asosiy bo'ladi. PNG, JPG, WEBP.",
+  imageTypeError: 'Faqat PNG, JPG, JPEG va WEBP rasmlar yuklash mumkin',
+
+  // 05
+  channels: 'Sotuv kanali',
+  online: 'Onlayn',
+  onlineHint: "ZARO ilovasida ko'rinadi",
+  store: "Do'konda",
+  storeHint: 'Faqat "Do\'kondan sotish"da',
+  channelsNote: 'Ombor miqdori ikkala kanal uchun umumiy — yuqoridagi variant jadvalidagi sonlar ishlatiladi.',
+  onlineAlert:
+    "Mahsulot onlaynda ko'rinadi — admin tasdiqlashidan keyin faollashadi. Do'konda sotish esa tasdiqni kutmaydi.",
+
+  // footer
+  saveDraft: 'Qoralama sifatida saqlash',
+  submitReview: "Ko'rib chiqishga yuborish",
+  draftSaved: 'Qoralama saqlandi',
+  submitted: "Mahsulot ko'rib chiqishga yuborildi",
+  updated: 'Mahsulot yangilandi',
+  fixErrors: "Belgilangan maydonlarni to'ldiring"
 } as const;
 
 export const categories = {
@@ -334,7 +431,14 @@ export const validation = {
   totalRequired: 'Jami summa talab qilinadi',
   shippingCountryRequired: 'Yetkazish mamlakat talab qilinadi',
   shippingCityRequired: 'Yetkazish shahri talab qilinadi',
-  shippingAddressRequired: 'Yetkazish manzili talab qilinadi'
+  shippingAddressRequired: 'Yetkazish manzili talab qilinadi',
+  purchasePriceRequired: 'Xarid narxini kiriting',
+  discountBelowPrice: "Chegirma narxi sotuv narxidan past bo'lishi kerak",
+  skuRequired: 'SKU kiriting',
+  channelRequired: 'Kamida bitta sotuv kanalini yoqing',
+  attributeRequired: (name: string) => `${name} majburiy`,
+  generateVariants: 'Variantlarni generatsiya qiling',
+  chooseVariantOptions: (names: string) => `${names} bo'yicha kamida bitta qiymat tanlang`
 } as const;
 
 export const orderStatusOptions = [

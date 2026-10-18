@@ -36,6 +36,12 @@ export declare namespace IApi {
 export declare namespace IEntity {
   export interface Category {
     id: number;
+    /** Parent category id; `null` for a top-level "Bo'lim". */
+    parentId: number | null;
+    /** ZARO commission for products of this category, in percent (null when the API doesn't send it). */
+    commissionPercent: number | null;
+    /** Commission tier label, e.g. "T3". */
+    commissionTier: string;
     name: string;
     nameUz: string;
     nameRu: string;

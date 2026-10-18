@@ -102,27 +102,42 @@ export const roundPrice = (value: number) =>
   value >= 1000 ? Math.round(value / 100) * 100 : Math.round(value * 100) / 100;
 
 export const discountPresets = (price: number, percents: readonly number[] = DISCOUNT_PERCENTS) =>
-  price > 0
-    ? percents.map(percent => ({ percent, value: roundPrice(price * (1 - percent / 100)) }))
-    : [];
+  price > 0 ? percents.map(percent => ({ percent, value: roundPrice(price * (1 - percent / 100)) })) : [];
 
 /**
  * Fields worth reusing from an existing product when adding a similar one.
- * Identity- and inventory-specific fields (name, stock, sort order, status)
+ * Identity- and inventory-specific fields (name, stock, variants, status)
  * are intentionally left out.
  */
 export const copyableFields = (
   product: Types.IEntity.Product
 ): Pick<
   Types.IForm.Create,
-  'categoryId' | 'description' | 'descriptionUz' | 'descriptionRu' | 'nameRu' | 'price' | 'discountPrice' | 'imageUrl'
-> => ({
-  categoryId: product.categoryId,
-  description: product.description,
-  descriptionUz: product.descriptionUz || product.description,
-  descriptionRu: product.descriptionRu,
-  nameRu: product.nameRu,
-  price: product.price,
-  discountPrice: product.discountPrice,
-  imageUrl: product.imageUrl
-});
+  | 'categoryId'
+  | 'description'
+  | 'descriptionUz'
+  | 'descriptionRu'
+  | 'nameRu'
+  | 'price'
+  | 'discountEnabled'
+  | 'discountPrice'
+  | 'purchasePrice'
+  | 'storePrice'
+  | 'imageUrls'
+> => {
+  const discountEnabled = product.discountPrice > 0 && product.discountPrice < product.price;
+
+  return {
+    categoryId: product.categoryId,
+    description: product.description,
+    descriptionUz: product.descriptionUz || product.description,
+    descriptionRu: product.descriptionRu,
+    nameRu: product.nameRu,
+    price: product.price,
+    discountEnabled,
+    discountPrice: discountEnabled ? product.discountPrice : 0,
+    purchasePrice: product.purchasePrice,
+    storePrice: product.storePrice,
+    imageUrls: product.imageUrls
+  };
+};

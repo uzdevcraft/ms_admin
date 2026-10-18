@@ -22,6 +22,12 @@ const product = (patch: Partial<Types.IEntity.Product>): Types.IEntity.Product =
   isActive: true,
   sortOrder: 0,
   createdAt: '',
+  imageUrls: [],
+  purchasePrice: 0,
+  storePrice: null,
+  onlineEnabled: true,
+  storeEnabled: false,
+  status: '',
   ...patch
 });
 

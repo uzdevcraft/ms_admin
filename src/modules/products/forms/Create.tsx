@@ -16,13 +16,16 @@ interface IChildren extends UseFormReturn<CreateFormValues> {
 interface IProps {
   children: (props: IChildren) => ReactNode;
   className?: string;
-  onBeforeSubmit?: () => boolean;
+  /** Extra checks that depend on server data (required category attributes, variants). Return false to stop. */
+  onBeforeSubmit?: (values: CreateFormValues, form: UseFormReturn<CreateFormValues>) => boolean;
+  /** Called when the static schema rejects the values. */
+  onInvalid?: () => void;
   onError?: (error: string) => void;
   onSettled?: () => void;
-  onSuccess?: (value: Types.IEntity.Product) => void;
+  onSuccess?: (value: Types.IEntity.Product, values: CreateFormValues) => void;
 }
 
-const CreateForm = ({ children, className, onBeforeSubmit, onError, onSettled, onSuccess }: IProps) => {
+const CreateForm = ({ children, className, onBeforeSubmit, onInvalid, onError, onSettled, onSuccess }: IProps) => {
   const create = useCreate();
 
   const form = useForm<CreateFormValues>({
@@ -30,26 +33,29 @@ const CreateForm = ({ children, className, onBeforeSubmit, onError, onSettled, o
     resolver: yupResolver(productFormSchema)
   });
 
-  const onSubmit = form.handleSubmit(values => {
-    if (onBeforeSubmit && !onBeforeSubmit()) return;
+  const onSubmit = form.handleSubmit(
+    values => {
+      if (onBeforeSubmit && !onBeforeSubmit(values, form)) return;
 
-    create.mutate(values, {
-      onSuccess: data => {
-        onSuccess?.(data);
-      },
-      onError: error => {
-        onError?.(getApiError(error).message || error.message);
-      },
-      onSettled: () => {
-        form.reset({ ...form.getValues() }, { ...keepOptions });
-        onSettled?.();
-      }
-    });
-  });
+      create.mutate(values, {
+        onSuccess: data => {
+          onSuccess?.(data, values);
+        },
+        onError: error => {
+          onError?.(getApiError(error).message || error.message);
+        },
+        onSettled: () => {
+          form.reset({ ...form.getValues() }, { ...keepOptions });
+          onSettled?.();
+        }
+      });
+    },
+    () => onInvalid?.()
+  );
 
   return (
     <FormProvider {...form}>
-      <form className={className} onSubmit={onSubmit}>
+      <form className={className} onSubmit={onSubmit} noValidate>
         {children({ ...form, isLoading: create.isPending })}
       </form>
     </FormProvider>

@@ -1,4 +1,4 @@
-import { Avatar, Button, Paper, Text, Tooltip } from '@mantine/core';
+import { Avatar, Button, Text, Tooltip } from '@mantine/core';
 import { IconCopy } from '@tabler/icons-react';
 
 import { formatPrice, mediaUrl } from '@common/utils';
@@ -17,10 +17,8 @@ const SimilarProducts = ({ products, onCopy, limit = 4 }: IProps) => {
   if (!products.length) return null;
 
   return (
-    <Paper withBorder radius="md" className={classes.similar}>
-      <Text size="xs" fw={600} c="dimmed" tt="uppercase">
-        {productSuggestions.similarTitle}
-      </Text>
+    <div className={classes.similar}>
+      <Text className={classes.similarTitle}>{productSuggestions.similarTitle}</Text>
       {products.slice(0, limit).map(product => (
         <div key={product.id} className={classes.similarItem}>
           <Avatar src={mediaUrl(product.imageUrl) || null} radius="sm" size={36}>
@@ -46,7 +44,7 @@ const SimilarProducts = ({ products, onCopy, limit = 4 }: IProps) => {
           </Tooltip>
         </div>
       ))}
-    </Paper>
+    </div>
   );
 };
 

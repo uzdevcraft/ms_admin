@@ -18,6 +18,10 @@ export const Update = ({ id, ...values }: Types.IApi.Update.Request): AxiosPromi
 export const Delete = ({ id }: Types.IQuery.Single): AxiosPromise<void> =>
   http.request.delete(`/admin/attributes/${id}`);
 
+/** Attribute set of a category (definitions + options + `required`). */
+export const ForCategory = ({ categoryId }: Types.IQuery.ForCategory): AxiosPromise<Types.IApi.ForCategory.Response> =>
+  http.request.get(`/categories/${categoryId}/attributes`);
+
 export const ListOptions = ({
   attributeDefinitionId
 }: Types.IQuery.OptionList): AxiosPromise<Types.IApi.OptionList.Response> =>

@@ -19,6 +19,7 @@ import { Categories } from '@/pages/Categories';
 import { Dashboard } from '@/pages/Dashboard';
 import { Login } from '@/pages/Login';
 import { Orders } from '@/pages/Orders';
+import { ProductEditor } from '@/pages/ProductEditor';
 import { Products } from '@/pages/Products';
 import { SingleOrder } from '@/pages/SingleOrder';
 
@@ -54,6 +55,14 @@ const getRoutesData = (): RouteObject[] => [
       {
         path: '/products',
         element: <Products />
+      },
+      {
+        path: '/products/new',
+        element: <ProductEditor />
+      },
+      {
+        path: '/products/:id/edit',
+        element: <ProductEditor />
       },
       {
         path: '/categories',

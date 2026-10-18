@@ -3,6 +3,9 @@ import type * as Types from './types';
 
 export const Category = (src: unknown): Types.IEntity.Category => ({
   id: get(src, 'id', 0),
+  parentId: get(src, 'parentId', null) as number | null,
+  commissionPercent: get(src, 'commissionPercent', null) as number | null,
+  commissionTier: get(src, 'commissionTier', ''),
   name: get(src, 'name', ''),
   nameUz: get(src, 'nameUz', ''),
   nameRu: get(src, 'nameRu', ''),

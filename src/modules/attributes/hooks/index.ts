@@ -7,3 +7,4 @@ export { default as useOptions } from './useOptions';
 export { default as useCreateOption } from './useCreateOption';
 export { default as useUpdateOption } from './useUpdateOption';
 export { default as useDeleteOption } from './useDeleteOption';
+export { default as useForCategory } from './useForCategory';
