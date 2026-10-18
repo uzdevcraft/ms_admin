@@ -107,6 +107,29 @@ export const products = {
   attributesSaved: 'Xususiyatlar saqlandi'
 } as const;
 
+export const productSuggestions = {
+  searching: 'Qidirilmoqda…',
+  nameHint: "Yozishni boshlang — mavjud mahsulotlar taklif qilinadi",
+  similarTitle: "O'xshash mahsulotlar",
+  copy: 'Nusxalash',
+  copyHint: "Bo'lim, tavsif, narx va rasmni ushbu mahsulotdan olish",
+  copied: (name: string) => `"${name}" ma'lumotlari ko'chirildi`,
+  duplicateTitle: 'Bunday mahsulot allaqachon mavjud',
+  duplicateMessage: (name: string, category: string) =>
+    `"${name}"${category ? ` (${category})` : ''} katalogda bor. Ikki marta qo'shmaganingizga ishonch hosil qiling.`,
+  recommendedCategory: "Tavsiya etilgan bo'lim:",
+  recommendedCategoryCount: (count: number, total: number) => `${total} ta o'xshash mahsulotdan ${count} tasi`,
+  priceRangeSimilar: "O'xshash mahsulotlar narxi:",
+  priceRangeCategory: "Bo'limdagi narxlar:",
+  median: "o'rtacha",
+  useMedian: "O'rtachani qo'yish",
+  discountPresets: 'Tez chegirma:',
+  nextSortOrder: (value: number) => `Bo'limdagi keyingi bo'sh raqam: ${value}`,
+  apply: "Qo'llash",
+  translations: 'Tarjimalar (UZ / RU)',
+  translationsHint: "UZ maydonlari asosiy nom va tavsifdan avtomatik to'ldiriladi"
+} as const;
+
 export const categories = {
   title: "Bo'limlar",
   description: "Xorijiy mahsulotlarni ko'rish uchun bo'limlarga ajrating",

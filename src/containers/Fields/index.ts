@@ -5,6 +5,7 @@ export { default as File } from './File';
 export { default as Image } from './Image';
 export { default as Number } from './Number';
 export { default as Password } from './Password';
+export { default as Autocomplete } from './Autocomplete';
 
 // other fields
 export { default as Chip } from './Chip';
