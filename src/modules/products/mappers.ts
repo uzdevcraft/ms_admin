@@ -36,6 +36,10 @@ export const Product = (src: unknown): Types.IEntity.Product => {
   };
 };
 
+/** `POST /products` and `PUT /products/{id}` answer with the product id (int64). */
+export const Id = (src: unknown): number =>
+  typeof src === 'number' ? src : Number(src) || (get(src, 'id', 0) as number);
+
 export const List = (src: unknown): Types.IQuery.List => {
   const items = Array.isArray(src) ? src : get(src, 'content', get(src, 'data', get(src, 'results', [])));
 

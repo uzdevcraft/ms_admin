@@ -95,7 +95,7 @@ const CategoryPicker = ({ index, onChange, variantNames, recommended }: IProps) 
         ))}
       </SimpleGrid>
 
-      {current && (
+      {current && (path.length > 1 || variantNames.length > 0 || tier) && (
         <div className={classes.path}>
           {path.map((item, position) => (
             <span key={item.id} className={position === path.length - 1 ? classes.pathCurrent : undefined}>

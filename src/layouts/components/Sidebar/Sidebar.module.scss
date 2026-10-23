@@ -1,25 +1,54 @@
 .navLinks {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 18px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.groupDivider {
+  display: block;
+  width: 20px;
+  height: 1px;
+  margin: 0 auto 6px;
+  background: var(--app-border-strong);
+}
+
+.group:first-child .groupDivider {
+  display: none;
+}
+
+.sectionLabel {
+  padding: 0 12px 6px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--app-text-muted);
 }
 
 .footer {
   display: flex;
   flex-direction: column;
+  border-top: 1px solid var(--app-border);
 }
 
 .navLink {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 12px;
   width: 100%;
   height: 40px;
-  padding: 0 0.75rem;
+  padding: 0 12px;
   border: none;
   border-radius: var(--mantine-radius-md);
   background: transparent;
-  color: light-dark(var(--gray-7), var(--dark-1));
+  color: var(--app-text-secondary);
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 500;
@@ -27,26 +56,39 @@
   cursor: pointer;
   transition:
     background-color 0.15s ease,
-    color 0.15s ease,
-    transform 0.1s ease;
+    color 0.15s ease;
 
   &:hover {
-    background: light-dark(var(--gray-1), var(--dark-5));
-    color: light-dark(var(--gray-9), var(--white));
+    background: var(--app-surface-hover);
+    color: var(--app-text);
   }
 
-  &:active {
-    transform: scale(0.97);
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--app-focus-ring);
   }
 }
 
 .navLinkActive {
-  background: light-dark(var(--blue-0), var(--dark-5));
-  color: light-dark(var(--blue-7), var(--blue-4));
+  background: var(--app-accent-soft);
+  color: var(--app-accent-text);
+  font-weight: 600;
+
+  // Accent bar on the leading edge of the active item.
+  &::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    left: -12px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: var(--active);
+  }
 
   &:hover {
-    background: light-dark(var(--blue-1), var(--dark-4));
-    color: light-dark(var(--blue-8), var(--blue-3));
+    background: var(--app-accent-soft);
+    color: var(--app-accent-text);
   }
 }
 
@@ -58,7 +100,7 @@
   width: 20px;
   height: 20px;
   color: inherit;
-}f
+}
 
 .navLinkLabel {
   flex: 1;
@@ -68,6 +110,11 @@
   white-space: nowrap;
 }
 
+.logoutButton {
+  height: 40px;
+  font-weight: 500;
+}
+
 /* Collapsed: icon-only square buttons, the active one keeps an accent pill. */
 .navLinks[data-collapsed],
 .footer[data-collapsed] {
@@ -75,27 +122,23 @@
 }
 
 .navLinks[data-collapsed] {
-  gap: 0.375rem;
+  gap: 10px;
 
-  // No labels here, so the icons carry the contrast on their own.
-  .navLink {
-    justify-content: center;
-    width: 40px;
-    padding: 0;
-    gap: 0;
-    color: light-dark(var(--gray-8), var(--gray-4));
-
-    &:hover {
-      color: light-dark(var(--gray-9), var(--white));
-    }
+  .group {
+    align-items: center;
+    gap: 6px;
   }
 
-  .navLinkActive {
-    color: light-dark(var(--blue-7), var(--blue-4));
+  .navLink {
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    gap: 0;
+  }
 
-    &:hover {
-      color: light-dark(var(--blue-8), var(--blue-3));
-    }
+  .navLinkActive::before {
+    left: -12px;
   }
 
   .navLinkLabel {
@@ -109,11 +152,6 @@
 }
 
 .logoutIcon {
-  width: 40px;
-  height: 40px;
-  transition: transform 0.1s ease;
-
-  &:active {
-    transform: scale(0.97);
-  }
+  width: 44px;
+  height: 44px;
 }

@@ -8,6 +8,7 @@ export const Upload = (file: File) => {
 
 export const UploadMultiple = (files: File[]) => {
   const formData = new FormData();
-  files.forEach((file) => formData.append("files", file));
+  // Swagger: multipart field `file` (array of binaries) → ResourceFileDto[] { fileId, url }.
+  files.forEach((file) => formData.append("file", file));
   return http.request.post<unknown>("/files/upload-multiple", formData);
 };

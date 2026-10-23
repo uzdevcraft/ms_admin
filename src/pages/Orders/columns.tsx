@@ -1,11 +1,14 @@
-import { ActionIcon, Badge, Group, Text } from '@mantine/core';
+import { Avatar, Badge, Group, Text } from '@mantine/core';
 import { IconEye, IconPencil, IconTrash } from '@tabler/icons-react';
-import dayjs from 'dayjs';
 
+import { DateTime } from '@/components/DateTime';
+import { RowAction } from '@/components/RowAction';
 import type { TableColumn } from '@/components/Table';
 import formatPrice from '@common/utils/formatPrice';
 import { common, orderStatus, orders as ordersLocale } from '@/locale/uz';
 import type * as Types from '@/modules/orders/types';
+
+import classes from './Orders.module.css';
 
 export const STATUS_COLORS: Record<Types.OrderStatus, string> = {
   PENDING: 'yellow',
@@ -39,8 +42,10 @@ export const getOrderColumns = ({
   {
     key: 'id',
     title: ordersLocale.orderNumber,
+    nowrap: true,
+    width: 88,
     render: order => (
-      <Text size="sm" fw={600}>
+      <Text size="sm" className={classes.orderId}>
         #{order.id}
       </Text>
     )
@@ -48,24 +53,48 @@ export const getOrderColumns = ({
   {
     key: 'userFullName',
     title: ordersLocale.customer,
-    render: order => order.userFullName || common.dash
+    render: order =>
+      order.userFullName ? (
+        <Group gap={10} wrap="nowrap">
+          <Avatar name={order.userFullName} color="initials" size={28} radius="xl" />
+          <Text size="sm" fw={500} lineClamp={1} maw={180}>
+            {order.userFullName}
+          </Text>
+        </Group>
+      ) : (
+        common.dash
+      )
   },
   {
     key: 'items',
     title: ordersLocale.items,
-    render: order =>
-      order.items.length > 0 ? order.items.map(item => `${item.productName} ×${item.quantity}`).join(', ') : common.dash
+    render: order => {
+      const summary = order.items.map(item => `${item.productName} ×${item.quantity}`).join(', ');
+      return order.items.length > 0 ? (
+        <Text size="sm" className={classes.secondary} lineClamp={1} maw={260} title={summary}>
+          {summary}
+        </Text>
+      ) : (
+        common.dash
+      );
+    }
   },
   {
     key: 'totalAmount',
     title: ordersLocale.total,
-    render: order => formatPrice(order.totalAmount)
+    numeric: true,
+    render: order => (
+      <Text size="sm" fw={600} span>
+        {formatPrice(order.totalAmount)}
+      </Text>
+    )
   },
   {
     key: 'status',
     title: ordersLocale.status,
+    nowrap: true,
     render: order => (
-      <Badge color={STATUS_COLORS[order.status]} radius="sm" variant="outline">
+      <Badge color={STATUS_COLORS[order.status]} variant="dot" size="md">
         {STATUS_LABELS[order.status] || order.status}
       </Badge>
     )
@@ -74,7 +103,7 @@ export const getOrderColumns = ({
     key: 'deliveryAddress',
     title: ordersLocale.delivery,
     render: order => (
-      <Text size="sm" lineClamp={1} maw={200}>
+      <Text size="sm" className={classes.secondary} lineClamp={1} maw={200} title={order.deliveryAddress || undefined}>
         {order.deliveryAddress || common.dash}
       </Text>
     )
@@ -82,22 +111,18 @@ export const getOrderColumns = ({
   {
     key: 'createdAt',
     title: ordersLocale.date,
-    render: order => (order.createdAt ? `${dayjs(`${order.createdAt}`).format('DD/MM/YYYY HH:mm')}` : common.dash)
+    render: order => <DateTime value={order.createdAt} />
   },
   {
     key: 'actions',
     title: common.actions,
+    align: 'right',
+    width: 128,
     render: order => (
-      <Group gap={8} wrap="nowrap">
-        <ActionIcon color="teal" aria-label={ordersLocale.open} onClick={() => onOpen(order)}>
-          <IconEye size={16} />
-        </ActionIcon>
-        <ActionIcon color="blue" aria-label={common.updateStatus} onClick={() => onEdit(order)}>
-          <IconPencil size={16} />
-        </ActionIcon>
-        <ActionIcon color="red" aria-label={common.delete} onClick={() => onDelete(order)}>
-          <IconTrash size={16} />
-        </ActionIcon>
+      <Group gap={2} wrap="nowrap" justify="flex-end">
+        <RowAction label={ordersLocale.open} icon={<IconEye size={16} />} onClick={() => onOpen(order)} />
+        <RowAction label={common.updateStatus} icon={<IconPencil size={16} />} onClick={() => onEdit(order)} />
+        <RowAction label={common.delete} icon={<IconTrash size={16} />} onClick={() => onDelete(order)} danger />
       </Group>
     )
   }

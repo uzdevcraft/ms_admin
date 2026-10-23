@@ -1,0 +1,16 @@
+.action {
+  color: var(--app-text-muted);
+
+  &:hover {
+    background: var(--app-surface-hover);
+    color: var(--app-text);
+  }
+}
+
+.danger {
+  &:hover,
+  &:focus-visible {
+    background: light-dark(var(--red-0), rgba(250, 82, 82, 0.14));
+    color: light-dark(var(--red-7), var(--red-4));
+  }
+}

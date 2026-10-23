@@ -7,6 +7,7 @@ import { ErrorAlert } from '@/components/ErrorAlert';
 import { PageHeader } from '@/components/PageHeader';
 import { toast } from '@common/utils';
 import { common, nav, productEditor } from '@/locale/uz';
+import { Constants as AttributeConstants } from '@/modules/attributes';
 import type * as Attributes from '@/modules/attributes/types';
 import { useProductAttributes } from '@/modules/product-attributes';
 import { Constants, Hooks, Validation } from '@modules/products';
@@ -37,11 +38,9 @@ const ProductEditor = () => {
 
   // Checks that need server data: required category attributes and generated variants.
   const beforeSubmit = <T extends CreateFormValues>(values: T, form: UseFormReturn<T>) => {
-    const categoryAttributes = queryClient.getQueryData<Attributes.IQuery.CategoryAttributes>([
-      'attributes',
-      'category',
-      values.categoryId
-    ]);
+    const categoryAttributes = queryClient.getQueryData<Attributes.IQuery.CategoryAttributes>(
+      AttributeConstants.WITH_OPTIONS_QUERY_KEY
+    );
     const errors = Validation.validateExtras(values, categoryAttributes);
     const { setError } = form as unknown as UseFormReturn<CreateFormValues>;
     errors.forEach(error => setError(error.name, { type: 'manual', message: error.message }));

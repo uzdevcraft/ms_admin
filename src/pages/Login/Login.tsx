@@ -2,8 +2,9 @@ import { toast } from '@/common/utils/toast';
 
 import { Button } from '@/components/Button';
 import { Logo } from '@/layouts/components/Logo';
-import { Center, Paper, Space, Stack, Text } from '@mantine/core';
+import { Center, Paper, Space, Stack, Title } from '@mantine/core';
 
+import { login } from '@/locale/uz';
 import { LoginForm } from '@/modules/auth/forms';
 import { Form } from '@/pages/Login/components/form';
 
@@ -19,9 +20,11 @@ const Login = () => {
         >
           {({ isLoading }) => (
             <Stack gap="lg">
-              <Stack align="center" gap={4}>
+              <Stack align="center" gap="md">
                 <Logo />
-                <Text>Admin Panel</Text>
+                <Title order={2} className={classes.title}>
+                  {login.title}
+                </Title>
               </Stack>
 
               <Form />

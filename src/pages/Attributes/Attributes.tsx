@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
-import { Button, Group, Modal, NumberInput, Select, Stack, Switch, Text, TextInput } from '@mantine/core';
+import { Badge, Button, Code, Group, Modal, NumberInput, Select, Stack, Switch, Text, TextInput } from '@mantine/core';
 import { IconPlus, IconX } from '@tabler/icons-react';
 import { modals } from '@mantine/modals';
 
 import { ErrorAlert } from '@/components/ErrorAlert';
 import { PageHeader } from '@/components/PageHeader';
+import { tables } from '@/locale/uz';
 import { Table } from '@/components/Table';
 import getApiError from '@common/utils/getApiError';
 import { toast } from '@/common/utils/toast';
@@ -108,32 +109,69 @@ const Attributes = () => {
 
   const columns = useMemo(
     () => [
-      { key: 'code', title: 'Kod', render: (row: Types.IEntity.AttributeDefinition) => row.code },
-      { key: 'nameUz', title: 'Nomi', render: (row: Types.IEntity.AttributeDefinition) => row.nameUz },
-      { key: 'attributeType', title: 'Turi', render: (row: Types.IEntity.AttributeDefinition) => row.attributeType },
-      { key: 'displayType', title: "Ko'rinish", render: (row: Types.IEntity.AttributeDefinition) => row.displayType },
+      {
+        key: 'code',
+        title: 'Kod',
+        render: (row: Types.IEntity.AttributeDefinition) => <Code fw={600}>{row.code}</Code>
+      },
+      {
+        key: 'nameUz',
+        title: 'Nomi',
+        render: (row: Types.IEntity.AttributeDefinition) => (
+          <Text size="sm" fw={600}>
+            {row.nameUz}
+          </Text>
+        )
+      },
+      {
+        key: 'attributeType',
+        title: 'Turi',
+        render: (row: Types.IEntity.AttributeDefinition) => (
+          <Badge variant="light" color="gray">
+            {row.attributeType}
+          </Badge>
+        )
+      },
+      {
+        key: 'displayType',
+        title: "Ko'rinish",
+        render: (row: Types.IEntity.AttributeDefinition) => (
+          <Badge variant="light" color="gray">
+            {row.displayType}
+          </Badge>
+        )
+      },
       {
         key: 'variant',
         title: 'Variant',
-        render: (row: Types.IEntity.AttributeDefinition) => (row.variant ? 'Ha' : "Yo'q")
+        render: (row: Types.IEntity.AttributeDefinition) => (
+          <Badge variant="dot" color={row.variant ? 'blue' : 'gray'}>
+            {row.variant ? 'Ha' : "Yo'q"}
+          </Badge>
+        )
       },
       {
         key: 'filterable',
         title: 'Filtr',
-        render: (row: Types.IEntity.AttributeDefinition) => (row.filterable ? 'Ha' : "Yo'q")
+        render: (row: Types.IEntity.AttributeDefinition) => (
+          <Badge variant="dot" color={row.filterable ? 'teal' : 'gray'}>
+            {row.filterable ? 'Ha' : "Yo'q"}
+          </Badge>
+        )
       },
       {
         key: 'actions',
         title: 'Amallar',
+        align: 'right' as const,
         render: (row: Types.IEntity.AttributeDefinition) => (
-          <Group gap={8} wrap="nowrap">
-            <Button variant="light" onClick={() => (window.location.href = `/attributes/${row.id}`)}>
+          <Group gap={6} wrap="nowrap" justify="flex-end">
+            <Button size="compact-sm" variant="light" onClick={() => (window.location.href = `/attributes/${row.id}`)}>
               Ochish
             </Button>
-            <Button variant="default" onClick={() => handleEdit(row)}>
+            <Button size="compact-sm" variant="default" onClick={() => handleEdit(row)}>
               Tahrirlash
             </Button>
-            <Button color="red" variant="subtle" onClick={() => handleDelete(row)}>
+            <Button size="compact-sm" color="red" variant="subtle" onClick={() => handleDelete(row)}>
               O'chirish
             </Button>
           </Group>
@@ -170,6 +208,8 @@ const Attributes = () => {
           loading={isLoading}
           rowKey={attribute => attribute.id}
           minWidth={980}
+          title={tables.allAttributes}
+          count={isLoading ? undefined : attributes.length}
           emptyMessage="Hali atribut yo'q"
         />
       )}

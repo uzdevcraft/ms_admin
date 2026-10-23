@@ -14,11 +14,17 @@ type IProps = {
 const Header = ({ collapsed, mobileOpened, onToggleCollapsed, onToggleMobile }: IProps) => {
   return (
     <AppShell.Header className={classes.header}>
-      <Group h="100%" px="md" wrap="nowrap" justify="space-between">
-        <Group wrap="nowrap" gap="sm">
-          <Burger opened={mobileOpened} onClick={onToggleMobile} size="sm" hiddenFrom="sm" />
+      <Group h="100%" px={{ base: 'sm', sm: 'md' }} wrap="nowrap" justify="space-between">
+        <Group wrap="nowrap" gap="md">
+          <Burger opened={mobileOpened} onClick={onToggleMobile} size="sm" hiddenFrom="sm" className={classes.burger} />
 
-          <Burger opened={!collapsed} onClick={onToggleCollapsed} size="sm" visibleFrom="sm" />
+          <Burger
+            opened={!collapsed}
+            onClick={onToggleCollapsed}
+            size="sm"
+            visibleFrom="sm"
+            className={classes.burger}
+          />
 
           <Logo />
         </Group>

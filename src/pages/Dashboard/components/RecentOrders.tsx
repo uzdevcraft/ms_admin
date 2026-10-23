@@ -1,7 +1,8 @@
-import { Badge, Group, Paper, Text, Title } from '@mantine/core';
+import { Avatar, Badge, Group, Text } from '@mantine/core';
+import { IconArrowRight } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
-import dayjs from 'dayjs';
 
+import { DateTime } from '@/components/DateTime';
 import { Table, type TableColumn } from '@/components/Table';
 import formatPrice from '@common/utils/formatPrice';
 import { common, dashboard, orderStatus, orders as ordersLocale } from '@/locale/uz';
@@ -31,8 +32,9 @@ const columns: TableColumn<Types.IEntity.Order>[] = [
   {
     key: 'id',
     title: ordersLocale.orderNumber,
+    nowrap: true,
     render: order => (
-      <Text size="sm" fw={600}>
+      <Text size="sm" className={classes.orderId}>
         #{order.id}
       </Text>
     )
@@ -40,18 +42,34 @@ const columns: TableColumn<Types.IEntity.Order>[] = [
   {
     key: 'userFullName',
     title: ordersLocale.customer,
-    render: order => order.userFullName || common.dash
+    render: order =>
+      order.userFullName ? (
+        <Group gap={10} wrap="nowrap">
+          <Avatar name={order.userFullName} color="initials" size={28} radius="xl" />
+          <Text size="sm" fw={500} lineClamp={1}>
+            {order.userFullName}
+          </Text>
+        </Group>
+      ) : (
+        common.dash
+      )
   },
   {
     key: 'totalAmount',
     title: ordersLocale.total,
-    render: order => formatPrice(order.totalAmount)
+    numeric: true,
+    render: order => (
+      <Text size="sm" fw={600} span>
+        {formatPrice(order.totalAmount)}
+      </Text>
+    )
   },
   {
     key: 'status',
     title: ordersLocale.status,
+    nowrap: true,
     render: order => (
-      <Badge color={STATUS_COLORS[order.status]} radius="sm" variant="outline">
+      <Badge color={STATUS_COLORS[order.status]} variant="dot" size="md">
         {STATUS_LABELS[order.status] || order.status}
       </Badge>
     )
@@ -59,7 +77,7 @@ const columns: TableColumn<Types.IEntity.Order>[] = [
   {
     key: 'createdAt',
     title: ordersLocale.date,
-    render: order => (order.createdAt ? dayjs(order.createdAt).format('DD/MM/YYYY HH:mm') : common.dash)
+    render: order => <DateTime value={order.createdAt} />
   }
 ];
 
@@ -69,30 +87,22 @@ type IProps = {
 
 const RecentOrders = ({ orders }: IProps) => {
   return (
-    <Paper withBorder radius="md" p="md" className={classes.chartCard}>
-      <Group justify="space-between" align="flex-start" mb="md">
-        <div>
-          <Title order={4} mb={4}>
-            {dashboard.recentOrders}
-          </Title>
-          <Text size="sm" c="dimmed">
-            {dashboard.recentOrdersDesc}
-          </Text>
-        </div>
-        <Text component={Link} to="/orders" size="sm" fw={500} className={classes.viewAll}>
+    <Table
+      title={dashboard.recentOrders}
+      description={dashboard.recentOrdersDesc}
+      actions={
+        <Text component={Link} to="/orders" size="sm" fw={600} className={classes.viewAll}>
           {dashboard.viewAllOrders}
+          <IconArrowRight size={14} stroke={2} />
         </Text>
-      </Group>
-
-      <Table
-        columns={columns}
-        data={orders}
-        loading={false}
-        emptyMessage={dashboard.noOrders}
-        rowKey={order => order.id}
-        minWidth={640}
-      />
-    </Paper>
+      }
+      columns={columns}
+      data={orders}
+      loading={false}
+      emptyMessage={dashboard.noOrders}
+      rowKey={order => order.id}
+      minWidth={640}
+    />
   );
 };
 

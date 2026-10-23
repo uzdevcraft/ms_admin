@@ -31,14 +31,6 @@ export declare namespace IApi {
     export type Response = IEntity.AttributeDefinition;
   }
 
-  export namespace ForCategory {
-    /** Attribute set of a category, each definition with its options inline. */
-    export type Response = (IEntity.AttributeDefinition & {
-      required?: boolean;
-      options?: IEntity.AttributeOption[];
-    })[];
-  }
-
   export namespace OptionList {
     export type Response = IEntity.AttributeOption[];
   }
@@ -80,6 +72,7 @@ export declare namespace IEntity {
 
   /** Attribute definition with its options, as used by the product editor. */
   export interface CategoryAttribute extends AttributeDefinition {
+    /** Not sent by the API yet (always false); kept for a future per-category attribute set. */
     required: boolean;
     options: AttributeOption[];
   }
@@ -107,20 +100,11 @@ export declare namespace IQuery {
     attributeDefinitionId: number;
   }
 
-  export interface ForCategory {
-    categoryId: number;
-  }
-
   export interface CategoryAttributes {
     /** Attributes describing the product (Brend, Material, ...). */
     specs: IEntity.CategoryAttribute[];
     /** Attributes that form variants (O'lcham, Rang, ...). */
     variants: IEntity.CategoryAttribute[];
-    /**
-     * `category` — the category's own attribute set from the backend;
-     * `global` — the endpoint isn't available yet, so every attribute is offered.
-     */
-    source: 'category' | 'global';
   }
 }
 

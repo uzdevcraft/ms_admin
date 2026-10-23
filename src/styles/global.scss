@@ -21,9 +21,9 @@ $colors: (dark, gray, red, pink, grape, violet, indigo, blue, cyan, teal, green,
 
   --white: var(--mantine-color-white);
 
-  // active colors
-  --active: var(--mantine-color-blue-6);
-  --active-hover: var(--mantine-color-blue-7);
+  // active colors (brand — see `theme.colors.blue` in src/theme/theme.ts)
+  --active: var(--mantine-primary-color-filled);
+  --active-hover: var(--mantine-primary-color-filled-hover);
 
   @each $color in $colors {
     @for $i from 0 through 9 {
@@ -32,8 +32,102 @@ $colors: (dark, gray, red, pink, grape, violet, indigo, blue, cyan, teal, green,
   }
 }
 
+/*
+ * App design tokens. Every surface/border/text colour in the layout and shared
+ * components comes from here, so light and dark stay in sync. (Defined per
+ * scheme instead of light-dark(): the PostCSS preset can't scope :root rules.)
+ */
+:root {
+  --app-bg: #f5f6fa;
+  --app-surface: var(--white);
+  --app-surface-muted: #f8f9fc;
+  --app-surface-hover: #f2f4f9;
+  --app-border: #e6e8ef;
+  --app-border-strong: #d6d9e3;
+  --app-text: #141824;
+  --app-text-secondary: #4b5263;
+  --app-text-muted: #7a8194;
+  --app-accent-soft: var(--blue-0);
+  --app-accent-text: var(--blue-7);
+  --app-focus-ring: 0 0 0 3px rgba(74, 85, 230, 0.18);
+  --app-header-bg: rgba(255, 255, 255, 0.92);
+  --app-border-hover: var(--gray-5);
+  --app-shadow-dropdown: 0 12px 32px -8px rgba(16, 24, 40, 0.14), 0 2px 6px rgba(16, 24, 40, 0.06);
+
+  --app-radius-card: var(--mantine-radius-lg);
+  --app-shadow-xs: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --app-shadow-button: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 1px 2px rgba(16, 24, 40, 0.18);
+  --app-shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04);
+  --app-shadow-raised: 0 4px 12px -4px rgba(16, 24, 40, 0.1), 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+:root[data-mantine-color-scheme='dark'] {
+  --app-bg: var(--dark-9);
+  --app-surface: var(--dark-7);
+  --app-surface-muted: var(--dark-8);
+  --app-surface-hover: var(--dark-6);
+  --app-border: var(--dark-5);
+  --app-border-strong: var(--dark-4);
+  --app-text: var(--dark-0);
+  --app-text-secondary: var(--dark-1);
+  --app-text-muted: var(--dark-2);
+  --app-accent-soft: rgba(90, 104, 243, 0.16);
+  --app-accent-text: var(--blue-3);
+  --app-focus-ring: 0 0 0 3px rgba(113, 130, 249, 0.3);
+  --app-header-bg: rgba(26, 28, 36, 0.9);
+  --app-border-hover: var(--dark-3);
+  --app-shadow-dropdown: 0 12px 32px -8px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.3);
+
+  --app-shadow-card: none;
+  --app-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --app-shadow-button: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --app-shadow-raised: 0 6px 16px -6px rgba(0, 0, 0, 0.5);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
   font-family: var(--inter);
+  font-feature-settings: 'cv11', 'ss01';
+  color: var(--app-text);
+  background: var(--app-bg);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+// Thin, unobtrusive scrollbars that follow the theme.
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--app-border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: var(--app-border-strong);
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

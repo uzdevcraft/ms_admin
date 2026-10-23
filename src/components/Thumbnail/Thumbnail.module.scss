@@ -1,0 +1,14 @@
+.image {
+  border: 1px solid var(--app-border);
+  background: var(--app-surface-muted);
+}
+
+.placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--app-border-strong);
+  border-radius: var(--mantine-radius-md);
+  color: var(--app-text-muted);
+  background: var(--app-surface-muted);
+}

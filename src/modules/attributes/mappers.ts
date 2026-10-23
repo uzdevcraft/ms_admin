@@ -69,17 +69,8 @@ export const OptionUpdateRequest = (
   ...OptionCreateRequest(values, displayType)
 });
 
-export const CategoryAttribute = (src: unknown): Types.IEntity.CategoryAttribute => ({
-  ...AttributeDefinition(src),
-  required: get(src, 'required', false),
-  options: OptionList(get(src, 'options', []))
-});
-
-export const CategoryAttributes = (
-  items: Types.IEntity.CategoryAttribute[],
-  source: Types.IQuery.CategoryAttributes['source']
-): Types.IQuery.CategoryAttributes => ({
+/** Splits definitions (with their options) into spec attributes and variant axes. */
+export const CategoryAttributes = (items: Types.IEntity.CategoryAttribute[]): Types.IQuery.CategoryAttributes => ({
   specs: items.filter(item => !item.variant),
-  variants: items.filter(item => item.variant),
-  source
+  variants: items.filter(item => item.variant)
 });

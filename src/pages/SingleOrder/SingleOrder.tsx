@@ -59,7 +59,7 @@ const SingleOrder = () => {
         <ErrorAlert isFetching={isFetching} refetch={refetch} />
       ) : isLoading ? (
         <div className={classes.loader}>
-          <Loader color="blue" />
+          <Loader />
         </div>
       ) : !order ? (
         <Text c="dimmed">{ordersLocale.notFound}</Text>
@@ -67,7 +67,7 @@ const SingleOrder = () => {
         <Stack gap="md">
           <Grid>
             <Grid.Col span={{ base: 12, md: 7 }}>
-              <Card className={classes.card} padding="lg" radius="md" withBorder>
+              <Card className={classes.card} padding="lg" withBorder>
                 <Stack gap="sm">
                   <Title order={5}>{ordersLocale.orderInfo}</Title>
 
@@ -75,7 +75,7 @@ const SingleOrder = () => {
                   <Info
                     label={ordersLocale.status}
                     value={
-                      <Badge color={STATUS_COLORS[order.status]} radius="sm" variant="outline">
+                      <Badge color={STATUS_COLORS[order.status]} radius="sm" variant="light">
                         {STATUS_LABELS[order.status] || order.status}
                       </Badge>
                     }
@@ -94,7 +94,7 @@ const SingleOrder = () => {
             </Grid.Col>
 
             <Grid.Col span={{ base: 12, md: 5 }}>
-              <Card className={classes.card} padding="lg" radius="md" withBorder>
+              <Card className={classes.card} padding="lg" withBorder>
                 <Stack gap="sm">
                   <Title order={5}>{ordersLocale.paymentInfo}</Title>
 
@@ -160,19 +160,15 @@ const SingleOrder = () => {
             </Grid.Col>
           </Grid>
 
-          <Card className={classes.card} padding="lg" radius="md" withBorder>
-            <Stack gap="sm">
-              <Title order={5}>{ordersLocale.items}</Title>
-
-              <Table
-                columns={columns}
-                data={order.items}
-                emptyMessage={ordersLocale.noItems}
-                rowKey={item => item.id}
-                minWidth={640}
-              />
-            </Stack>
-          </Card>
+          <Table
+            title={ordersLocale.items}
+            count={order.items.length}
+            columns={columns}
+            data={order.items}
+            emptyMessage={ordersLocale.noItems}
+            rowKey={item => item.id}
+            minWidth={640}
+          />
         </Stack>
       )}
     </PageHeader>

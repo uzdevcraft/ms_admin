@@ -1,6 +1,6 @@
-const HEADER_HEIGHT = 70;
-const SIDEBAR_WIDTH = 250;
-const SIDEBAR_COLLAPSED_WIDTH = 60;
+const HEADER_HEIGHT = 64;
+const SIDEBAR_WIDTH = 248;
+const SIDEBAR_COLLAPSED_WIDTH = 68;
 
 export const layout = {
   header: {

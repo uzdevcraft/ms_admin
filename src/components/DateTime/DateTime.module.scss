@@ -1,0 +1,23 @@
+.root {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.2;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.date {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--app-text);
+}
+
+.time {
+  font-size: 0.75rem;
+  color: var(--app-text-muted);
+}
+
+.empty {
+  color: var(--app-text-muted);
+}

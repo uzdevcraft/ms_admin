@@ -2,13 +2,14 @@ import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
+import { IconPlus } from '@tabler/icons-react';
 
 import { ErrorAlert } from '@/components/ErrorAlert';
 import { PageHeader } from '@/components/PageHeader';
 import { Table } from '@/components/Table';
 import getApiError from '@common/utils/getApiError';
 import { toast } from '@/common/utils/toast';
-import { common, products as productsLocale } from '@/locale/uz';
+import { common, products as productsLocale, tables } from '@/locale/uz';
 import { useDelete, useList } from '@/modules/products/hooks';
 import type * as Types from '@/modules/products/types';
 import { AttributesModal } from '@/pages/Products/components/AttributesModal';
@@ -62,7 +63,11 @@ const Products = () => {
     <PageHeader
       title={productsLocale.title}
       description={productsLocale.description}
-      actions={<Button onClick={() => navigate('/products/new')}>{productsLocale.add}</Button>}
+      actions={
+        <Button leftSection={<IconPlus size={16} stroke={2} />} onClick={() => navigate('/products/new')}>
+          {productsLocale.add}
+        </Button>
+      }
     >
       {isError ? (
         <ErrorAlert isFetching={isFetching} refetch={refetch} />
@@ -74,6 +79,8 @@ const Products = () => {
           emptyMessage="Mahsulotlar topilmadi"
           rowKey={product => product.id}
           minWidth={860}
+          title={tables.allProducts}
+          count={isLoading ? undefined : products.length}
         />
       )}
 

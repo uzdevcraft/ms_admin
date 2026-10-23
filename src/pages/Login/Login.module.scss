@@ -2,16 +2,33 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
   min-height: 100vh;
-  background-color: light-dark(var(--gray-1), var(--dark-9));
+  padding: 16px;
+  background-color: var(--app-bg);
+  // A faint brand-tinted halo behind the card; no imagery, no motion.
+  background-image: radial-gradient(
+    60rem 32rem at 50% -10%,
+    light-dark(rgba(74, 85, 230, 0.1), rgba(90, 104, 243, 0.16)),
+    transparent 70%
+  );
 }
 
 .paper {
-  width: 400px;
+  width: 420px;
   max-width: 100%;
-  padding: 30px 20px;
-  border-radius: 12px;
-  border: 1px solid light-dark(var(--gray-3), var(--gray-8));
-  background-color: light-dark(var(--white), var(--dark-8));
+  padding: 36px 32px 32px;
+  border: 1px solid var(--app-border);
+  border-radius: var(--mantine-radius-xl);
+  background-color: var(--app-surface);
+  box-shadow: var(--mantine-shadow-lg);
+
+  @media (max-width: 480px) {
+    padding: 28px 20px 24px;
+  }
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: center;
 }

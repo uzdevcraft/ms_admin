@@ -8,6 +8,8 @@ import {
 } from '@tabler/icons-react';
 import { Group, Paper, SimpleGrid, Text, ThemeIcon } from '@mantine/core';
 
+import cx from 'clsx';
+
 import formatPrice from '@common/utils/formatPrice';
 import { dashboard } from '@/locale/uz';
 
@@ -67,19 +69,26 @@ const Stats = ({ stats }: IProps) => {
   return (
     <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }} spacing="md">
       {STAT_CARDS.map(({ key, label, icon: Icon, color }) => (
-        <Paper key={key} withBorder radius="md" p="md" className={classes.statCard}>
-          <Group justify="space-between" align="flex-start" mb="sm">
+        <Paper
+          key={key}
+          withBorder
+          p="lg"
+          className={cx(classes.statCard, key === 'totalRevenue' && classes.statCardPrimary)}
+        >
+          <Group justify="space-between" align="center" wrap="nowrap" mb="md">
             <Text className={classes.statLabel}>{label}</Text>
-            <ThemeIcon variant="outline" color={color} radius="md" size="lg">
-              <Icon size={18} />
+            <ThemeIcon variant="light" color={color} radius="md" size={36}>
+              <Icon size={18} stroke={1.75} />
             </ThemeIcon>
           </Group>
           <Text className={classes.statValue}>{formatStatValue(key, stats)}</Text>
           {key === 'totalRevenue' && stats.averageOrderValue > 0 ? (
-            <Text size="xs" c="dimmed" mt={6}>
-              <IconReceipt2 size={12} style={{ display: 'inline', verticalAlign: 'middle' }} /> {dashboard.averageOrder}
-              : {formatPrice(stats.averageOrderValue)} UZS
-            </Text>
+            <Group gap={6} mt={8} wrap="nowrap" className={classes.statMeta}>
+              <IconReceipt2 size={14} stroke={1.75} />
+              <span>
+                {dashboard.averageOrder}: {formatPrice(stats.averageOrderValue)} UZS
+              </span>
+            </Group>
           ) : null}
         </Paper>
       ))}

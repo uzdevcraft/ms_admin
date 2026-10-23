@@ -10,7 +10,7 @@ is ready, the backend must add it.
 
 ## 1. Categories — hierarchy and commission (new fields)
 
-`GET /categories` — each item gets three optional fields:
+`GET /categories` — `CategoryResponse` has none of these yet; each item would get three optional fields:
 
 | Field               | Type             | Meaning                                                  |
 | ------------------- | ---------------- | -------------------------------------------------------- |
@@ -22,41 +22,30 @@ Without `parentId` every category is shown as one flat level. Without
 `commissionPercent` the profit preview uses 12 % (`DEFAULT_COMMISSION_PERCENT`
 in `src/modules/products/constants.ts`).
 
-## 2. Category attribute set (new endpoint)
+## 2. Attributes (exists) and per-category attribute set (new)
 
-`GET /categories/{categoryId}/attributes`
+Used now — checked against Swagger (`/v3/api-docs`):
 
-```json
-[
-  {
-    "id": 10,
-    "code": "BRAND",
-    "nameUz": "Brend",
-    "nameRu": "Бренд",
-    "attributeType": "TEXT",
-    "displayType": "DROPDOWN",
-    "variant": false,
-    "filterable": true,
-    "required": true,
-    "options": [{ "id": 1, "valueUz": "Samsung", "valueRu": null, "sortOrder": 1, "metaJson": null }]
-  }
-]
-```
+- `GET /attribute-definition` — all definitions (`variant`, `attributeType`, `displayType`).
+- `GET /attribute-options/{attributeDefinitionId}` — options of one definition.
+- `POST /attribute-definition`, `PUT|DELETE /attribute-definition/{id}`,
+  `POST /attribute-options/{attributeDefinitionId}`, `PUT|DELETE /admin/attribute-options/{id}`
+  — used by the Attributes admin page (same `attributes` module).
 
-- `variant: false` → shown in section 02 (Brend, Material, Mavsum, …).
-- `variant: true` → variant axes in section 03 (O'lcham, Rang, …).
-- `required` → the field is marked `*` and checked before saving.
-- For `TEXT` attributes, `options` are used as autocomplete suggestions.
-- For `SWATCH` options, `metaJson.colorHex` is the colour shown in the chip.
+`variant: false` definitions fill section 02, `variant: true` ones become the
+variant axes in section 03. For `TEXT` attributes the options are autocomplete
+suggestions; for `SWATCH` options `metaJson.colorHex` is the chip colour.
 
-Until this endpoint exists (404/405/501), the editor falls back to
-`GET /admin/attributes` + `GET /admin/attributes/{id}/options` and shows every
-attribute, with none required.
+Not in the API yet: a per-category attribute set with a `required` flag, e.g.
+`GET /categories/{categoryId}/attributes` returning definitions + `required` +
+`options`. Until then every definition is shown for every category and none is
+required.
 
 ## 3. Create / update product (new fields in the body)
 
-`POST /products` and `PUT /products/{id}` (**exists**) — the body keeps every
-current field and adds:
+`POST /products` and `PUT /products/{id}` (**exists**) — both respond with the
+product id (`int64`). The body (`ProductRequest`) keeps every current field and
+the frontend also sends these, which the current `ProductRequest` doesn't have:
 
 | Field           | Type                 | Notes                                                       |
 | --------------- | -------------------- | ----------------------------------------------------------- |
@@ -105,8 +94,9 @@ After the product is saved, generated variants go to
 
 ## 5. Images (exists)
 
-`POST /files/upload-multiple` (form field `files`). The response may be an
-array of URLs or of objects with `url` / `fileUrl` / `path` / `link`.
+`POST /files/upload-multiple` — multipart field `file` (repeated), optional
+`minWidth` / `minHeight` query params, responds with `ResourceFileDto[]`
+(`{ fileId, url }`).
 
 ## 6. Recommendations already used (exists)
 

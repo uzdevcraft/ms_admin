@@ -18,16 +18,19 @@ const useUpdate = () => {
 
   return useMutation({
     mutationFn: async ({ id, values }: UpdateVariables) => {
-      const { data } = await Api.Update(Mappers.UpdateRequest(id, values));
+      const request = Mappers.UpdateRequest(id, values);
+      const { data } = await Api.Update(request);
+      const productId = Mappers.Id(data) || id;
 
       if (values.variants.length) {
         await ProductAttributesApi.SaveProductVariants({
-          productId: id,
+          productId,
           request: ProductAttributesMappers.SaveVariantsRequest(Mappers.VariantsRequest(values))
         });
       }
 
-      return Mappers.Product(data ?? { ...values, id });
+      // The API returns only the id; build the entity from what was sent.
+      return Mappers.Product({ ...request, id: productId });
     },
     onSuccess: (_, { id, values }) => {
       queryClient.invalidateQueries({ queryKey: ['products', 'list'] });

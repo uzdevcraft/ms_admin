@@ -28,7 +28,7 @@ export default function MainLayout() {
         breakpoint: 'sm',
         collapsed: { mobile: !mobileOpened }
       }}
-      padding="md"
+      padding={{ base: 'sm', sm: 'lg' }}
       transitionDuration={200}
       classNames={{ root: classes.shell }}
     >

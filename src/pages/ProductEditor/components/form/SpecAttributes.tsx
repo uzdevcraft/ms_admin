@@ -10,16 +10,14 @@ import classes from './Form.module.css';
 
 type IProps = {
   categoryId: number;
-  /** "Kiyim → Ko'ylak-liboslar" */
-  categoryLabel: string;
   data?: Attributes.IQuery.CategoryAttributes;
   isLoading: boolean;
   isError: boolean;
   onRetry: () => void;
 };
 
-/** Section 02: attributes of the chosen category, loaded from the backend. */
-const SpecAttributes = ({ categoryId, categoryLabel, data, isLoading, isError, onRetry }: IProps) => {
+/** Section 02: spec attributes from `GET /attribute-definition` with their options. */
+const SpecAttributes = ({ categoryId, data, isLoading, isError, onRetry }: IProps) => {
   if (!categoryId) {
     return (
       <div className={cx(classes.banner, classes.bannerMuted)}>
@@ -54,11 +52,7 @@ const SpecAttributes = ({ categoryId, categoryLabel, data, isLoading, isError, o
     <>
       <div className={classes.banner}>
         <IconBolt size={18} className={classes.bannerIcon} />
-        <span>
-          {data.source === 'category'
-            ? productEditor.specsBannerCategory(categoryLabel)
-            : productEditor.specsBannerGlobal}
-        </span>
+        <span>{productEditor.specsBanner}</span>
       </div>
 
       {data.specs.length ? (

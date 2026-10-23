@@ -10,9 +10,10 @@
   flex-direction: column;
   gap: 20px;
   padding: 24px;
-  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
-  border-radius: var(--mantine-radius-md);
-  background: light-dark(var(--white), var(--dark-7));
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-card);
+  background: var(--app-surface);
+  box-shadow: var(--app-shadow-card);
 
   @media (max-width: 576px) {
     padding: 16px;
@@ -25,7 +26,7 @@
   justify-content: space-between;
   gap: 12px;
   padding-bottom: 16px;
-  border-bottom: 1px solid light-dark(var(--gray-3), var(--dark-4));
+  border-bottom: 1px solid var(--app-border);
 }
 
 .sectionTitle {
@@ -34,7 +35,7 @@
   gap: 12px;
   font-size: 18px;
   font-weight: 600;
-  color: light-dark(var(--gray-9), var(--gray-0));
+  color: var(--app-text);
 }
 
 .sectionNumber {
@@ -46,8 +47,8 @@
   border-radius: var(--mantine-radius-md);
   font-size: 0.75rem;
   font-weight: 600;
-  color: light-dark(var(--blue-7), var(--blue-3));
-  background: light-dark(var(--blue-0), rgba(34, 139, 230, 0.15));
+  color: var(--app-accent-text);
+  background: var(--app-accent-soft);
 }
 
 .fieldBody {
@@ -59,7 +60,7 @@
   margin-left: 6px;
   font-size: 0.75rem;
   font-weight: 400;
-  color: light-dark(var(--gray-6), var(--gray-5));
+  color: var(--app-text-muted);
 }
 
 .labelRow {
@@ -83,12 +84,12 @@
   align-items: center;
   gap: 8px;
   font-size: 0.875rem;
-  color: light-dark(var(--gray-6), var(--gray-5));
+  color: var(--app-text-muted);
 }
 
 .pathCurrent {
   font-weight: 600;
-  color: light-dark(var(--gray-9), var(--gray-0));
+  color: var(--app-text);
 }
 
 .hint {
@@ -108,13 +109,13 @@
   font-size: 0.875rem;
   line-height: 1.5;
   color: light-dark(var(--blue-9), var(--blue-2));
-  background: light-dark(var(--blue-0), rgba(34, 139, 230, 0.12));
+  background: var(--app-accent-soft);
 }
 
 .bannerMuted {
-  color: light-dark(var(--gray-7), var(--gray-4));
-  background: light-dark(var(--gray-0), var(--dark-6));
-  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
+  color: var(--app-text-secondary);
+  background: var(--app-surface-muted);
+  border: 1px solid var(--app-border);
 }
 
 .bannerIcon {
@@ -135,12 +136,12 @@
   gap: 8px;
   min-height: 36px;
   padding: 0 14px;
-  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
+  border: 1px solid var(--app-border);
   border-radius: var(--mantine-radius-md);
   font-size: 0.875rem;
   font-weight: 500;
-  color: light-dark(var(--gray-7), var(--gray-3));
-  background: light-dark(var(--white), var(--dark-6));
+  color: var(--app-text-secondary);
+  background: var(--app-surface);
   cursor: pointer;
   transition:
     background 120ms ease,
@@ -179,7 +180,7 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 1px solid light-dark(var(--gray-4), var(--dark-3));
+  border: 1px solid var(--app-border-strong);
 }
 
 .chip.chipError {
@@ -207,7 +208,7 @@
   gap: 6px;
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px dashed light-dark(var(--gray-3), var(--dark-4));
+  border-top: 1px dashed var(--app-border);
   font-size: 0.8rem;
 }
 
@@ -215,7 +216,7 @@
   display: flex;
   justify-content: space-between;
   gap: 8px;
-  color: light-dark(var(--gray-6), var(--gray-5));
+  color: var(--app-text-muted);
 
   & > span:last-child {
     white-space: nowrap;
@@ -224,7 +225,7 @@
 
 .breakdownStrong {
   font-weight: 600;
-  color: light-dark(var(--gray-9), var(--gray-0));
+  color: var(--app-text);
 }
 
 .negative {
@@ -237,7 +238,7 @@
 }
 
 .variantTable {
-  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
+  border: 1px solid var(--app-border);
   border-radius: var(--mantine-radius-md);
   overflow-x: auto;
 }
@@ -255,8 +256,8 @@
   height: 120px;
   border-radius: var(--mantine-radius-md);
   overflow: hidden;
-  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
-  background: light-dark(var(--gray-0), var(--dark-6));
+  border: 1px solid var(--app-border);
+  background: var(--app-surface-muted);
 
   &:hover .imageActions {
     opacity: 1;
@@ -291,11 +292,11 @@
   gap: 6px;
   width: 120px;
   height: 120px;
-  border: 1px dashed light-dark(var(--gray-4), var(--dark-3));
+  border: 1px dashed var(--app-border-strong);
   border-radius: var(--mantine-radius-md);
   font-size: 0.875rem;
-  color: light-dark(var(--gray-6), var(--gray-5));
-  background: light-dark(var(--gray-0), var(--dark-6));
+  color: var(--app-text-muted);
+  background: var(--app-surface-muted);
   cursor: pointer;
 
   &:hover {
@@ -325,27 +326,27 @@
   justify-content: space-between;
   gap: 12px;
   padding: 16px 20px;
-  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
+  border: 1px solid var(--app-border);
   border-radius: var(--mantine-radius-md);
-  background: light-dark(var(--gray-0), var(--dark-6));
+  background: var(--app-surface-muted);
 }
 
 .channelTitle {
   font-weight: 600;
-  color: light-dark(var(--gray-9), var(--gray-0));
+  color: var(--app-text);
 }
 
 .channelHint {
   font-size: 0.8rem;
-  color: light-dark(var(--gray-6), var(--gray-5));
+  color: var(--app-text-muted);
 }
 
 /* ---------- similar products ---------- */
 .similar {
   padding: 8px 12px;
-  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
+  border: 1px solid var(--app-border);
   border-radius: var(--mantine-radius-md);
-  background: light-dark(var(--gray-0), var(--dark-6));
+  background: var(--app-surface-muted);
 }
 
 .similarTitle {
@@ -353,7 +354,7 @@
   font-size: 0.75rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: light-dark(var(--gray-6), var(--gray-5));
+  color: var(--app-text-muted);
 }
 
 .similarItem {
@@ -364,7 +365,7 @@
 }
 
 .similarItem + .similarItem {
-  border-top: 1px solid light-dark(var(--gray-3), var(--dark-4));
+  border-top: 1px solid var(--app-border);
 }
 
 .similarText {

@@ -6,25 +6,25 @@
 }
 
 .card {
-  background: light-dark(var(--white), var(--dark-6));
   height: 100%;
 }
 
 .label {
-  font-size: 0.8rem;
-  color: light-dark(var(--gray-6), var(--dark-2));
+  font-size: 0.8125rem;
+  color: var(--app-text-muted);
 }
 
 .receipt {
   max-height: 320px;
   cursor: zoom-in;
-  border: 1px solid light-dark(var(--gray-3), var(--dark-4));
+  border: 1px solid var(--app-border);
   border-radius: var(--mantine-radius-md);
 }
 
 .value {
   font-size: 0.875rem;
   font-weight: 500;
+  font-variant-numeric: tabular-nums;
   text-align: right;
   word-break: break-word;
 }

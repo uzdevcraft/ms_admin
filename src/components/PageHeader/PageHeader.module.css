@@ -1,21 +1,24 @@
 .pageHeader {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 0;
   gap: 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0;
 }
 
 .breadcrumbs {
-  /* Pulls the trail closer to the title than the container's 20px gap. */
-  margin-bottom: -12px;
+  /* Pulls the trail closer to the title than the container's gap. */
+  margin-bottom: -10px;
 }
 
 .content {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  /* border: 1px solid red; */
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 4px;
 }
 
 .titleContent {
@@ -23,23 +26,34 @@
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  gap: 4px;
+  gap: 6px;
+  min-width: 0;
 }
 
 .title {
-  font-size: 30px;
-  font-weight: 600;
+  font-size: 1.625rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  color: var(--app-text);
 
   @media (max-width: 768px) {
-    font-size: 20px;
+    font-size: 1.375rem;
   }
 
   @media (max-width: 480px) {
-    font-size: 16px;
+    font-size: 1.25rem;
   }
 }
 
 .description {
-  font-size: 14px;
-  color: light-dark(var(--gray-6), var(--gray-5));
+  max-width: 720px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--app-text-muted);
+}
+
+.actions {
+  flex-shrink: 0;
+  gap: 8px;
 }

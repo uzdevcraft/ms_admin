@@ -1,12 +1,13 @@
-import { ActionIcon, Badge, Group, Text } from '@mantine/core';
+import { Badge, Group, Text } from '@mantine/core';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
 
-import { ImagePreview } from '@/components/ImagePreview';
+import { DateTime } from '@/components/DateTime';
+import { RowAction } from '@/components/RowAction';
 import type { TableColumn } from '@/components/Table';
+import { Thumbnail } from '@/components/Thumbnail';
 import mediaUrl from '@common/utils/mediaUrl';
 import { categories as categoriesLocale, common } from '@/locale/uz';
 import type * as Types from '@/modules/categories/types';
-import dayjs from 'dayjs';
 
 type CategoryColumnsOptions = {
   onEdit: (category: Types.IEntity.Category) => void;
@@ -21,25 +22,18 @@ export const getCategoryColumns = ({
     key: 'imageUrl',
     title: '',
     width: 64,
-    render: category =>
-      category.imageUrl ? (
-        <ImagePreview src={mediaUrl(category.imageUrl)} alt={category.name} w={40} h={40} radius="sm" fit="cover" />
-      ) : (
-        <Text c="dimmed" size="sm">
-          {common.dash}
-        </Text>
-      )
+    render: category => <Thumbnail src={category.imageUrl ? mediaUrl(category.imageUrl) : ''} alt={category.name} />
   },
   {
     key: 'name',
     title: categoriesLocale.category,
     render: category => (
       <div>
-        <Text fw={500} size="sm">
+        <Text fw={600} size="sm" lineClamp={1}>
           {category.name || common.dash}
         </Text>
         {category.description ? (
-          <Text c="dimmed" size="xs" lineClamp={1} maw={240}>
+          <Text c="dimmed" size="xs" lineClamp={1} maw={320}>
             {category.description}
           </Text>
         ) : null}
@@ -49,13 +43,14 @@ export const getCategoryColumns = ({
   {
     key: 'sortOrder',
     title: categoriesLocale.sortOrder,
-    align: 'center'
+    numeric: true
   },
   {
     key: 'isActive',
     title: categoriesLocale.status,
+    nowrap: true,
     render: category => (
-      <Badge color={category.isActive ? 'teal' : 'gray'} radius="sm" variant="outline">
+      <Badge color={category.isActive ? 'teal' : 'gray'} variant="dot" size="md">
         {category.isActive ? common.active : common.inactive}
       </Badge>
     )
@@ -63,20 +58,17 @@ export const getCategoryColumns = ({
   {
     key: 'createdAt',
     title: categoriesLocale.created,
-    render: category =>
-      category.createdAt ? `${dayjs(`${category.createdAt}`).format('DD/MM/YYYY HH:mm')}` : common.dash
+    render: category => <DateTime value={category.createdAt} />
   },
   {
     key: 'actions',
     title: common.actions,
+    align: 'right',
+    width: 96,
     render: category => (
-      <Group gap={8} wrap="nowrap">
-        <ActionIcon color="blue" aria-label={common.edit} onClick={() => onEdit(category)}>
-          <IconPencil size={16} />
-        </ActionIcon>
-        <ActionIcon color="red" aria-label={common.delete} onClick={() => onDelete(category)}>
-          <IconTrash size={16} />
-        </ActionIcon>
+      <Group gap={2} wrap="nowrap" justify="flex-end">
+        <RowAction label={common.edit} icon={<IconPencil size={16} />} onClick={() => onEdit(category)} />
+        <RowAction label={common.delete} icon={<IconTrash size={16} />} onClick={() => onDelete(category)} danger />
       </Group>
     )
   }

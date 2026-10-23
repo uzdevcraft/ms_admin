@@ -1,13 +1,14 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Button, Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
+import { IconPlus } from '@tabler/icons-react';
 
 import { ErrorAlert } from '@/components/ErrorAlert';
 import { PageHeader } from '@/components/PageHeader';
 import { Table } from '@/components/Table';
 import getApiError from '@common/utils/getApiError';
 import { toast } from '@/common/utils/toast';
-import { categories as categoriesLocale, common } from '@/locale/uz';
+import { categories as categoriesLocale, common, tables } from '@/locale/uz';
 import { useDelete, useList } from '@/modules/categories/hooks';
 import type * as Types from '@/modules/categories/types';
 import { Create, Update } from '@/pages/Categories/Form';
@@ -60,7 +61,11 @@ const Categories = () => {
     <PageHeader
       title={categoriesLocale.title}
       description={categoriesLocale.description}
-      actions={<Button onClick={() => setCreateOpen(true)}>{categoriesLocale.add}</Button>}
+      actions={
+        <Button leftSection={<IconPlus size={16} stroke={2} />} onClick={() => setCreateOpen(true)}>
+          {categoriesLocale.add}
+        </Button>
+      }
     >
       {isError ? (
         <ErrorAlert isFetching={isFetching} refetch={refetch} />
@@ -72,6 +77,8 @@ const Categories = () => {
           emptyMessage="Kategoriyalar topilmadi"
           rowKey={category => category.id}
           minWidth={720}
+          title={tables.allCategories}
+          count={isLoading ? undefined : categories.length}
         />
       )}
 

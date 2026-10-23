@@ -1,22 +1,24 @@
 .breadcrumbs {
   flex-wrap: wrap;
-  font-size: 13px;
-  color: light-dark(var(--gray-3), var(--dark-2));
+  font-size: 0.8125rem;
+  color: var(--app-text-muted);
 }
 
 .link {
-  font-size: 13px;
-  color: light-dark(var(--gray-6), var(--dark-2));
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--app-text-muted);
   text-decoration: none;
+  transition: color 120ms ease;
 
   &:hover {
-    color: var(--active);
+    color: var(--app-accent-text);
     text-decoration: none;
   }
 }
 
 .current {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
-  color: light-dark(var(--gray-9), var(--gray-3));
+  color: var(--app-text-secondary);
 }

@@ -4,9 +4,9 @@ import { nav } from '@/locale/uz';
 import type { NavItem } from '@/layouts/types';
 
 export const NAV_ITEMS: NavItem[] = [
-  { to: '/', label: nav.dashboard, icon: IconLayoutDashboard },
-  { to: '/products', label: nav.products, icon: IconPackage },
-  { to: '/categories', label: nav.categories, icon: IconCategory },
-  { to: '/attributes', label: 'Atributlar', icon: IconList },
-  { to: '/orders', label: nav.orders, icon: IconShoppingCart }
+  { to: '/', label: nav.dashboard, icon: IconLayoutDashboard, group: nav.groups.overview },
+  { to: '/products', label: nav.products, icon: IconPackage, group: nav.groups.catalog },
+  { to: '/categories', label: nav.categories, icon: IconCategory, group: nav.groups.catalog },
+  { to: '/attributes', label: 'Atributlar', icon: IconList, group: nav.groups.catalog },
+  { to: '/orders', label: nav.orders, icon: IconShoppingCart, group: nav.groups.sales }
 ];

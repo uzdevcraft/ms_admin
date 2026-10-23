@@ -42,7 +42,8 @@ export declare namespace IApi {
       attributes: AttributeValue[];
     }
 
-    export type Response = IEntity.Product;
+    /** Id of the created product. */
+    export type Response = number;
   }
 
   export namespace Update {
@@ -51,7 +52,8 @@ export declare namespace IApi {
       newId?: number;
     }
 
-    export type Response = IEntity.Product;
+    /** Id of the updated product. */
+    export type Response = number;
   }
 
   export namespace Search {

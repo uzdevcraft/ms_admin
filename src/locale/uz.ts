@@ -29,7 +29,20 @@ export const common = {
   id: 'ID'
 } as const;
 
+export const tables = {
+  allProducts: 'Barcha mahsulotlar',
+  allCategories: "Barcha bo'limlar",
+  allOrders: 'Barcha buyurtmalar',
+  allAttributes: 'Barcha atributlar',
+  orderItems: 'Buyurtma tarkibi'
+} as const;
+
 export const nav = {
+  groups: {
+    overview: 'Umumiy',
+    catalog: 'Katalog',
+    sales: 'Savdo'
+  },
   dashboard: 'Asosiy',
   products: 'Mahsulotlar',
   categories: "Bo'limlar",
@@ -158,10 +171,8 @@ export const productEditor = {
   specsLoading: 'Xususiyatlar yuklanmoqda…',
   specsEmpty: "Bu kategoriya uchun qo'shimcha xususiyatlar yo'q.",
   specsError: "Xususiyatlarni yuklab bo'lmadi",
-  specsBannerCategory: (path: string) =>
-    `Maydonlar ${path} uchun serverdan keladi (kategoriyaning atribut to'plami). Boshqa kategoriya tanlansa, maydonlar o'zgaradi va avvalgi javoblar tozalanadi. * — majburiy. Narx, ombor va variantlar bu yerda emas — 03-bo'limda.`,
-  specsBannerGlobal:
-    "Kategoriyaga biriktirilgan atribut to'plami serverda hali yo'q, shuning uchun barcha xususiyatlar ko'rsatilmoqda. Narx, ombor va variantlar — 03-bo'limda.",
+  specsBanner:
+    "Maydonlar serverdagi atributlar ro'yxatidan keladi. Kategoriya o'zgarsa, avvalgi javoblar tozalanadi. Narx, ombor va variantlar — 3-bo'limda.",
   textPlaceholder: (name: string) => `Masalan: ${name}`,
   yes: 'Ha',
   no: "Yo'q",

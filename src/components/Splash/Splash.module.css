@@ -1,5 +1,5 @@
 .wrapper {
-  background: light-dark(var(--white), var(--dark-7));
+  background: var(--app-surface);
   width: 100%;
   height: 100%;
   position: fixed;

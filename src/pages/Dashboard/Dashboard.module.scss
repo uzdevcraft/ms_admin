@@ -9,36 +9,151 @@
   min-height: 280px;
 }
 
+/* ---------- KPI cards ---------- */
 .statCard {
-  background: light-dark(var(--white), var(--dark-6));
-  transition: box-shadow 0.15s ease;
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: var(--app-border-strong);
+    box-shadow: var(--app-shadow-raised);
+  }
+}
+
+.statCardPrimary {
+  border-color: light-dark(var(--blue-2), rgba(113, 130, 249, 0.35));
+  background: light-dark(linear-gradient(180deg, var(--blue-0) 0%, var(--white) 70%), rgba(90, 104, 243, 0.08));
 }
 
 .statLabel {
-  font-weight: 600;
-  font-size: 0.75rem;
-  color: light-dark(var(--gray-6), var(--gray-5));
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--app-text-muted);
 }
 
 .statValue {
   font-size: 1.75rem;
   font-weight: 700;
-  color: light-dark(var(--gray-9), var(--gray-0));
-  line-height: 1.2;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  font-variant-numeric: tabular-nums;
+  color: var(--app-text);
 }
 
+.statMeta {
+  font-size: 0.75rem;
+  color: var(--app-text-muted);
+}
+
+/* ---------- chart cards ---------- */
 .chartCard {
-  background: light-dark(var(--white), var(--dark-6));
-  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 340px;
+}
+
+.cardHeader {
+  margin-bottom: 16px;
+}
+
+.cardTitle {
+  margin-bottom: 2px;
+  font-size: 0.9375rem;
+  font-weight: 650;
+}
+
+.cardDescription {
+  font-size: 0.8125rem;
+  color: var(--app-text-muted);
+}
+
+.chartBody {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Donut + legend */
+.donutLayout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.donutLabel {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: pre-line;
+  fill: var(--app-text);
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  list-style: none;
+}
+
+.legendItem {
+  display: grid;
+  grid-template-columns: 10px 1fr auto 40px;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8125rem;
+}
+
+.legendSwatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.legendName {
+  color: var(--app-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.legendValue {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--app-text);
+}
+
+.legendShare {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--app-text-muted);
+}
+
+.empty {
+  padding: 48px 0;
+  font-size: 0.875rem;
+  text-align: center;
+  color: var(--app-text-muted);
 }
 
 .viewAll {
-  color: light-dark(var(--blue-6), var(--blue-4));
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  color: var(--app-accent-text);
   text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
-.viewAll:hover {
-  text-decoration: underline;
+.orderId {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--app-text-secondary);
 }

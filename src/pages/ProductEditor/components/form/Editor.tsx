@@ -38,7 +38,8 @@ const Editor = () => {
   const index = useMemo(() => Tree.buildIndex(categories?.data ?? []), [categories]);
   const path = useMemo(() => Tree.pathTo(index, categoryId), [index, categoryId]);
 
-  const attributes = AttributeHooks.useForCategory(categoryId);
+  // Loaded once a category is chosen; the API has no per-category attribute set yet.
+  const attributes = AttributeHooks.useWithOptions(categoryId > 0);
   const suggestions = Hooks.useSuggestions({ name, categoryId, excludeId: id || undefined });
 
   const commissionCategory = [...path].reverse().find(item => item.commissionPercent !== null);
@@ -97,7 +98,6 @@ const Editor = () => {
       <Section number={2} title={productEditor.specs}>
         <SpecAttributes
           categoryId={categoryId}
-          categoryLabel={Tree.pathLabel(path.slice(-2), ' → ')}
           data={attributes.data}
           isLoading={attributes.isLoading}
           isError={attributes.isError}

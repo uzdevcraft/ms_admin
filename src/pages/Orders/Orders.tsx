@@ -8,7 +8,7 @@ import { PageHeader } from '@/components/PageHeader';
 import { Table } from '@/components/Table';
 import getApiError from '@common/utils/getApiError';
 import { toast } from '@/common/utils/toast';
-import { common, orders as ordersLocale } from '@/locale/uz';
+import { common, orders as ordersLocale, tables } from '@/locale/uz';
 import { filterDefaultValues, type FilterFormValues } from '@/modules/orders/forms';
 import { useDelete, useList } from '@/modules/orders/hooks';
 import type * as Types from '@/modules/orders/types';
@@ -67,16 +67,18 @@ const Orders = () => {
 
   return (
     <PageHeader title={ordersLocale.title} description={ordersLocale.description}>
-      <div className={classes.container}>
-        <div className={classes.content}>
-          <Filter values={filters} onFilter={setFilters} />
-        </div>
-      </div>
-
       {isError ? (
-        <ErrorAlert isFetching={isFetching} refetch={refetch} />
+        <>
+          <div className={classes.content}>
+            <Filter values={filters} onFilter={setFilters} />
+          </div>
+          <ErrorAlert isFetching={isFetching} refetch={refetch} />
+        </>
       ) : (
         <Table
+          title={tables.allOrders}
+          count={isLoading ? undefined : orders.length}
+          toolbar={<Filter values={filters} onFilter={setFilters} />}
           data={orders}
           minWidth={900}
           columns={columns}

@@ -57,7 +57,7 @@ const Dashboard = () => {
         <ErrorAlert isFetching={isFetching} refetch={refetch} />
       ) : isLoading ? (
         <div className={classes.loader}>
-          <Loader color="blue" />
+          <Loader />
         </div>
       ) : (
         <Stack gap="md" className={classes.content}>

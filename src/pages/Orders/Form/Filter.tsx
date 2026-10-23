@@ -1,3 +1,5 @@
+import { IconFilter, IconX } from '@tabler/icons-react';
+
 import { Button } from '@/components/Button';
 
 import { FilterForm, filterDefaultValues, type FilterFormValues } from '@/modules/orders/forms';
@@ -17,12 +19,14 @@ const Filter = ({ values, onFilter }: IProps) => {
         <>
           <Form />
 
-          <Button type="submit" title="Qidirish" />
+          <Button type="submit" title="Qidirish" leftSection={<IconFilter size={16} stroke={1.75} />} />
 
           {watch('status') ? (
             <Button
               title="Tozalash"
-              variant="default"
+              variant="subtle"
+              color="gray"
+              leftSection={<IconX size={16} stroke={1.75} />}
               onClick={() => {
                 reset(filterDefaultValues);
                 onFilter(filterDefaultValues);

@@ -13,8 +13,10 @@ const useCreate = () => {
 
   return useMutation({
     mutationFn: async (values: Types.IForm.Create) => {
-      const { data } = await Api.Create(Mappers.CreateRequest(values));
-      const product = Mappers.Product(data);
+      const request = Mappers.CreateRequest(values);
+      const { data } = await Api.Create(request);
+      // The API returns only the new id; build the entity from what was sent.
+      const product = Mappers.Product({ ...request, id: Mappers.Id(data) });
 
       if (values.variants.length && product.id) {
         await ProductAttributesApi.SaveProductVariants({
