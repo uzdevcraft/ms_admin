@@ -10,7 +10,7 @@ export const validateVariants = (groups: ProductAttributeGroup[], variants: Vari
   const combinations = new Set<string>();
 
   for (const [index, variant] of variants.entries()) {
-    if (!variant.sku.trim()) return `${index + 1}-variant uchun SKU kiriting`;
+    if (!variant.sku?.trim()) return `${index + 1}-variant uchun SKU kiriting`;
 
     if (groups.some(group => !variant.selectedOptions[group.attributeDefinitionId])) {
       return `${index + 1}-variant uchun barcha variant xususiyatlarini tanlang`;

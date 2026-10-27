@@ -29,10 +29,13 @@ export const Product = (src: unknown): Types.IEntity.Product => {
     createdAt: get(src, 'createdAt', ''),
     imageUrls: imageUrls.length ? imageUrls : imageUrl ? [imageUrl] : [],
     purchasePrice: get(src, 'purchasePrice', 0),
-    storePrice: get(src, 'storePrice', null) as number | null,
     onlineEnabled: get(src, 'onlineEnabled', get(src, 'isActive', true)) as boolean,
     storeEnabled: get(src, 'storeEnabled', false),
-    status: get(src, 'status', '') as Types.IEntity.Product['status']
+    status: get(src, 'status', '') as Types.IEntity.Product['status'],
+    minPrice: get(src, 'minPrice', get(src, 'effectivePrice', 0)) as number,
+    maxPrice: get(src, 'maxPrice', get(src, 'effectivePrice', 0)) as number,
+    hasVariants: get(src, 'hasVariants', false),
+    inStock: get(src, 'inStock', get(src, 'stockQuantity', 0) > 0) as boolean
   };
 };
 
@@ -47,15 +50,6 @@ export const List = (src: unknown): Types.IQuery.List => {
     data: (items as unknown[]).map(Product)
   };
 };
-
-export const AttributesRequest = (specs: Types.IForm.Create['specs']): Types.IApi.Create.AttributeValue[] =>
-  Object.entries(specs)
-    .map(([key, spec]) => ({
-      attributeDefinitionId: attributeIdFromKey(key),
-      optionIds: spec?.optionIds ?? [],
-      value: spec?.value?.trim() ? spec.value.trim() : null
-    }))
-    .filter(item => item.attributeDefinitionId && (item.optionIds.length || item.value !== null));
 
 export const CreateRequest = (values: Types.IForm.Create): Types.IApi.Create.Request => {
   const stockQuantity = values.variants.length
@@ -79,11 +73,9 @@ export const CreateRequest = (values: Types.IForm.Create): Types.IApi.Create.Req
     sortOrder: values.sortOrder,
     imageUrls: values.imageUrls,
     purchasePrice: values.purchasePrice,
-    storePrice: values.storePrice || null,
     onlineEnabled: values.onlineEnabled,
     storeEnabled: values.storeEnabled,
-    status: values.status,
-    attributes: AttributesRequest(values.specs)
+    status: values.status
   };
 };
 
@@ -93,12 +85,26 @@ export const UpdateRequest = (id: number, values: Types.IForm.Update): Types.IAp
   ...CreateRequest(values)
 });
 
+/**
+ * Spec values in the shape of `PUT /seller/products/specs/{productId}`:
+ * `optionIds` for SELECT / MULTISELECT, `textValue` for TEXT / NUMBER / BOOLEAN.
+ * Empty answers are left out (the list replaces the saved one).
+ */
+export const SpecsRequest = (values: Types.IForm.Create): ProductAttributes.SpecInput[] =>
+  Object.entries(values.specs ?? {}).flatMap(([key, spec]): ProductAttributes.SpecInput[] => {
+    const attributeDefinitionId = attributeIdFromKey(key);
+    if (!attributeDefinitionId || !spec) return [];
+    if (spec.optionIds?.length) return [{ attributeDefinitionId, optionIds: spec.optionIds }];
+    const textValue = spec.value?.trim();
+    return textValue ? [{ attributeDefinitionId, textValue }] : [];
+  });
+
 /** Variants in the shape of `PUT /seller/products/variants/{productId}`. */
 export const VariantsRequest = (values: Types.IForm.Create): ProductAttributes.VariantInput[] =>
   values.variants.map(variant => ({
     variantId: variant.variantId,
     selectedOptions: variant.selectedOptions,
-    sku: variant.sku.trim(),
+    sku: variant.sku.trim() || null,
     priceOverride: variant.price ?? undefined,
     stockQuantity: variant.stockQuantity
   }));
@@ -138,7 +144,10 @@ export const FormValues = (
 
   const specs: Types.IForm.Create['specs'] = {};
   (attributes?.specGroups ?? []).forEach(group => {
-    specs[specKey(group.attributeDefinitionId)] = { optionIds: group.options.map(option => option.id), value: '' };
+    specs[specKey(group.attributeDefinitionId)] = {
+      optionIds: group.options.map(option => option.id),
+      value: group.textValue ?? ''
+    };
   });
 
   const discountEnabled = product.discountPrice > 0 && product.discountPrice < product.price;
@@ -158,7 +167,6 @@ export const FormValues = (
     price: product.price,
     discountEnabled,
     discountPrice: discountEnabled ? product.discountPrice : 0,
-    storePrice: product.storePrice,
     stockQuantity: variants.length ? 0 : product.stockQuantity,
     variants,
     imageUrls: product.imageUrls,

@@ -1,0 +1,19 @@
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.required {
+  margin-left: 2px;
+  color: var(--mantine-color-red-6);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--mantine-font-size-xs);
+  color: var(--app-text-muted);
+}

@@ -8,38 +8,56 @@ sends and reads.
 Status legend: **exists** — already used by the app · **new** — the frontend
 is ready, the backend must add it.
 
-## 1. Categories — hierarchy and commission (new fields)
+## 1. Categories — 3-level tree (exists / new)
 
-`GET /categories` — `CategoryResponse` has none of these yet; each item would get three optional fields:
+Levels: `0` Departament › `1` Kategoriya › `2` Subkategoriya. **Products are
+attached only to level 2** — the editor's category picker lets you open levels
+0–1 but only a subcategory becomes `categoryId`.
 
-| Field               | Type             | Meaning                                                  |
-| ------------------- | ---------------- | -------------------------------------------------------- |
-| `parentId`          | `number \| null` | Parent category. `null` = top level ("Bo'lim").           |
-| `commissionPercent` | `number \| null` | ZARO commission for this category (inherited downwards). |
-| `commissionTier`    | `string`         | Tier label shown in the UI, e.g. `"T3"`.                 |
+- `GET /categories/tree` (**new** — not live yet) — departments with nested
+  `children`, each with `code`, `categoryLevel`, `childCount`, `hasChildren`.
+  Until it exists (today `/categories/tree` falls into `/categories/{id}` and
+  answers 400) the app falls back to `GET /categories`, which returns every
+  category with `parentId` and `categoryLevel`, and builds the tree from it.
+- `GET /categories/{id}` (**exists**) — edit form; returns `attributeTemplateId`.
+- Template badges on the Bo'limlar tree (own = filled, inherited = faded) are
+  computed from `attributeTemplateId` along the parents. `/categories/tree`
+  doesn't send it, so the page merges it from `GET /categories`.
+- `POST /categories` → id, `PUT /categories/{id}`, `DELETE /categories/{id}` (soft) (**exist**).
+  On `PUT`, `parentId` / `attributeTemplateId`: `null` = keep, `0` = remove, `> 0` = set.
+  The admin sends `null` for values the user didn't change, so an inherited
+  template is never unlinked by accident.
 
-Without `parentId` every category is shown as one flat level. Without
-`commissionPercent` the profit preview uses 12 % (`DEFAULT_COMMISSION_PERCENT`
-in `src/modules/products/constants.ts`).
+Optional, still **new**: `commissionPercent` / `commissionTier` per category for
+the profit preview (otherwise 12 %, `DEFAULT_COMMISSION_PERCENT`).
 
-## 2. Attributes (exists) and per-category attribute set (new)
+## 2. Attribute templates (exists)
 
-Used now — checked against Swagger (`/v3/api-docs`):
+- `GET /categories/{categoryId}/attributes` — the category's resolved template
+  (`templateId`, `templateName`, `templateSourceCategoryId`, `attributes[]` with
+  `required`, `sortOrder`, `options`). The product editor uses its
+  `variant: true` attributes as variant axes; `required` axes must get at least
+  one option. No template → the product is saved without variants.
+- `GET|POST /attribute-templates`, `PUT|DELETE /attribute-templates/{id}` —
+  Shablonlar page. `PUT` replaces `items` completely; `sortOrder` is the row
+  order. `DELETE` answers 400 while a category uses the template.
+- `GET /attribute-definition`, `GET /attribute-options/{id}` and the admin
+  option endpoints — Atributlar page (unchanged).
 
-- `GET /attribute-definition` — all definitions (`variant`, `attributeType`, `displayType`).
-- `GET /attribute-options/{attributeDefinitionId}` — options of one definition.
-- `POST /attribute-definition`, `PUT|DELETE /attribute-definition/{id}`,
-  `POST /attribute-options/{attributeDefinitionId}`, `PUT|DELETE /admin/attribute-options/{id}`
-  — used by the Attributes admin page (same `attributes` module).
+Spec attributes (`variant: false`, e.g. Brend, Material) are section 02 of the
+editor, drawn by `attributeType` (SELECT → one, MULTISELECT → many, TEXT,
+NUMBER, BOOLEAN), `required` enforced. Saved after the variants with
+`PUT /seller/products/specs/{productId}` (list replaces the saved one):
 
-`variant: false` definitions fill section 02, `variant: true` ones become the
-variant axes in section 03. For `TEXT` attributes the options are autocomplete
-suggestions; for `SWATCH` options `metaJson.colorHex` is the chip colour.
+```json
+{ "values": [
+  { "attributeDefinitionId": 7, "optionIds": [21] },
+  { "attributeDefinitionId": 9, "textValue": "100% paxta" }
+] }
+```
 
-Not in the API yet: a per-category attribute set with a `required` flag, e.g.
-`GET /categories/{categoryId}/attributes` returning definitions + `required` +
-`options`. Until then every definition is shown for every category and none is
-required.
+Edit mode prefills them from `specGroups` of `GET /product-attributes/{id}`
+(`options` ids or `textValue`).
 
 ## 3. Create / update product (new fields in the body)
 
@@ -51,19 +69,9 @@ the frontend also sends these, which the current `ProductRequest` doesn't have:
 | --------------- | -------------------- | ----------------------------------------------------------- |
 | `imageUrls`     | `string[]`           | All images, first is main. `imageUrl` = `imageUrls[0]`.     |
 | `purchasePrice` | `number`             | Purchase price ("Xarid narxi"). Must never reach customers. |
-| `storePrice`    | `number \| null`     | In-store price ("Do'kon narxi"), no commission.             |
 | `onlineEnabled` | `boolean`            | Sold in the ZARO app.                                        |
 | `storeEnabled`  | `boolean`            | Sold in "Do'kondan sotish".                                  |
 | `status`        | `"DRAFT" \| "PENDING_REVIEW" \| "ACTIVE"` | Draft button → `DRAFT`, submit → `PENDING_REVIEW`. |
-| `attributes`    | `AttributeValue[]`   | Section 02 answers, see below.                               |
-
-```ts
-interface AttributeValue {
-  attributeDefinitionId: number;
-  optionIds: number[]; // SELECT / MULTISELECT
-  value: string | null; // TEXT / NUMBER / BOOLEAN ("true" | "false")
-}
-```
 
 Also derived by the frontend:
 
@@ -74,8 +82,7 @@ Also derived by the frontend:
 - `sortOrder` = next free number in the category (from `GET /products/category/{id}`).
 
 `GET /products/{id}` should return the same new fields so the edit page can
-prefill them. Section 02 answers are read from `specGroups` of
-`GET /product-attributes/{productId}` (**exists**).
+prefill them. Variants are read from `GET /product-attributes/{productId}` (**exists**).
 
 ## 4. Variants (exists)
 
@@ -85,12 +92,23 @@ After the product is saved, generated variants go to
 ```json
 {
   "variants": [
-    { "variantId": 7, "selectedOptions": { "16": 52, "17": 60 }, "sku": "AYO-YOZ-KOY-M-QIZI", "priceOverride": 170000, "stockQuantity": 10 }
+    { "variantId": 7, "selectedOptions": { "16": 52, "17": 60 }, "sku": null, "priceOverride": 170000, "stockQuantity": 10 }
   ]
 }
 ```
 
-`priceOverride` is omitted when the variant uses the product price.
+`sku: null` (SKU left empty) → the backend generates it. `priceOverride` is
+omitted when the variant uses the product price. Existing rows keep their
+`variantId`; removed rows are simply not sent (the backend deactivates them).
+When an edited product had variants and now has none, an empty list is sent.
+If the product saves but the variants or specs call fails, the editor shows the
+backend's reason and opens the saved product's edit page (no duplicate on retry).
+
+## 4.1 Product list
+
+`minPrice`, `maxPrice`, `hasVariants`, `inStock` from the product responses:
+variant products with different prices show "<minPrice> dan"; `inStock: false`
+shows a red "Tugagan" badge instead of the stock count.
 
 ## 5. Images (exists)
 

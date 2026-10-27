@@ -11,6 +11,10 @@ export function validateAttribute(v: Partial<Types.IForm.AttributeDefinition>) {
   if (!v.nameUz?.trim()) errors.nameUz = 'Nomi (uz) majburiy';
   if (!v.attributeType) errors.attributeType = 'Turini tanlang';
   if (!v.displayType) errors.displayType = "Ko'rinishni tanlang";
+  // Backend rule: a variant attribute must be SELECT (one option per variant).
+  if (v.variant && v.attributeType && v.attributeType !== 'SELECT') {
+    errors.attributeType = "Variant atribut faqat SELECT turida bo'ladi";
+  }
 
   return errors;
 }

@@ -20,6 +20,10 @@ type ProductColumnsOptions = {
 const hasDiscount = (product: Types.IEntity.Product) =>
   product.discountPrice > 0 && product.discountPrice < product.price;
 
+/** Variant products with different prices show "<min> so'mdan" (min/max come from the backend). */
+const hasPriceRange = (product: Types.IEntity.Product) =>
+  product.hasVariants && product.minPrice > 0 && product.minPrice !== product.maxPrice;
+
 export const getProductColumns = ({
   onEdit,
   onDelete,
@@ -67,8 +71,14 @@ export const getProductColumns = ({
     numeric: true,
     render: product => (
       <div className={classes.priceCell}>
-        <span className={classes.price}>{formatPrice(product.effectivePrice || product.price)}</span>
-        {hasDiscount(product) ? <span className={classes.oldPrice}>{formatPrice(product.price)}</span> : null}
+        {hasPriceRange(product) ? (
+          <span className={classes.price}>{productsLocale.priceFrom(formatPrice(product.minPrice))}</span>
+        ) : (
+          <>
+            <span className={classes.price}>{formatPrice(product.effectivePrice || product.price)}</span>
+            {hasDiscount(product) ? <span className={classes.oldPrice}>{formatPrice(product.price)}</span> : null}
+          </>
+        )}
       </div>
     )
   },
@@ -76,9 +86,14 @@ export const getProductColumns = ({
     key: 'stockQuantity',
     title: productsLocale.stock,
     numeric: true,
-    render: product => (
-      <span className={product.stockQuantity > 0 ? classes.stock : classes.stockEmpty}>{product.stockQuantity}</span>
-    )
+    render: product =>
+      product.inStock ? (
+        <span className={classes.stock}>{product.stockQuantity}</span>
+      ) : (
+        <Badge color="red" variant="light" size="sm" radius="sm" tt="none">
+          {productsLocale.outOfStock}
+        </Badge>
+      )
   },
   {
     key: 'isActive',

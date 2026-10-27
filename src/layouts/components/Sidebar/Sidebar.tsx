@@ -20,7 +20,9 @@ const LOGOUT_LABEL = 'Chiqish';
 const Sidebar = ({ collapsed, onNavigate }: IProps) => {
   const logout = useAuthStore(state => state.logout);
   const userRole = useAuthStore(state => state.user?.role);
-  const navItems = NAV_ITEMS.filter(item => item.to !== '/attributes' || userRole === 'ADMIN');
+  // The user isn't always loaded (only ADMIN accounts can sign in), so hide admin
+  // items only for a user that is known to have another role.
+  const navItems = NAV_ITEMS.filter(item => !item.adminOnly || !userRole || userRole === 'ADMIN');
   // Keeps the order of NAV_ITEMS; a group appears where its first item is.
   const groups = navItems.reduce<{ label: string; items: typeof navItems }[]>((acc, item) => {
     const existing = acc.find(group => group.label === item.group);

@@ -10,26 +10,19 @@ test('profit: commission, payout and profits', () => {
       discountEnabled: false,
       discountPrice: 0,
       purchasePrice: 90000,
-      storePrice: 160000,
       commissionPercent: 12
     }),
-    { salePrice: 150000, commission: 18000, payout: 132000, onlineProfit: 42000, storeProfit: 70000 }
+    { salePrice: 150000, commission: 18000, payout: 132000, onlineProfit: 42000 }
   );
 });
 
 test('profit: discount price is used only when enabled and lower than the price', () => {
-  const base = { price: 100000, discountPrice: 80000, purchasePrice: 0, storePrice: null, commissionPercent: 10 };
+  const base = { price: 100000, discountPrice: 80000, purchasePrice: 0, commissionPercent: 10 };
 
   assert.equal(Calculations.profit({ ...base, discountEnabled: true }).salePrice, 80000);
   assert.equal(Calculations.profit({ ...base, discountEnabled: false }).salePrice, 100000);
   assert.equal(Calculations.profit({ ...base, discountEnabled: true, discountPrice: 120000 }).salePrice, 100000);
   assert.equal(Calculations.profit({ ...base, price: 0, discountEnabled: false }).onlineProfit, 0);
-});
-
-test('sku prefix transliterates and shortens the name', () => {
-  assert.equal(Calculations.skuPrefix("Ayollar yozgi ko'ylagi, gulli"), 'AYO-YOZ-KOY');
-  assert.equal(Calculations.skuPrefix('Платье летнее'), 'PLA-LET');
-  assert.equal(Calculations.skuPrefix(''), 'SKU');
 });
 
 test('generates the cartesian product and keeps edited rows', () => {
@@ -64,7 +57,7 @@ test('generates the cartesian product and keeps edited rows', () => {
     variantId: undefined,
     selectedOptions: { 1: 10, 2: 20 },
     label: 'S / Qizil',
-    sku: 'KOY-S-QIZI',
+    sku: '',
     price: null,
     stockQuantity: 10
   });

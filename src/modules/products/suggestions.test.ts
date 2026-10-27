@@ -24,10 +24,13 @@ const product = (patch: Partial<Types.IEntity.Product>): Types.IEntity.Product =
   createdAt: '',
   imageUrls: [],
   purchasePrice: 0,
-  storePrice: null,
   onlineEnabled: true,
   storeEnabled: false,
   status: '',
+  minPrice: 0,
+  maxPrice: 0,
+  hasVariants: false,
+  inStock: true,
   ...patch
 });
 

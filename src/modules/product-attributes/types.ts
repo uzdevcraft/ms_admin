@@ -13,6 +13,8 @@ export interface ProductAttributeGroup {
   nameUz: string;
   displayType: AttributeDisplayType;
   options: AttributeOption[];
+  /** TEXT / NUMBER / BOOLEAN spec values come here instead of `options`. */
+  textValue: string | null;
 }
 
 export interface ProductVariant {
@@ -33,11 +35,24 @@ export interface ProductAttributes {
 export interface VariantInput {
   variantId?: number;
   selectedOptions: Record<number, number>;
-  sku: string;
+  /** `null` → the backend generates the SKU. */
+  sku: string | null;
   priceOverride?: number;
   stockQuantity: number;
 }
 
 export interface SaveVariantsRequest {
   variants: VariantInput[];
+}
+
+/** One spec (non-variant) value: `optionIds` for SELECT / MULTISELECT, `textValue` otherwise. */
+export interface SpecInput {
+  attributeDefinitionId: number;
+  optionIds?: number[];
+  textValue?: string;
+}
+
+/** `PUT /seller/products/specs/{productId}` — replaces the product's specs completely. */
+export interface SaveSpecsRequest {
+  values: SpecInput[];
 }

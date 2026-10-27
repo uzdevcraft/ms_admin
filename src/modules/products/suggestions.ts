@@ -122,7 +122,6 @@ export const copyableFields = (
   | 'discountEnabled'
   | 'discountPrice'
   | 'purchasePrice'
-  | 'storePrice'
   | 'imageUrls'
 > => {
   const discountEnabled = product.discountPrice > 0 && product.discountPrice < product.price;
@@ -137,7 +136,6 @@ export const copyableFields = (
     discountEnabled,
     discountPrice: discountEnabled ? product.discountPrice : 0,
     purchasePrice: product.purchasePrice,
-    storePrice: product.storePrice,
     imageUrls: product.imageUrls
   };
 };

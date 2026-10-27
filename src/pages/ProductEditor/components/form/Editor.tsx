@@ -17,6 +17,7 @@ import Images from './Images';
 import Pricing from './Pricing';
 import Section from './Section';
 import SpecAttributes from './SpecAttributes';
+import TemplateNotice from './TemplateNotice';
 
 /**
  * The product editor body (sections 01–05). Lives inside a products
@@ -34,12 +35,12 @@ const Editor = () => {
   const isCreate = !id;
 
   // ---- backend data
-  const { data: categories } = CategoryHooks.useList();
+  const { data: categories } = CategoryHooks.useTree();
   const index = useMemo(() => Tree.buildIndex(categories?.data ?? []), [categories]);
   const path = useMemo(() => Tree.pathTo(index, categoryId), [index, categoryId]);
 
-  // Loaded once a category is chosen; the API has no per-category attribute set yet.
-  const attributes = AttributeHooks.useWithOptions(categoryId > 0);
+  // The category's attribute template: spec attributes (section 02) and variant axes (section 03).
+  const attributes = AttributeHooks.useForCategory(categoryId);
   const suggestions = Hooks.useSuggestions({ name, categoryId, excludeId: id || undefined });
 
   const commissionCategory = [...path].reverse().find(item => item.commissionPercent !== null);
@@ -49,7 +50,7 @@ const Editor = () => {
 
   const options = { shouldDirty: true, shouldValidate: isSubmitted };
 
-  // ---- a new category brings a new attribute set → previous answers no longer apply
+  // ---- a new category brings a new attribute template → previous answers no longer apply
   const changeCategory = (next: number) => {
     if (next === getValues('categoryId')) return;
     setValue('categoryId', next, options);
@@ -70,7 +71,6 @@ const Editor = () => {
     setValue('discountEnabled', fields.discountEnabled, options);
     setValue('discountPrice', fields.discountPrice, options);
     if (fields.purchasePrice) setValue('purchasePrice', fields.purchasePrice, options);
-    if (fields.storePrice) setValue('storePrice', fields.storePrice, options);
     if (fields.imageUrls.length && !getValues('imageUrls').length) setValue('imageUrls', fields.imageUrls, options);
     toast.success(productSuggestions.copied(product.name));
   };
@@ -114,6 +114,7 @@ const Editor = () => {
           </Badge>
         }
       >
+        {categoryId > 0 && <TemplateNotice data={attributes.data} />}
         <Pricing
           axes={variantAxes}
           commissionPercent={commissionPercent}

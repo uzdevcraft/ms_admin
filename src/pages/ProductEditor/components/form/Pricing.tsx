@@ -57,18 +57,16 @@ const Pricing = ({ axes, commissionPercent, priceStats, priceSource }: IProps) =
 
   const { fields, replace, remove } = useFieldArray({ control, name: 'variants', keyName: '_id' });
 
-  const [price = 0, discountEnabled, discountPrice = 0, purchasePrice = 0, storePrice = null, variantOptions] =
-    useWatch({
-      control,
-      name: ['price', 'discountEnabled', 'discountPrice', 'purchasePrice', 'storePrice', 'variantOptions']
-    });
+  const [price = 0, discountEnabled, discountPrice = 0, purchasePrice = 0, variantOptions] = useWatch({
+    control,
+    name: ['price', 'discountEnabled', 'discountPrice', 'purchasePrice', 'variantOptions']
+  });
 
   const breakdown = Calculations.profit({
     price,
     discountEnabled,
     discountPrice,
     purchasePrice,
-    storePrice,
     commissionPercent
   });
 
@@ -236,20 +234,6 @@ const Pricing = ({ axes, commissionPercent, priceStats, priceSource }: IProps) =
               <span>{productEditor.onlineProfit}</span>
               <span className={breakdown.onlineProfit < 0 ? classes.negative : classes.positive}>
                 {money(breakdown.onlineProfit)}
-              </span>
-            </div>
-          </div>
-        </Stack>
-
-        {/* store price */}
-        <Stack gap={6}>
-          <ColumnLabel label={productEditor.storePrice} hint={productEditor.storePriceHint} />
-          <MoneyInput name="storePrice" nullable placeholder="160 000" aria-label={productEditor.storePrice} />
-          <div className={classes.breakdown}>
-            <div className={cx(classes.breakdownRow, classes.breakdownStrong)}>
-              <span>{productEditor.storeProfit}</span>
-              <span className={breakdown.storeProfit < 0 ? classes.negative : classes.positive}>
-                {money(breakdown.storeProfit)}
               </span>
             </div>
           </div>

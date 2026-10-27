@@ -42,3 +42,7 @@ export const UpdateOption = ({
 
 export const DeleteOption = ({ id }: { id: number }): AxiosPromise<void> =>
   http.request.delete(`/admin/attribute-options/${id}`);
+
+/** Attributes of a category's template (inherited from the nearest parent when not set on it). */
+export const ForCategory = ({ categoryId }: Types.IQuery.ForCategory): AxiosPromise<Types.IApi.ForCategory.Response> =>
+  http.request.get(`/categories/${categoryId}/attributes`);

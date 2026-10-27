@@ -10,7 +10,9 @@ const useDelete = () => {
       await Api.Delete({ id });
     },
     onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: ["categories", "list"] });
+      // Tree, list, single and every category's resolved attributes may change.
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["attributes", "category"] });
       queryClient.removeQueries({ queryKey: ["categories", "single", id] });
     },
   });

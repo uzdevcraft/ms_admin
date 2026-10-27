@@ -13,7 +13,8 @@ export const ProductAttributeGroup = (src: unknown): Types.ProductAttributeGroup
   code: get(src, 'code', ''),
   nameUz: get(src, 'nameUz', ''),
   displayType: get(src, 'displayType', 'DROPDOWN') as Types.AttributeDisplayType,
-  options: (get(src, 'options', []) as unknown[]).map(AttributeOption)
+  options: (get(src, 'options', []) as unknown[]).map(AttributeOption),
+  textValue: get(src, 'textValue', null) as string | null
 });
 
 export const ProductVariant = (src: unknown): Types.ProductVariant => ({
@@ -32,3 +33,5 @@ export const ProductAttributes = (src: unknown): Types.ProductAttributes => ({
 });
 
 export const SaveVariantsRequest = (variants: Types.VariantInput[]): Types.SaveVariantsRequest => ({ variants });
+
+export const SaveSpecsRequest = (values: Types.SpecInput[]): Types.SaveSpecsRequest => ({ values });

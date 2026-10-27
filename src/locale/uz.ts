@@ -34,6 +34,8 @@ export const tables = {
   allCategories: "Barcha bo'limlar",
   allOrders: 'Barcha buyurtmalar',
   allAttributes: 'Barcha atributlar',
+  allTemplates: 'Barcha shablonlar',
+  categoryTree: "Bo'limlar daraxti",
   orderItems: 'Buyurtma tarkibi'
 } as const;
 
@@ -46,6 +48,8 @@ export const nav = {
   dashboard: 'Asosiy',
   products: 'Mahsulotlar',
   categories: "Bo'limlar",
+  attributes: 'Atributlar',
+  attributeTemplates: 'Shablonlar',
   orders: 'Buyurtmalar',
   users: 'Mijozlar',
   userTesting: 'Foydalanuvchi testi'
@@ -117,7 +121,9 @@ export const products = {
   editModal: 'Mahsulotni tahrirlash',
   attributes: 'Xususiyatlar',
   attributesModal: 'Mahsulot xususiyatlari',
-  attributesSaved: 'Xususiyatlar saqlandi'
+  attributesSaved: 'Xususiyatlar saqlandi',
+  priceFrom: (price: string) => `${price} dan`,
+  outOfStock: 'Tugagan'
 } as const;
 
 export const productSuggestions = {
@@ -160,22 +166,26 @@ export const productEditor = {
   level2: 'Kategoriya',
   level3: 'Subkategoriya',
   choose: '— tanlang —',
-  chooseDeeper: "Aniqroq kategoriyani tanlang — xususiyatlar shunga qarab o'zgaradi",
+  chooseDeeper: 'Mahsulot faqat subkategoriyaga biriktiriladi — keyingi bosqichni tanlang',
   variantChip: (names: string) => `Variant: ${names}`,
   translations: 'Tarjimalar (UZ / RU)',
   translationsHint: "UZ maydonlari bo'sh qolsa, asosiy nom va tavsif ishlatiladi",
 
-  // 02
-  specs: 'Kategoriyaga xos xususiyatlar',
-  specsChooseCategory: 'Avval kategoriyani tanlang — xususiyatlar shunga qarab serverdan yuklanadi.',
-  specsLoading: 'Xususiyatlar yuklanmoqda…',
-  specsEmpty: "Bu kategoriya uchun qo'shimcha xususiyatlar yo'q.",
-  specsError: "Xususiyatlarni yuklab bo'lmadi",
-  specsBanner:
-    "Maydonlar serverdagi atributlar ro'yxatidan keladi. Kategoriya o'zgarsa, avvalgi javoblar tozalanadi. Narx, ombor va variantlar — 3-bo'limda.",
+  // 02 — spec attributes of the category template
+  specs: 'Xususiyatlar',
+  specsChooseCategory: 'Avval subkategoriyani tanlang — xususiyatlar uning atribut shablonidan keladi.',
+  specsEmpty: "Bu kategoriya shablonida xususiyat (variant bo'lmagan) atributlar yo'q.",
   textPlaceholder: (name: string) => `Masalan: ${name}`,
   yes: 'Ha',
   no: "Yo'q",
+
+  // Category attribute template (GET /categories/{id}/attributes)
+  templateLoading: 'Kategoriya atributlari yuklanmoqda…',
+  templateError: "Kategoriya atributlarini yuklab bo'lmadi",
+  templateMissing:
+    "Bu kategoriya uchun atributlar sozlanmagan — mahsulot variantlarsiz saqlanadi. Shablonni «Shablonlar» / «Bo'limlar» sahifasida sozlang.",
+  templateNoVariants: (name: string) =>
+    `«${name}» shablonida variant atributlari yo'q — mahsulot bitta narx va ombor bilan saqlanadi.`,
 
   // 03
   pricing: 'Narxlar, foyda va variantlar',
@@ -189,8 +199,6 @@ export const productEditor = {
   onlinePrice: 'Onlayn sotuv narxi',
   discount: 'Chegirma',
   discountPrice: 'Chegirma narxi',
-  storePrice: "Do'kon narxi",
-  storePriceHint: '(komissiyasiz)',
   defaultStock: 'Standart ombor',
   stock: 'Ombor',
   currency: "so'm",
@@ -198,12 +206,12 @@ export const productEditor = {
   commissionRow: (percent: number) => `Komissiya (${percent}%)`,
   payout: 'Sizga tushadi',
   onlineProfit: 'Sof foyda (xarid narxidan keyin)',
-  storeProfit: 'Sof foyda',
   generate: 'Variantlarni generatsiya qilish',
   regenerate: 'Variantlarni yangilash',
   variantsCount: (count: number) => `${count} ta variant`,
   variant: 'Variant',
   sku: 'SKU',
+  skuPlaceholder: 'Avtomatik',
   variantPrice: 'Narx',
   variantStock: 'Ombor',
   removeVariant: "Variantni o'chirish",
@@ -235,6 +243,8 @@ export const productEditor = {
   draftSaved: 'Qoralama saqlandi',
   submitted: "Mahsulot ko'rib chiqishga yuborildi",
   updated: 'Mahsulot yangilandi',
+  partialSaveFailed: (stage: 'variants' | 'specs', reason: string) =>
+    `Mahsulot saqlandi, lekin ${stage === 'variants' ? 'variantlar' : 'xususiyatlar'} saqlanmadi${reason ? `: ${reason}` : ''}. Tuzatib, qayta saqlang.`,
   fixErrors: "Belgilangan maydonlarni to'ldiring"
 } as const;
 
@@ -253,7 +263,65 @@ export const categories = {
   createSuccess: "Bo'lim yaratildi",
   updateSuccess: "Bo'lim yangilandi",
   addModal: "Bo'lim qo'shish",
-  editModal: "Bo'limni tahrirlash"
+  editModal: "Bo'limni tahrirlash",
+
+  // tree
+  levels: ['Departament', 'Kategoriya', 'Subkategoriya'] as const,
+  addChild: "Ichki bo'lim qo'shish",
+  addChildModal: (parent: string) => `«${parent}» ichiga qo'shish`,
+  childCount: (count: number) => `${count} ta ichki`,
+  templateOwnBadge: "Shablon shu bo'limga biriktirilgan",
+  templateFrom: (source: string) => `Shablon «${source}» dan meros`,
+  searchPlaceholder: "Nomi yoki kodi bo'yicha qidiring",
+  expandAll: 'Hammasini ochish',
+  collapseAll: 'Hammasini yopish',
+  empty: "Bo'limlar topilmadi",
+  inactive: 'Nofaol',
+  deleteWithChildren: (count: number) =>
+    `Ichida ${count} ta bo'lim bor — ular ham ko'rinmay qoladi. Mahsulotlar o'z holida qoladi.`,
+
+  // form
+  parent: "Yuqori bo'lim",
+  parentPlaceholder: "Bo'sh — departament (eng yuqori daraja)",
+  parentHint: "Subkategoriya ichiga bo'lim qo'shib bo'lmaydi",
+  template: 'Atribut shabloni',
+  templatePlaceholder: "Bo'sh — yuqori bo'limdan meros oladi",
+  templateInherited: (name: string, source: string) => `Bo'sh qolsa: «${name}» — ${source} dan meros`,
+  templateNone: "Bo'sh qolsa: shablon yo'q — mahsulotlar variantlarsiz qo'shiladi",
+  translations: 'Tarjimalar (UZ / RU)',
+  nameUzHint: "Bo'sh qolsa, asosiy nom ishlatiladi"
+} as const;
+
+export const attributeTemplates = {
+  title: 'Atribut shablonlari',
+  description:
+    "Kategoriyaga biriktiriladigan atributlar to'plami. Shablon ichki bo'limlarga meros bo'lib o'tadi va mahsulot variantlarini belgilaydi.",
+  add: "Shablon qo'shish",
+  template: 'Shablon',
+  name: 'Shablon nomi',
+  namePlaceholder: 'Masalan: Kiyim',
+  attributes: 'Atributlar',
+  emptyItems: "Atribut qo'shilmagan",
+  addAttribute: "Atribut qo'shish",
+  addAttributePlaceholder: "Ro'yxatdan atribut tanlang",
+  allAdded: "Barcha atributlar qo'shilgan",
+  noItems: "Hali atribut yo'q — yuqoridagi ro'yxatdan qo'shing. Tartib mahsulot formasidagi tartibni belgilaydi.",
+  required: 'Majburiy',
+  variant: 'Variant',
+  spec: 'Xususiyat',
+  moveUp: 'Yuqoriga',
+  moveDown: 'Pastga',
+  remove: 'Olib tashlash',
+  replaceNote: "Saqlanganda atributlar ro'yxati to'liq almashtiriladi.",
+  createSuccess: 'Shablon yaratildi',
+  updateSuccess: 'Shablon yangilandi',
+  deleted: "Shablon o'chirildi",
+  deleteTitle: "Shablonni o'chirish",
+  deleteConfirm: "ni o'chirasizmi?",
+  deleteLinked: "Shablon kategoriyalarga biriktirilgan — avval ularni boshqa shablonga o'tkazing.",
+  addModal: "Shablon qo'shish",
+  editModal: 'Shablonni tahrirlash',
+  empty: 'Shablonlar topilmadi'
 } as const;
 
 export const orders = {
@@ -449,7 +517,9 @@ export const validation = {
   channelRequired: 'Kamida bitta sotuv kanalini yoqing',
   attributeRequired: (name: string) => `${name} majburiy`,
   generateVariants: 'Variantlarni generatsiya qiling',
-  chooseVariantOptions: (names: string) => `${names} bo'yicha kamida bitta qiymat tanlang`
+  chooseVariantOptions: (names: string) => `${names} bo'yicha kamida bitta qiymat tanlang`,
+  templateNameRequired: 'Shablon nomini kiriting',
+  templateDuplicate: "Bir atribut shablonga ikki marta qo'shilgan"
 } as const;
 
 export const orderStatusOptions = [

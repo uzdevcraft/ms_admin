@@ -69,8 +69,37 @@ export const OptionUpdateRequest = (
   ...OptionCreateRequest(values, displayType)
 });
 
-/** Splits definitions (with their options) into spec attributes and variant axes. */
-export const CategoryAttributes = (items: Types.IEntity.CategoryAttribute[]): Types.IQuery.CategoryAttributes => ({
-  specs: items.filter(item => !item.variant),
-  variants: items.filter(item => item.variant)
+export const CategoryAttribute = (src: unknown): Types.IEntity.CategoryAttribute => ({
+  ...AttributeDefinition(src),
+  required: get(src, 'required', false),
+  sortOrder: get(src, 'sortOrder', 0),
+  options: OptionList(get(src, 'options', []))
 });
+
+const byOrder = (a: Types.IEntity.CategoryAttribute, b: Types.IEntity.CategoryAttribute) => a.sortOrder - b.sortOrder;
+
+/** Splits definitions (with their options) into spec attributes and variant axes, template order kept. */
+export const CategoryAttributes = (
+  items: Types.IEntity.CategoryAttribute[],
+  template: Partial<Omit<Types.IQuery.CategoryAttributes, 'specs' | 'variants'>> = {}
+): Types.IQuery.CategoryAttributes => {
+  const sorted = [...items].sort(byOrder);
+
+  return {
+    categoryId: template.categoryId ?? 0,
+    templateId: template.templateId ?? null,
+    templateName: template.templateName ?? '',
+    templateSourceCategoryId: template.templateSourceCategoryId ?? null,
+    specs: sorted.filter(item => !item.variant),
+    variants: sorted.filter(item => item.variant)
+  };
+};
+
+/** `GET /categories/{categoryId}/attributes`. */
+export const ForCategory = (src: unknown): Types.IQuery.CategoryAttributes =>
+  CategoryAttributes((get(src, 'attributes', []) as unknown[]).map(CategoryAttribute), {
+    categoryId: get(src, 'categoryId', 0),
+    templateId: get(src, 'templateId', null) as number | null,
+    templateName: get(src, 'templateName', '') ?? '',
+    templateSourceCategoryId: get(src, 'templateSourceCategoryId', null) as number | null
+  });

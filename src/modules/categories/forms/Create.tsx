@@ -19,13 +19,15 @@ interface IProps {
   onError?: (error: string) => void;
   onSettled?: () => void;
   onSuccess?: (value: Types.IEntity.Category) => void;
+  /** Preset parent — "add subcategory" from a tree node. */
+  parentId?: number | null;
 }
 
-const CreateForm = ({ children, className, onError, onSettled, onSuccess }: IProps) => {
+const CreateForm = ({ children, className, onError, onSettled, onSuccess, parentId = null }: IProps) => {
   const create = useCreate();
 
   const form = useForm<CreateFormValues>({
-    defaultValues,
+    defaultValues: { ...defaultValues, parentId },
     resolver: yupResolver(categoryFormSchema)
   });
 

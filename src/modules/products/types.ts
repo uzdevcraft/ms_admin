@@ -10,12 +10,6 @@ export declare namespace IApi {
   }
 
   export namespace Create {
-    export interface AttributeValue {
-      attributeDefinitionId: number;
-      optionIds: number[];
-      value: string | null;
-    }
-
     export interface Request {
       categoryId: number;
       name: string;
@@ -35,11 +29,9 @@ export declare namespace IApi {
       // them; see docs/product-editor-api.md for the backend contract.
       imageUrls: string[];
       purchasePrice: number;
-      storePrice: number | null;
       onlineEnabled: boolean;
       storeEnabled: boolean;
       status: IEntity.Status;
-      attributes: AttributeValue[];
     }
 
     /** Id of the created product. */
@@ -91,10 +83,15 @@ export declare namespace IEntity {
     // Optional until the backend returns them (see docs/product-editor-api.md).
     imageUrls: string[];
     purchasePrice: number;
-    storePrice: number | null;
     onlineEnabled: boolean;
     storeEnabled: boolean;
     status: Status | '';
+
+    // Computed by the backend from active variants (list price "...dan", out-of-stock state).
+    minPrice: number;
+    maxPrice: number;
+    hasVariants: boolean;
+    inStock: boolean;
   }
 }
 
@@ -113,9 +110,9 @@ export declare namespace IQuery {
 }
 
 export declare namespace IForm {
-  /** Value of one category attribute (section 02). */
+  /** Value of one spec (non-variant) attribute of the category template. */
   export interface SpecValue {
-    /** Chosen option ids — SELECT (one) / MULTISELECT (many). */
+    /** Chosen option ids — SELECT (exactly one) / MULTISELECT (one or more). */
     optionIds: number[];
     /** Free value — TEXT / NUMBER / BOOLEAN ("true" | "false"). */
     value: string;
@@ -129,6 +126,7 @@ export declare namespace IForm {
     /** attributeDefinitionId → optionId */
     selectedOptions: Record<number, number>;
     label: string;
+    /** Empty → the backend generates the SKU. */
     sku: string;
     /** Empty → the variant uses the product's online price. */
     price: number | null;
@@ -145,7 +143,7 @@ export declare namespace IForm {
     descriptionRu: string;
     categoryId: number;
 
-    // 02 — category attributes, keyed by `specKey(attributeDefinitionId)`
+    // 02 — spec attributes of the category template, keyed by `specKey(attributeDefinitionId)`
     specs: Record<string, SpecValue>;
 
     // 03 — prices and variants
@@ -155,7 +153,6 @@ export declare namespace IForm {
     price: number;
     discountEnabled: boolean;
     discountPrice: number;
-    storePrice: number | null;
     /** Default stock for new variants, or the product stock without variants. */
     stockQuantity: number;
     variants: Variant[];

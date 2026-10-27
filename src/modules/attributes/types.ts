@@ -35,6 +35,22 @@ export declare namespace IApi {
     export type Response = IEntity.AttributeOption[];
   }
 
+  export namespace ForCategory {
+    /** `GET /categories/{categoryId}/attributes` — the resolved template of a category. */
+    export interface Response {
+      categoryId: number;
+      templateId: number | null;
+      templateName: string | null;
+      /** Category the template is set on (this one or the nearest parent). */
+      templateSourceCategoryId: number | null;
+      attributes: (IEntity.AttributeDefinition & {
+        required: boolean;
+        sortOrder: number;
+        options: IEntity.AttributeOption[];
+      })[];
+    }
+  }
+
   export namespace OptionCreate {
     export interface Request {
       valueUz: string;
@@ -72,8 +88,9 @@ export declare namespace IEntity {
 
   /** Attribute definition with its options, as used by the product editor. */
   export interface CategoryAttribute extends AttributeDefinition {
-    /** Not sent by the API yet (always false); kept for a future per-category attribute set. */
+    /** Required by the category's attribute template. */
     required: boolean;
+    sortOrder: number;
     options: AttributeOption[];
   }
 
@@ -100,7 +117,17 @@ export declare namespace IQuery {
     attributeDefinitionId: number;
   }
 
+  export interface ForCategory {
+    categoryId: number;
+  }
+
   export interface CategoryAttributes {
+    categoryId: number;
+    /** `null` — no template on the category or any parent. */
+    templateId: number | null;
+    templateName: string;
+    /** Category the template is inherited from (equals `categoryId` when set directly). */
+    templateSourceCategoryId: number | null;
     /** Attributes describing the product (Brend, Material, ...). */
     specs: IEntity.CategoryAttribute[];
     /** Attributes that form variants (O'lcham, Rang, ...). */

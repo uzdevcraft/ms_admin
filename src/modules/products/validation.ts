@@ -15,7 +15,8 @@ const isEmpty = (spec?: Types.IForm.SpecValue) => !spec || (!spec.optionIds?.len
 
 /**
  * Checks that depend on server data and so can't live in the static yup
- * schema: required category attributes and generated variants.
+ * schema: required spec attributes and variant axes of the category
+ * template, and generated variants.
  */
 export const validateExtras = (
   values: Types.IForm.Create,
@@ -29,7 +30,6 @@ export const validateExtras = (
       name: `specs.${specKey(attribute.id)}`,
       message: validation.attributeRequired(attribute.nameUz)
     }));
-
   const requiredAxes = attributes.variants.filter(attribute => attribute.required);
   const missingAxes = requiredAxes.filter(attribute => !values.variantOptions[specKey(attribute.id)]?.length);
 

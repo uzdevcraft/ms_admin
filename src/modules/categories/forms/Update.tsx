@@ -6,6 +6,7 @@ import getApiError from '@common/utils/getApiError';
 import { keepOptions } from '@/helpers';
 
 import useUpdate from '../hooks/useUpdate';
+import * as Mappers from '../mappers';
 import type * as Types from '../types';
 import { categoryUpdateFormSchema, updateDefaultValues, type UpdateFormValues } from './schema';
 
@@ -22,17 +23,6 @@ interface IProps {
   onSuccess?: (value: Types.IEntity.Category) => void;
 }
 
-const toFormValues = (category: Types.IEntity.Category): UpdateFormValues => ({
-  id: category.id,
-  name: category.name,
-  nameUz: category.nameUz,
-  nameRu: category.nameRu,
-  description: category.description,
-  imageUrl: category.imageUrl,
-  isActive: category.isActive,
-  sortOrder: category.sortOrder
-});
-
 const UpdateForm = ({ category, children, className, onError, onSettled, onSuccess }: IProps) => {
   const update = useUpdate();
 
@@ -41,13 +31,15 @@ const UpdateForm = ({ category, children, className, onError, onSettled, onSucce
     resolver: yupResolver(categoryUpdateFormSchema)
   });
 
+  const { reset } = form;
+
   useEffect(() => {
-    form.reset(toFormValues(category));
-  }, [category, form.reset]);
+    reset(Mappers.FormValues(category));
+  }, [category, reset]);
 
   const onSubmit = form.handleSubmit(values => {
     update.mutate(
-      { id: category.id, values },
+      { id: category.id, values, initial: Mappers.FormValues(category) },
       {
         onSuccess: data => {
           onSuccess?.(data);

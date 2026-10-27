@@ -28,7 +28,7 @@ interface IProps {
   onClose: () => void;
 }
 
-type VariantDraft = VariantInput & { key: string; effectivePrice?: number };
+type VariantDraft = Omit<VariantInput, 'sku'> & { sku: string; key: string; effectivePrice?: number };
 
 const createDraft = (): VariantDraft => ({
   key: crypto.randomUUID(),

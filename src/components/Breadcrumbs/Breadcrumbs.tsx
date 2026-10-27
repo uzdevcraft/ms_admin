@@ -16,6 +16,7 @@ export const ROUTE_LABELS: Record<string, string> = {
   '/users': nav.users,
   '/products': nav.products,
   '/categories': nav.categories,
+  '/attribute-templates': nav.attributeTemplates,
   '/orders': nav.orders
 };
 

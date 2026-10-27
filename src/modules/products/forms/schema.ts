@@ -12,7 +12,7 @@ const variantSchema: yup.ObjectSchema<Types.IForm.Variant> = yup.object({
   variantId: yup.number().optional(),
   selectedOptions: yup.mixed<Record<number, number>>().required(),
   label: yup.string().defined(),
-  sku: yup.string().trim().required(validation.skuRequired),
+  sku: yup.string().trim().defined(),
   price: yup.number().min(0, validation.pricePositive).nullable().defined(),
   stockQuantity: yup.number().typeError(REQUIRED).integer().min(0).required(REQUIRED)
 });
@@ -47,7 +47,6 @@ export const productFormSchema: yup.ObjectSchema<Types.IForm.Create> = yup.objec
         ? schema.moreThan(0, validation.discountRequired).lessThan(price || Infinity, validation.discountBelowPrice)
         : schema
     ),
-  storePrice: yup.number().typeError(validation.pricePositive).min(0, validation.pricePositive).nullable().defined(),
   stockQuantity: yup.number().typeError(validation.stockRequired).integer().min(0).required(validation.stockRequired),
   variants: yup.array(variantSchema).required(),
 
@@ -88,7 +87,6 @@ export const defaultValues: CreateFormValues = {
   price: 0,
   discountEnabled: false,
   discountPrice: 0,
-  storePrice: null,
   stockQuantity: 10,
   variants: [],
   imageUrls: [],

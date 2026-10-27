@@ -7,24 +7,22 @@ import type * as Types from "../types";
 interface UpdateVariables {
   id: number;
   values: Types.IForm.Update;
+  /** Values the form started from — unchanged parent / template are sent as `null` (keep). */
+  initial?: Types.IForm.Update;
 }
 
 const useUpdate = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, values }: UpdateVariables) => {
-      const { data } = await Api.Update(Mappers.UpdateRequest(id, values));
-      return Mappers.Category(data);
+    mutationFn: async ({ id, values, initial }: UpdateVariables) => {
+      const { data } = await Api.Update(Mappers.UpdateRequest(id, values, initial));
+      return Mappers.Category(typeof data === "object" && data ? data : { ...values, id });
     },
-    onSuccess: (_, { id, values }) => {
-      queryClient.invalidateQueries({ queryKey: ["categories", "list"] });
-      queryClient.invalidateQueries({ queryKey: ["categories", "single", id] });
-      if (values.id !== id) {
-        queryClient.invalidateQueries({
-          queryKey: ["categories", "single", values.id],
-        });
-      }
+    onSuccess: () => {
+      // Tree, list, single and every category's resolved attributes may change.
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["attributes", "category"] });
     },
   });
 };

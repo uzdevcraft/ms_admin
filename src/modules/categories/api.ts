@@ -2,8 +2,13 @@ import type { AxiosPromise } from "axios";
 import { http } from "@common/services";
 import type * as Types from "./types";
 
+/** Every category as a flat list (with `parentId` and `categoryLevel`) — the tree fallback. */
 export const List = (): AxiosPromise<Types.IApi.List.Response> =>
   http.request.get("/categories");
+
+/** Full active hierarchy (departments → categories → subcategories). */
+export const Tree = (): AxiosPromise<Types.IApi.Tree.Response> =>
+  http.request.get("/categories/tree");
 
 export const Single = ({
   id,

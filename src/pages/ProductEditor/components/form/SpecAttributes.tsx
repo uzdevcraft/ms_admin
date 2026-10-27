@@ -1,5 +1,5 @@
-import { Alert, Button, Center, Loader, SimpleGrid, Text } from '@mantine/core';
-import { IconBolt, IconInfoCircle } from '@tabler/icons-react';
+import { Alert, Button, Group, Loader, SimpleGrid, Text } from '@mantine/core';
+import { IconInfoCircle } from '@tabler/icons-react';
 import cx from 'clsx';
 
 import { productEditor } from '@/locale/uz';
@@ -16,7 +16,10 @@ type IProps = {
   onRetry: () => void;
 };
 
-/** Section 02: spec attributes from `GET /attribute-definition` with their options. */
+/**
+ * Section 02: spec (non-variant) attributes of the category template from
+ * `GET /categories/{id}/attributes`; saved with `PUT /seller/products/specs/{id}`.
+ */
 const SpecAttributes = ({ categoryId, data, isLoading, isError, onRetry }: IProps) => {
   if (!categoryId) {
     return (
@@ -29,18 +32,18 @@ const SpecAttributes = ({ categoryId, data, isLoading, isError, onRetry }: IProp
 
   if (isLoading) {
     return (
-      <Center py="lg" className={classes.loading}>
-        <Loader size="sm" />
+      <Group gap="xs" className={classes.loading}>
+        <Loader size="xs" />
         <Text size="sm" c="dimmed">
-          {productEditor.specsLoading}
+          {productEditor.templateLoading}
         </Text>
-      </Center>
+      </Group>
     );
   }
 
   if (isError || !data) {
     return (
-      <Alert color="red" variant="light" title={productEditor.specsError}>
+      <Alert color="red" variant="light" title={productEditor.templateError}>
         <Button size="compact-sm" variant="light" color="red" onClick={onRetry}>
           {productEditor.retry}
         </Button>
@@ -48,25 +51,20 @@ const SpecAttributes = ({ categoryId, data, isLoading, isError, onRetry }: IProp
     );
   }
 
-  return (
-    <>
-      <div className={classes.banner}>
-        <IconBolt size={18} className={classes.bannerIcon} />
-        <span>{productEditor.specsBanner}</span>
-      </div>
+  if (!data.specs.length) {
+    return (
+      <Text size="sm" c="dimmed">
+        {data.templateId ? productEditor.specsEmpty : productEditor.templateMissing}
+      </Text>
+    );
+  }
 
-      {data.specs.length ? (
-        <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl" verticalSpacing="lg">
-          {data.specs.map(attribute => (
-            <AttributeField key={attribute.id} attribute={attribute} />
-          ))}
-        </SimpleGrid>
-      ) : (
-        <Text size="sm" c="dimmed">
-          {productEditor.specsEmpty}
-        </Text>
-      )}
-    </>
+  return (
+    <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl" verticalSpacing="lg">
+      {data.specs.map(attribute => (
+        <AttributeField key={attribute.id} attribute={attribute} />
+      ))}
+    </SimpleGrid>
   );
 };
 

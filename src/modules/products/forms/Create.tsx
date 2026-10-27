@@ -5,6 +5,7 @@ import { FormProvider, useForm, type UseFormReturn } from 'react-hook-form';
 import getApiError from '@common/utils/getApiError';
 import { keepOptions } from '@/helpers';
 
+import { isPartialSaveError } from '../errors';
 import useCreate from '../hooks/useCreate';
 import type * as Types from '../types';
 import { defaultValues, productFormSchema, type CreateFormValues } from './schema';
@@ -20,7 +21,8 @@ interface IProps {
   onBeforeSubmit?: (values: CreateFormValues, form: UseFormReturn<CreateFormValues>) => boolean;
   /** Called when the static schema rejects the values. */
   onInvalid?: () => void;
-  onError?: (error: string) => void;
+  /** `error` is the raw mutation error — e.g. `PartialSaveError` when only variants / specs failed. */
+  onError?: (message: string, error: unknown) => void;
   onSettled?: () => void;
   onSuccess?: (value: Types.IEntity.Product, values: CreateFormValues) => void;
 }
@@ -42,7 +44,7 @@ const CreateForm = ({ children, className, onBeforeSubmit, onInvalid, onError, o
           onSuccess?.(data, values);
         },
         onError: error => {
-          onError?.(getApiError(error).message || error.message);
+          onError?.(getApiError(isPartialSaveError(error) ? error.cause : error).message || error.message, error);
         },
         onSettled: () => {
           form.reset({ ...form.getValues() }, { ...keepOptions });

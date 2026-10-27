@@ -1,13 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import * as ProductAttributesApi from '@/modules/product-attributes/api';
-import * as ProductAttributesMappers from '@/modules/product-attributes/mappers';
-
 import * as Api from '../api';
 import * as Mappers from '../mappers';
 import type * as Types from '../types';
 
-/** Creates the product, then saves its generated variants (if any). */
+import saveExtras from './saveExtras';
+
+/** Creates the product, then saves its generated variants and spec values (if any). */
 const useCreate = () => {
   const queryClient = useQueryClient();
 
@@ -18,18 +17,14 @@ const useCreate = () => {
       // The API returns only the new id; build the entity from what was sent.
       const product = Mappers.Product({ ...request, id: Mappers.Id(data) });
 
-      if (values.variants.length && product.id) {
-        await ProductAttributesApi.SaveProductVariants({
-          productId: product.id,
-          request: ProductAttributesMappers.SaveVariantsRequest(Mappers.VariantsRequest(values))
-        });
-      }
+      if (product.id) await saveExtras(product.id, values);
 
       return product;
     },
-    onSuccess: product => {
+    onSettled: product => {
+      // Also after a partial failure: the product exists either way.
       queryClient.invalidateQueries({ queryKey: ['products', 'list'] });
-      queryClient.invalidateQueries({ queryKey: ['product-attributes', product.id] });
+      if (product) queryClient.invalidateQueries({ queryKey: ['product-attributes', product.id] });
     }
   });
 };

@@ -13,7 +13,9 @@ const useCreate = () => {
       return Mappers.Category(typeof data === "object" ? data : { id: data });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories", "list"] });
+      // Tree, list, single and every category's resolved attributes may change.
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["attributes", "category"] });
     },
   });
 };

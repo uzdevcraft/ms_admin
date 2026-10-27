@@ -52,7 +52,12 @@ const VariantTable = ({ fields, basePrice, onRemove, onApplyStock }: IProps) => 
               </Text>
             </Table.Td>
             <Table.Td>
-              <Fields.Text name={`variants.${index}.sku`} size="sm" aria-label={productEditor.sku} />
+              <Fields.Text
+                name={`variants.${index}.sku`}
+                size="sm"
+                placeholder={productEditor.skuPlaceholder}
+                aria-label={productEditor.sku}
+              />
             </Table.Td>
             <Table.Td>
               <MoneyInput

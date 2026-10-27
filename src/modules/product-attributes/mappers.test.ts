@@ -37,7 +37,8 @@ test('maps Swagger product attributes response including groups and variants', (
           code: 'color',
           nameUz: 'Rang',
           displayType: 'SWATCH',
-          options: [{ id: 11, valueUz: 'Qizil', valueRu: 'Красный', metaJson: { hex: '#f00' } }]
+          options: [{ id: 11, valueUz: 'Qizil', valueRu: 'Красный', metaJson: { hex: '#f00' } }],
+          textValue: null
         }
       ],
       specGroups: [],

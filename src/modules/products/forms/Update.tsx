@@ -6,6 +6,7 @@ import getApiError from '@common/utils/getApiError';
 import { keepOptions } from '@/helpers';
 import type * as ProductAttributes from '@/modules/product-attributes/types';
 
+import { isPartialSaveError } from '../errors';
 import useUpdate from '../hooks/useUpdate';
 import * as Mappers from '../mappers';
 import type * as Types from '../types';
@@ -23,7 +24,8 @@ interface IProps {
   onBeforeSubmit?: (values: UpdateFormValues, form: UseFormReturn<UpdateFormValues>) => boolean;
   /** Called when the static schema rejects the values. */
   onInvalid?: () => void;
-  onError?: (error: string) => void;
+  /** `error` is the raw mutation error — e.g. `PartialSaveError` when only variants / specs failed. */
+  onError?: (message: string, error: unknown) => void;
   onSettled?: () => void;
   onSuccess?: (value: Types.IEntity.Product, values: UpdateFormValues) => void;
 }
@@ -57,13 +59,17 @@ const UpdateForm = ({
       if (onBeforeSubmit && !onBeforeSubmit(values, form)) return;
 
       update.mutate(
-        { id: product.id, values },
+        {
+          id: product.id,
+          values,
+          saved: { hadVariants: Boolean(attributes?.variants.length), hadSpecs: Boolean(attributes?.specGroups.length) }
+        },
         {
           onSuccess: data => {
             onSuccess?.(data, values);
           },
           onError: error => {
-            onError?.(getApiError(error).message || error.message);
+            onError?.(getApiError(isPartialSaveError(error) ? error.cause : error).message || error.message, error);
           },
           onSettled: () => {
             form.reset({ ...form.getValues() }, { ...keepOptions });

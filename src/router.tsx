@@ -15,6 +15,7 @@ import { NotFound } from '@/components/NotFound';
 
 // pages
 import { Attributes, AttributeDetail } from '@/pages/Attributes';
+import { AttributeTemplates } from '@/pages/AttributeTemplates';
 import { Categories } from '@/pages/Categories';
 import { Dashboard } from '@/pages/Dashboard';
 import { Login } from '@/pages/Login';
@@ -75,6 +76,10 @@ const getRoutesData = (): RouteObject[] => [
       {
         path: '/attributes/:id',
         element: <AttributeDetail />
+      },
+      {
+        path: '/attribute-templates',
+        element: <AttributeTemplates />
       },
       {
         path: '/orders',

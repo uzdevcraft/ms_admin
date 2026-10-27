@@ -2,14 +2,20 @@ import * as yup from 'yup';
 import { validation } from '@/locale/uz';
 import type * as Types from '../types';
 
+const optionalText = () => yup.string().defined().default('');
+const optionalId = () => yup.number().integer().min(0).nullable().defined().default(null);
+
 export const categoryFormSchema: yup.ObjectSchema<Types.IForm.Create> = yup.object({
-  name: yup.string().required('Majburiy maydon'),
-  nameUz: yup.string().required('Majburiy maydon'),
-  nameRu: yup.string().required('Majburiy maydon'),
-  description: yup.string().required('Majburiy maydon'),
-  imageUrl: yup.string().required('Majburiy maydon'),
+  name: yup.string().trim().required('Majburiy maydon'),
+  // Empty UZ name falls back to `name` in the mapper; RU, description and image are optional (API doc §6.1).
+  nameUz: optionalText(),
+  nameRu: optionalText(),
+  description: optionalText(),
+  imageUrl: optionalText(),
   isActive: yup.boolean().defined().required(),
-  sortOrder: yup.number().integer().min(0).required('Majburiy maydon')
+  sortOrder: yup.number().integer().min(0).nullable().defined().default(null),
+  parentId: optionalId(),
+  attributeTemplateId: optionalId()
 });
 
 export const categoryUpdateFormSchema: yup.ObjectSchema<Types.IForm.Update> = categoryFormSchema.shape({
@@ -26,7 +32,9 @@ export const defaultValues: CreateFormValues = {
   description: '',
   imageUrl: '',
   isActive: true,
-  sortOrder: null
+  sortOrder: null,
+  parentId: null,
+  attributeTemplateId: null
 };
 
 export const updateDefaultValues: UpdateFormValues = {

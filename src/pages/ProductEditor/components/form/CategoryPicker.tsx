@@ -28,17 +28,33 @@ const CategoryPicker = ({ index, onChange, variantNames, recommended }: IProps) 
   } = useFormContext<CreateFormValues>();
   const categoryId = useWatch({ control, name: 'categoryId' }) ?? 0;
 
-  // ---- search: free text, cleared after a category is picked
+  // Products attach only to subcategories. Picking a department / category is
+  // kept as a local draft (it only opens the next level) and clears the value.
+  const [draftId, setDraftId] = useState(0);
+  const select = (id: number) => {
+    if (id && Tree.isSelectable(index, id)) {
+      onChange(id);
+    } else {
+      setDraftId(id);
+      onChange(0);
+    }
+  };
+
+  // ---- search: free text over subcategories, cleared after one is picked
   const [query, setQuery] = useState('');
   const justPicked = useRef(false);
-  const results = useMemo(() => Tree.search(index, query), [index, query]);
+  const results = useMemo(
+    () => Tree.search(index, query, 8, category => Tree.isSelectable(index, category.id)),
+    [index, query]
+  );
 
-  // ---- cascade: one select per level, derived from the selected category's path
-  const path = useMemo(() => Tree.pathTo(index, categoryId), [index, categoryId]);
+  // ---- cascade: one select per level, derived from the selected (or draft) category's path
+  const focusId = categoryId || draftId;
+  const path = useMemo(() => Tree.pathTo(index, focusId), [index, focusId]);
   const levels = Math.min(3, Tree.depth(index));
-  const current = path[path.length - 1];
+  const current = categoryId ? path[path.length - 1] : undefined;
   const tier = current ? (path.findLast(item => item.commissionTier)?.commissionTier ?? '') : '';
-  const hasChildren = current ? !Tree.isLeaf(index, current.id) : false;
+  const needsDeeper = !categoryId && path.length > 0;
 
   const levelSelects = Array.from({ length: levels }, (_, level) => {
     const parentId = level === 0 ? null : path[level - 1]?.id;
@@ -69,7 +85,7 @@ const CategoryPicker = ({ index, onChange, variantNames, recommended }: IProps) 
         }}
         onOptionSubmit={value => {
           justPicked.current = true;
-          onChange(Number(value));
+          select(Number(value));
         }}
         data={results.map(result => ({ value: String(result.category.id), label: result.label }))}
         filter={({ options }) => options}
@@ -85,12 +101,12 @@ const CategoryPicker = ({ index, onChange, variantNames, recommended }: IProps) 
             placeholder={productEditor.choose}
             data={options.map(option => ({ value: String(option.id), label: option.name }))}
             value={value ? String(value) : null}
-            onChange={next => onChange(next ? Number(next) : (parentId ?? 0))}
+            onChange={next => select(next ? Number(next) : (parentId ?? 0))}
             disabled={!options.length}
             searchable={options.length > 8}
             clearable={level > 0}
             nothingFoundMessage={productEditor.categoryNothingFound}
-            error={level === 0 && !categoryId ? error : undefined}
+            error={!categoryId && level === Math.min(path.length, levels - 1) ? error : undefined}
           />
         ))}
       </SimpleGrid>
@@ -116,19 +132,19 @@ const CategoryPicker = ({ index, onChange, variantNames, recommended }: IProps) 
         </div>
       )}
 
-      {hasChildren && (
+      {needsDeeper && (
         <Text size="xs" c="blue">
           {productEditor.chooseDeeper}
         </Text>
       )}
 
-      {recommended && recommended.categoryId !== categoryId && index.byId.has(recommended.categoryId) && (
+      {recommended && recommended.categoryId !== categoryId && Tree.isSelectable(index, recommended.categoryId) && (
         <Group gap={6} className={classes.hint}>
           <IconSparkles size={14} />
           <Text size="xs" c="dimmed">
             {productSuggestions.recommendedCategory}
           </Text>
-          <Button size="compact-xs" variant="light" onClick={() => onChange(recommended.categoryId)}>
+          <Button size="compact-xs" variant="light" onClick={() => select(recommended.categoryId)}>
             {Tree.pathLabel(Tree.pathTo(index, recommended.categoryId))}
           </Button>
           <Text size="xs" c="dimmed">

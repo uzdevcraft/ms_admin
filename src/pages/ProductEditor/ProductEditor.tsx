@@ -10,7 +10,7 @@ import { common, nav, productEditor } from '@/locale/uz';
 import { Constants as AttributeConstants } from '@/modules/attributes';
 import type * as Attributes from '@/modules/attributes/types';
 import { useProductAttributes } from '@/modules/product-attributes';
-import { Constants, Hooks, Validation } from '@modules/products';
+import { Constants, Errors, Hooks, Validation } from '@modules/products';
 import { CreateForm, UpdateForm, type CreateFormValues } from '@modules/products/forms';
 import type * as Types from '@modules/products/types';
 
@@ -36,10 +36,10 @@ const ProductEditor = () => {
   const product = Hooks.useSingle(id, !isCreate);
   const attributes = useProductAttributes({ productId: id || undefined });
 
-  // Checks that need server data: required category attributes and generated variants.
+  // Checks that need server data: variant axes required by the category template, generated variants.
   const beforeSubmit = <T extends CreateFormValues>(values: T, form: UseFormReturn<T>) => {
     const categoryAttributes = queryClient.getQueryData<Attributes.IQuery.CategoryAttributes>(
-      AttributeConstants.WITH_OPTIONS_QUERY_KEY
+      AttributeConstants.categoryAttributesKey(values.categoryId)
     );
     const errors = Validation.validateExtras(values, categoryAttributes);
     const { setError } = form as unknown as UseFormReturn<CreateFormValues>;
@@ -63,7 +63,16 @@ const ProductEditor = () => {
     navigate(LIST);
   };
 
-  const handleError = (message: string) => toast.error(message || common.somethingWentWrong);
+  const handleError = (message: string, error: unknown) => {
+    // The product is saved but its variants / specs aren't: show the backend's reason
+    // and open the saved product, so submitting again updates it instead of duplicating.
+    if (Errors.isPartialSaveError(error)) {
+      toast.warning(productEditor.partialSaveFailed(error.stage, message), { duration: 10_000 });
+      if (isCreate) navigate(`${LIST}/${error.productId}/edit`, { replace: true });
+      return;
+    }
+    toast.error(message || common.somethingWentWrong);
+  };
 
   const handleInvalid = () => {
     toast.error(productEditor.fixErrors);

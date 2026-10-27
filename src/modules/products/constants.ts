@@ -9,7 +9,7 @@ export const STATUS = {
   active: 'ACTIVE'
 } as const satisfies Record<string, Types.IEntity.Status>;
 
-/** Form keys can't be bare numbers (react-hook-form would treat them as array indexes). */
+/** Spec / variant axis form keys can't be bare numbers (react-hook-form would treat them as array indexes). */
 export const specKey = (attributeDefinitionId: number) => `a${attributeDefinitionId}`;
 
 export const attributeIdFromKey = (key: string) => Number(key.replace(/^a/, '')) || 0;
